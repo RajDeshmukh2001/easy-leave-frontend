@@ -1,4 +1,4 @@
-import { CalendarPlus, LayoutGrid } from 'lucide-react';
+import { LayoutGrid } from 'lucide-react';
 import type { NavItem } from '../types/navigation';
 export const EMPLOYEE_NAV_ITEMS: NavItem[] = [
     {
@@ -6,9 +6,4 @@ export const EMPLOYEE_NAV_ITEMS: NavItem[] = [
       icon: LayoutGrid,
       href: "/dashboard"
     },
-    {
-      name: "Apply Leave",
-      icon: CalendarPlus,
-      href: "/apply-leave",
-    }
 ]
