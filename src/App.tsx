@@ -1,10 +1,13 @@
-import '@/App.css';
+import './App.css'
+import Layout from './components/Layout';
 
 const App = (): React.JSX.Element => {
   return (
-    <div>
-      EasyLeave - Leave Management System
-    </div>
+        <Layout>
+        <div>
+          EasyLeave - Leave Management System
+        </div>
+        </Layout>
   );
 };
 
