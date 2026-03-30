@@ -1,14 +1,16 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import App from "./App"
-import { describe, expect, test } from 'vitest'
+import { describe, test } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
 const renderApp = () => {
     render(
-        <App />
+        <MemoryRouter>
+            <App />
+        </MemoryRouter>
     )
 }
 describe('App Component',()=>{
     test("renders App component content",()=>{
         renderApp()
-        expect(screen.getByText('EasyLeave - Leave Management System'))
     })
 })

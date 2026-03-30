@@ -17,7 +17,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**'],
-      exclude: ['src/main.tsx'],
+      exclude: [
+        'src/main.tsx',
+        'src/components/ui/**',     // Shadcn UI Components
+        'src/hooks/use-mobile.ts',  // Shadcn component hooks
+        'src/lib/utils.ts',         // Shadcn utlity functions
+        '**/*.css',
+      ],
       thresholds: {
         branches: 90,
         functions: 100,
