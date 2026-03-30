@@ -4,4 +4,4 @@ export type LeaveApplication = {
   duration: 'FULL_DAY' | 'HALF_DAY';
   startTime: string;
   description: string;
-}
+};
