@@ -6,8 +6,10 @@ const Layout = () : React.JSX.Element => {
   return (
     <SidebarProvider>
         <AppSidebar />
-        <main>
-            <SidebarTrigger />
+        <main className="w-full bg-gray-50">
+            <header className="flex items-center h-14 border-b bg-white">
+              <SidebarTrigger size="sm" className="justify-self-start ml-2 cursor-pointer"/>
+            </header>
             <Outlet />
         </main>
     </SidebarProvider>
