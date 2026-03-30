@@ -1,11 +1,11 @@
-import './App.css'
+import '@/App.css';
 
-const App = () => {
-    return (
-        <div>
-            Leave Management System
-        </div>
-    )
-}
+const App = (): React.JSX.Element => {
+  return (
+    <div>
+      EasyLeave - Leave Management System
+    </div>
+  );
+};
 
 export default App;

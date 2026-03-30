@@ -1,0 +1,22 @@
+# Get staged files (Added, Copied, Modified, Renamed)
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
+
+# Filter only TS/JS/TSX/JSX files for ESLint
+TS_FILES=$(echo "$FILES" | grep -E '\.(ts|tsx|js|jsx)$')
+
+# Filter all Prettier-supported files
+PRETTIER_FILES=$(echo "$FILES" | grep -E '\.(ts|tsx|js|jsx|json|css|yaml|md)$')
+
+if [ -z "$TS_FILES" ]; then
+  echo "✅ No JS/TS files to check."
+  exit 0
+fi
+
+echo "🧼 Running Prettier..."
+npx prettier $PRETTIER_FILES --write --ignore-unknown
+
+echo "🔍 Running ESLint..."
+npx eslint $TS_FILES --fix
+
+echo "🔎 Running TypeScript (only staged files)..."
+npx tsc -b --noEmit
