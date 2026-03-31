@@ -27,7 +27,6 @@ const renderLeavePage = () => {
   )
 }
 
-
 describe('Leave Page Component', () => {
 
   beforeEach(() => {

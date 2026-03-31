@@ -22,7 +22,6 @@ function Dashboard() : React.JSX.Element {
       <PageHeader
         pageTitle="Dashboard"
         pageSubtitle="Welcome to your dashboard! Here you can find an overview of your Leaves" />
-
       <div className='flex w-full rounded-2xl shadow-xs border border-neutral-200'>
         <div className='w-full'>
           <h1 className='text-2xl font-bold mb-4 p-3'>Upcoming Leaves</h1>
