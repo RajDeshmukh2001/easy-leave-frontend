@@ -5,7 +5,7 @@ import Table from "../components/Table";
 import { fetchLeaves } from "../api/leave.api";
 import type { LeaveResponse } from "../types/leaves";
 
-function Dashboard() {
+function Dashboard() : React.JSX.Element {
   const [leaves, setLeaves] = useState<LeaveResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ function Dashboard() {
   const columns = [
     { header: 'Type', render: (leave: LeaveResponse) => leave.type },
     { header: 'Date', render: (leave: LeaveResponse) => new Date(leave.date).toLocaleDateString() },
-    { header: 'Duration', render: (leave: LeaveResponse) => leave.duration },
+    { header: 'Duration', render: (leave: LeaveResponse) => leave.duration.replace('_', ' ') },
     { header: 'Applied On', render: (leave: LeaveResponse) => new Date(leave.applyOn).toLocaleDateString() },
     { header: 'Reason', render: (leave: LeaveResponse) => leave.reason },
     { header: 'Actions', render: () => <EllipsisVertical size={20} strokeWidth={3} /> },

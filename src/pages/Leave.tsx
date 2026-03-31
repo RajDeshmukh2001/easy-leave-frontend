@@ -35,7 +35,7 @@ function Leave(): React.JSX.Element {
   const columns = [
     { header: 'Type', render: (leave: LeaveResponse) => leave.type },
     { header: 'Date', render: (leave: LeaveResponse) => new Date(leave.date).toLocaleDateString() },
-    { header: 'Duration', render: (leave: LeaveResponse) => leave.duration },
+    { header: 'Duration', render: (leave: LeaveResponse) => leave.duration.replace('_', ' ') },
     {
       header: 'Status',
       render: (leave: LeaveResponse) => {
