@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import type { DateRange } from 'react-day-picker';
 
 type DatePickerProps = {
-  date?: DateRange;
+  date?: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
   className?: string;
 };
