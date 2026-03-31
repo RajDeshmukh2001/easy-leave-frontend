@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react'
+import React, { type ReactNode } from 'react';
 
 type Column<T> = {
     header: string;
@@ -41,4 +41,4 @@ function Table<T>({ data, columns }: TableProps<T>): React.JSX.Element {
     );
 }
 
-export default Table
+export default Table;

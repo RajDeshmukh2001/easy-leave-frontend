@@ -4,7 +4,7 @@
 @import "@fontsource-variable/inter";
 
 :root {
-  --text: #6b6375;;
+  --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
   --border: oklch(0.922 0 0);
