@@ -102,6 +102,7 @@ describe('Leave Page Component', () => {
       expect(screen.getByText('Ongoing')).toBeInTheDocument()
     })
   })
+  
   test('shows Completed leave ', async () => {
     const todayLeave: LeaveResponse[] = [{
       ...mockLeaves[0],

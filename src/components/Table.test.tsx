@@ -38,10 +38,12 @@ describe('Table Component', () => {
         expect(screen.getByText('Employee Name')).toBeDefined()
         expect(screen.getByText('Date')).toBeDefined()
     })
+
     test('renders all data values correctly', () => {
         renderTable()
         expect(screen.getByText('Annual Leave')).toBeDefined()
     })
+    
     test('render single row correctly', () => {
         const singleData = [mockData[0]]
         renderTable(singleData)
