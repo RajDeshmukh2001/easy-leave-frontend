@@ -16,6 +16,6 @@ describe('App Component', () => {
     renderApp();
 
     expect(screen.getByRole('heading', { name: /easyleave/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /sign in with google/i })).toBeInTheDocument();
   });
 });
