@@ -6,7 +6,6 @@ import type { LeaveApplication } from '@/types/leave.type';
 import type { DateRange } from 'react-day-picker';
 import { addDays, format, eachDayOfInterval } from 'date-fns';
 import DatePicker from './ui/DatePicker';
-import { LEAVE_CATEGORIES } from '@/constants/leave';
 
 type ApplyLeaveFormValues = {
   dates: string[];
@@ -36,10 +35,6 @@ const ApplyLeaveForm = (): React.JSX.Element => {
     ),
   });
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(
-    LEAVE_CATEGORIES[0].id,
-  );
-
   const onSubmit = async (
     _values: ApplyLeaveFormValues,
     { resetForm }: FormikHelpers<ApplyLeaveFormValues>,
@@ -52,7 +47,7 @@ const ApplyLeaveForm = (): React.JSX.Element => {
     }
 
     const payload: LeaveApplication = {
-      leaveCategoryId: selectedCategoryId,
+      leaveCategoryId: import.meta.env.VITE_ANNUAL_LEAVE_CATEGORY_ID,
       dates: expandedDates,
       duration: 'FULL_DAY',
       startTime: '10:00',
@@ -72,22 +67,6 @@ const ApplyLeaveForm = (): React.JSX.Element => {
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
       {({ isSubmitting }) => (
         <Form>
-          <div className="flex flex-col">
-            <label>Leave Category:</label>
-            <select
-              name="leaveCategoryId"
-              value={selectedCategoryId}
-              onChange={(e) => setSelectedCategoryId(e.target.value)}
-              className="ml-2 rounded-md border border-gray-300 p-2"
-            >
-              {LEAVE_CATEGORIES.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
           <DatePicker date={date} setDate={setDate} className="w-full cursor-pointer" />
 
           <Button
