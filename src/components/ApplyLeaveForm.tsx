@@ -39,6 +39,9 @@ const validate = (values: LeaveFormValues) => {
     errors.leaveCategoryId = 'Leave category is required';
   }
 
+  if (!values.dateRange || !values.dateRange.from) {
+    errors.dateRange = 'Please enter a date';
+  }
   return errors;
 };
 
@@ -106,6 +109,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
               setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
               className="w-full cursor-pointer"
             />
+            <ErrorMessage name="dateRange" component="p" className="text-sm text-red-700" />
           </div>
 
           <Button
