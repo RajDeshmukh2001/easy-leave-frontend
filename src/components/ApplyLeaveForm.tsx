@@ -1,78 +1,77 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Form, type FormikHelpers } from 'formik';
+import { toast } from 'react-hot-toast';
 import { Button } from './ui/button';
 import { applyLeave } from '@/api/leave.api';
 import type { LeaveApplication } from '@/types/leave.type';
 import type { DateRange } from 'react-day-picker';
-import { addDays, format, eachDayOfInterval } from 'date-fns';
+import { format, eachDayOfInterval } from 'date-fns';
 import DatePicker from './ui/DatePicker';
+import { isAxiosError } from 'axios';
 
-type ApplyLeaveFormValues = {
-  dates: string[];
+type LeaveFormValues = {
+  dateRange: DateRange | undefined;
 };
 
-const initialValues: ApplyLeaveFormValues = {
-  dates: [],
+const initialValues: LeaveFormValues = {
+  dateRange: undefined,
 };
 
-const expandDateRange = (range: DateRange | undefined): string[] => {
-  if (!range?.from) return [];
-  const end = range.to ?? range.from;
-  return eachDayOfInterval({ start: range.from, end }).map((d) =>
-    format(d, 'yyyy-MM-dd'),
-  );
+const getDatesBetween = (range: DateRange | undefined): string[] => {
+  const noDatesSelected = !range || !range.from;
+  if (noDatesSelected) return [];
+
+  const startDate = range.from;
+  const endDate = range.to ?? range.from;
+  const allDays = eachDayOfInterval({ start: startDate!, end: endDate! });
+  const formattedDays = allDays.map((day) => format(day, 'yyyy-MM-dd'));
+
+  return formattedDays;
 };
 
 const ApplyLeaveForm = (): React.JSX.Element => {
-  const today = new Date();
-  const defaultNumberOfDaysSelected = 2;
+  const handleSubmit = async (
+    values: LeaveFormValues,
+    { resetForm }: FormikHelpers<LeaveFormValues>,
+  ): Promise<void> => {
+    const dates = getDatesBetween(values.dateRange);
 
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
-    to: addDays(
-      new Date(today.getFullYear(), today.getMonth(), today.getDate()),
-      defaultNumberOfDaysSelected - 1,
-    ),
-  });
-
-  const onSubmit = async (
-    _values: ApplyLeaveFormValues,
-    { resetForm }: FormikHelpers<ApplyLeaveFormValues>,
-  ) => {
-    const expandedDates = expandDateRange(date);
-
-    if (expandedDates.length === 0) {
-      console.error('No dates selected');
-      return;
-    }
-
-    const payload: LeaveApplication = {
+    const leaveData: LeaveApplication = {
       leaveCategoryId: import.meta.env.VITE_ANNUAL_LEAVE_CATEGORY_ID,
-      dates: expandedDates,
+      dates,
       duration: 'FULL_DAY',
       startTime: '10:00',
       description: 'Leave',
     };
 
     try {
-      const response = await applyLeave(payload);
-      console.log('Leave application submitted successfully:', response);
+      await applyLeave(leaveData);
+      toast.success('Leave submitted successfully!');
       resetForm();
-    } catch (error) {
-      console.error('Error submitting leave application:', error);
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data || 'Leave Application submission failed');
+      } else {
+        toast.error('Unexpected Error Occurred');
+      }
     }
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
-      {({ isSubmitting }) => (
-        <Form>
-          <DatePicker date={date} setDate={setDate} className="w-full cursor-pointer" />
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      {({ isSubmitting, values, setFieldValue }) => (
+        <Form className="flex flex-col gap-4 p-4 w-full">
+          <label>Date Range</label>
+          <DatePicker
+            date={values.dateRange}
+            setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
+            className="w-full cursor-pointer"
+          />
 
           <Button
             type="submit"
-            className="mt-4 w-full bg-(--technogise-blue) cursor-pointer py-5"
-            disabled={isSubmitting || !date?.from}
+            disabled={isSubmitting}
+            className="w-full bg-(--technogise-blue) cursor-pointer py-5"
           >
             Submit Leave
           </Button>
