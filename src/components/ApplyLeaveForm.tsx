@@ -29,7 +29,7 @@ const getDatesBetween = (range: DateRange | undefined): string[] => {
   return formattedDays;
 };
 
-const ApplyLeaveForm = (): React.JSX.Element => {
+const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JSX.Element => {
   const handleSubmit = async (
     values: LeaveFormValues,
     { resetForm }: FormikHelpers<LeaveFormValues>,
@@ -46,6 +46,7 @@ const ApplyLeaveForm = (): React.JSX.Element => {
 
     try {
       await applyLeave(leaveData);
+      await refresh();
       toast.success('Leave submitted successfully!');
       resetForm();
     } catch (error: unknown) {
