@@ -2,8 +2,12 @@
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "prettier.enable": true,
+  "prettier.requireConfig": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": ["source.addMissingImports", "source.fixAll.eslint"],
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
 }
