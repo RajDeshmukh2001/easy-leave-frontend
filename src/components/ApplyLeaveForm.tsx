@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Form, type FormikHelpers, Field } from 'formik';
+import { Formik, Form, type FormikHelpers, Field, ErrorMessage, type FormikErrors } from 'formik';
 import { toast } from 'react-hot-toast';
 import { Button } from './ui/button';
 import { applyLeave } from '@/api/leave.api';
@@ -11,12 +11,12 @@ import { isAxiosError } from 'axios';
 import useLeaveCategories from '@/hooks/useLeaveCategories';
 
 type LeaveFormValues = {
-  categoryId: string;
+  leaveCategoryId: string;
   dateRange: DateRange | undefined;
 };
 
 const initialValues: LeaveFormValues = {
-  categoryId: '',
+  leaveCategoryId: '',
   dateRange: undefined,
 };
 
@@ -32,6 +32,16 @@ const getDatesBetween = (range: DateRange | undefined): string[] => {
   return formattedDays;
 };
 
+const validate = (values: LeaveFormValues) => {
+  const errors: FormikErrors<LeaveFormValues> = {};
+
+  if (!values.leaveCategoryId) {
+    errors.leaveCategoryId = 'Leave category is required';
+  }
+
+  return errors;
+};
+
 const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JSX.Element => {
   const { categories, loading: categoriesLoading, error: categoriesError } = useLeaveCategories();
 
@@ -42,7 +52,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
     const dates = getDatesBetween(values.dateRange);
 
     const leaveData: LeaveApplication = {
-      leaveCategoryId: values.categoryId,
+      leaveCategoryId: values.leaveCategoryId,
       dates,
       duration: 'FULL_DAY',
       startTime: '10:00',
@@ -64,16 +74,16 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit} validate={validate}>
       {({ isSubmitting, values, setFieldValue }) => (
         <Form className="flex flex-col gap-4 p-4 w-full">
           <div className="flex flex-col gap-1">
             <label htmlFor="leaveCategory">Leave Category</label>
-            {categoriesError && <p className="text-sm text-red-500">{categoriesError}</p>}
+            {categoriesError && <p className="text-sm text-red-700">{categoriesError}</p>}
             <Field
               as="select"
-              name="categoryId"
-              id="categoryId"
+              name="leaveCategoryId"
+              id="leaveCategoryId"
               disabled={categoriesLoading}
               className="rounded-md border border-gray-300 p-2 cursor-pointer"
             >
@@ -86,6 +96,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
                 </option>
               ))}
             </Field>
+            <ErrorMessage name="leaveCategoryId" component="p" className="text-sm text-red-700" />
           </div>
 
           <div>
