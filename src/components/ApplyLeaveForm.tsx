@@ -51,12 +51,12 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
 
     try {
       await applyLeave(leaveData);
-      await refresh();
       toast.success('Leave submitted successfully!');
+      await refresh();
       resetForm();
     } catch (error: unknown) {
       if (isAxiosError(error)) {
-        toast.error(error.response?.data || 'Leave Application submission failed');
+        toast.error(error.response?.data?.message || 'Leave Application submission failed');
       } else {
         toast.error('Unexpected Error Occurred');
       }
