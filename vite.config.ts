@@ -26,7 +26,7 @@ export default defineConfig({
         '**/src/api/**',          // API layer
       ],
       thresholds: {
-        branches: 90,
+        branches: 100,
         functions: 100,
         lines: 100,
         statements: 100,

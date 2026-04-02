@@ -8,7 +8,7 @@ type UseLeavesReturn = {
   loading: boolean;
   error: string | null;
 }
-function useLeaves(status: LeaveStatus, scope: LeaveScope) : UseLeavesReturn {
+function useLeaves(status: LeaveStatus, scope: LeaveScope): UseLeavesReturn {
   const [leaves, setLeaves] = useState<LeaveResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,9 +22,7 @@ function useLeaves(status: LeaveStatus, scope: LeaveScope) : UseLeavesReturn {
         const data = await fetchLeaves({ status, scope });
         setLeaves(data);
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        }
+        setError(err instanceof Error ? err.message : 'Failed to load your leaves');
       } finally {
         setLoading(false);
       }
