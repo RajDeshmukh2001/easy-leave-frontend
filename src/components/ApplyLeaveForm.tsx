@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Form, type FormikHelpers } from 'formik';
+import { Formik, Form, type FormikHelpers, Field } from 'formik';
 import { toast } from 'react-hot-toast';
 import { Button } from './ui/button';
 import { applyLeave } from '@/api/leave.api';
@@ -8,12 +8,15 @@ import type { DateRange } from 'react-day-picker';
 import { format, eachDayOfInterval } from 'date-fns';
 import DatePicker from './ui/DatePicker';
 import { isAxiosError } from 'axios';
+import useLeaveCategories from '@/hooks/useLeaveCategories';
 
 type LeaveFormValues = {
+  categoryId: string;
   dateRange: DateRange | undefined;
 };
 
 const initialValues: LeaveFormValues = {
+  categoryId: '',
   dateRange: undefined,
 };
 
@@ -30,6 +33,8 @@ const getDatesBetween = (range: DateRange | undefined): string[] => {
 };
 
 const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JSX.Element => {
+  const { categories, loading: categoriesLoading, error: categoriesError } = useLeaveCategories();
+
   const handleSubmit = async (
     values: LeaveFormValues,
     { resetForm }: FormikHelpers<LeaveFormValues>,
@@ -37,7 +42,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
     const dates = getDatesBetween(values.dateRange);
 
     const leaveData: LeaveApplication = {
-      leaveCategoryId: import.meta.env.VITE_ANNUAL_LEAVE_CATEGORY_ID,
+      leaveCategoryId: values.categoryId,
       dates,
       duration: 'FULL_DAY',
       startTime: '10:00',
@@ -62,12 +67,35 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {({ isSubmitting, values, setFieldValue }) => (
         <Form className="flex flex-col gap-4 p-4 w-full">
-          <label>Date Range</label>
-          <DatePicker
-            date={values.dateRange}
-            setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
-            className="w-full cursor-pointer"
-          />
+          <div className="flex flex-col gap-1">
+            <label htmlFor="leaveCategory">Leave Category</label>
+            {categoriesError && <p className="text-sm text-red-500">{categoriesError}</p>}
+            <Field
+              as="select"
+              name="categoryId"
+              id="categoryId"
+              disabled={categoriesLoading}
+              className="rounded-md border border-gray-300 p-2 cursor-pointer"
+            >
+              <option value="">
+                {categoriesLoading ? 'Loading categories...' : 'Select a category'}
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </Field>
+          </div>
+
+          <div>
+            <label>Date Range</label>
+            <DatePicker
+              date={values.dateRange}
+              setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
+              className="w-full cursor-pointer"
+            />
+          </div>
 
           <Button
             type="submit"
