@@ -2,10 +2,10 @@
 FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
 
 # Filter only TS/JS/TSX/JSX files for ESLint
-TS_FILES=$(echo "$FILES" | grep -E '\.(ts|tsx|js|jsx)$' || true)
+TS_FILES=$(echo "$FILES" | awk '/\.(ts|tsx|js|jsx)$/')
 
 # Filter all Prettier-supported files
-PRETTIER_FILES=$(echo "$FILES" | grep -E '\.(ts|tsx|js|jsx|json|css|yaml|md)$' || true)
+PRETTIER_FILES=$(echo "$FILES" | awk '/\.(ts|tsx|js|jsx|json|css|yaml|md)$/')
 
 # Run Prettier on supported files
 if [ -n "$PRETTIER_FILES" ]; then
