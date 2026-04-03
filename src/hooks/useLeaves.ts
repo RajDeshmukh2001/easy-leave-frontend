@@ -23,9 +23,7 @@ function useLeaves(status: LeaveStatus, scope: LeaveScope): UseLeavesReturn {
       const data = await fetchLeaves({ status, scope });
       setLeaves(data);
     } catch (err) {
-      if (err instanceof Error) {
         setError(err instanceof Error ? err.message : 'Failed to load your leaves');
-      }
     } finally {
       setLoading(false);
     }
