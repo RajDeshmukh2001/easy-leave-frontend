@@ -11,7 +11,7 @@ const AuthContext = createContext<AuthContextType>({
   fetchCurrentUser: async () => {},
 });
 
-export const UserProvider = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

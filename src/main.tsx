@@ -4,16 +4,16 @@ import '@/index.css';
 import App from '@/App.tsx';
 import { BrowserRouter } from 'react-router-dom';
 import { TooltipProvider } from './components/ui/tooltip.tsx';
-import { UserProvider } from './context/AuthContext.tsx';
+import { AuthProvider } from './context/AuthContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UserProvider>
+    <AuthProvider>
       <TooltipProvider>
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </TooltipProvider>
-    </UserProvider>
+    </AuthProvider>
   </StrictMode>,
 );

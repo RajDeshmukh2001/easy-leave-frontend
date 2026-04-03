@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { UserProvider } from '@/context/AuthContext';
+import { AuthProvider } from '@/context/AuthContext';
 import useAuthUser from '@/hooks/useAuthUser';
 import * as authApi from '@/api/auth.api';
 import { vi } from 'vitest';
@@ -27,9 +27,9 @@ describe('AuthContext test', () => {
     });
 
     render(
-      <UserProvider>
+      <AuthProvider>
         <TestComponent />
-      </UserProvider>,
+      </AuthProvider>,
     );
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -41,9 +41,9 @@ describe('AuthContext test', () => {
     mockedGetUser.mockRejectedValue(new Error('Failed'));
 
     render(
-      <UserProvider>
+      <AuthProvider>
         <TestComponent />
-      </UserProvider>,
+      </AuthProvider>,
     );
 
     await waitFor(() => expect(screen.getByText('Error: Failed')).toBeInTheDocument());
@@ -53,9 +53,9 @@ describe('AuthContext test', () => {
     mockedGetUser.mockRejectedValue('Some random error'); // not Error object
 
     render(
-      <UserProvider>
+      <AuthProvider>
         <TestComponent />
-      </UserProvider>,
+      </AuthProvider>,
     );
 
     await waitFor(() =>
