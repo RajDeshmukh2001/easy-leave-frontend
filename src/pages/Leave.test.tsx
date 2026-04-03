@@ -114,3 +114,10 @@ describe('Leave Page Component', () => {
     })
   })
 })
+
+test('renders ApplyLeaveForm component', async () => {
+  renderLeavePage()
+  await waitFor(() => {
+    expect(screen.getByRole('button', { name: 'Submit Leave' })).toBeInTheDocument()
+  })
+})
