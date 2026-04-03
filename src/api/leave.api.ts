@@ -3,6 +3,7 @@ import axiosInstance from './axiosInstance';
 import type { LeaveScope, LeaveStatus } from '../constants/LeaveStatus';
 import type { LeaveResponse } from '../types/leaves';
 import type { LeaveApplication } from '@/types/leave.type';
+import type { LeaveApplicationRequest } from '@/types/leaves';
 
 type Props = {
   status?: LeaveStatus;
@@ -20,7 +21,6 @@ export const fetchLeaves = async ({ status, scope = 'self' }: Props): Promise<Le
   }
   return data.data;
 };
-
 
 export const applyLeave = async (leaveData: LeaveApplication): Promise<LeaveApplication> => {
   try {

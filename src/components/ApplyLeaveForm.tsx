@@ -3,7 +3,7 @@ import { Formik, Form, type FormikHelpers, Field, ErrorMessage, type FormikError
 import { toast } from 'react-hot-toast';
 import { Button } from './ui/button';
 import { applyLeave } from '@/api/leave.api';
-import type { LeaveApplication } from '@/types/leaves';
+import type { LeaveApplicationRequest } from '@/types/leaves';
 import type { DateRange } from 'react-day-picker';
 import { format, eachDayOfInterval } from 'date-fns';
 import DatePicker from './ui/DatePicker';
@@ -74,7 +74,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
   ): Promise<void> => {
     const dates = getDatesBetween(values.dateRange);
 
-    const leaveData: LeaveApplication = {
+    const leaveData: LeaveApplicationRequest = {
       leaveCategoryId: values.leaveCategoryId,
       dates,
       duration: values.duration,
