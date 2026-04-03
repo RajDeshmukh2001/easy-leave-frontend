@@ -1,21 +1,20 @@
-import Loading from '@/components/Loading';
 import useAuthUser from '@/hooks/useAuthUser';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-type ProtectedRouteProps = {
+type PublicRouteProps = {
   children: React.ReactNode;
 };
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps): React.JSX.Element {
+export default function PublicRoute({ children }: PublicRouteProps): React.JSX.Element {
   const { user, loading } = useAuthUser();
 
   if (loading) {
-    return <Loading />;
+    return <div>Loading...</div>;
   }
 
-  if (!user) {
-    return <Navigate to="/" replace />;
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

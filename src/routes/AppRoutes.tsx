@@ -5,6 +5,7 @@ import Dashboard from '@/pages/Dashboard';
 import Home from '@/components/Home';
 import ProtectedRoute from './ProtectedRoute';
 import type React from 'react';
+import PublicRoute from './PublicRoute';
 
 const AppRoutes = (): React.JSX.Element => {
   return (
@@ -20,7 +21,15 @@ const AppRoutes = (): React.JSX.Element => {
         <Route path="/leave" element={<Leave />} />
       </Route>
 
-      <Route index path="/" element={<Home />} />
+      <Route
+        index
+        path="/"
+        element={
+          <PublicRoute>
+            <Home />
+          </PublicRoute>
+        }
+      />
     </Routes>
   );
 };
