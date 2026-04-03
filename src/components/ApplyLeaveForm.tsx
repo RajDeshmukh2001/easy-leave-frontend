@@ -6,7 +6,7 @@ import { applyLeave } from '@/api/leave.api';
 import type { LeaveApplicationRequest } from '@/types/leaves';
 import type { DateRange } from 'react-day-picker';
 import { getDatesBetween, addHours } from '@/utils/time';
-import DatePicker from './ui/DatePicker';
+import DatePicker from './DatePicker';
 import { isAxiosError } from 'axios';
 import useLeaveCategories from '@/hooks/useLeaveCategories';
 
