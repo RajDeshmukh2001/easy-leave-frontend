@@ -20,7 +20,7 @@ function Table<T>({ data, columns, message }: TableProps<T>): React.JSX.Element 
                         {columns.map((col, index) => (
                             <th
                                 key={index}
-                                className="px-3 md:px-6 py-3 text-center font-semibold text-nowrap"
+                                className="px-3 md:px-6 py-3 text-left font-semibold text-nowrap"
                             >
                                 {col.header}
                             </th>

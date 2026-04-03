@@ -8,11 +8,11 @@ function Dashboard() : React.JSX.Element {
   const { leaves, loading, error } = useLeaves("upcoming", "self");
 
   const columns = [
-    { header: 'Type', render: (leave: LeaveResponse) => leave.type },
+    { header: 'Type', render: (leave: LeaveResponse) => <span className="font-medium text-gray-800">{leave.type}</span> },
     { header: 'Date', render: (leave: LeaveResponse) => new Date(leave.date).toLocaleDateString() },
-    { header: 'Duration', render: (leave: LeaveResponse) => leave.duration.replace('_', ' ') },
+    { header: 'Duration', render: (leave: LeaveResponse) => leave.duration.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ') },
     { header: 'Applied On', render: (leave: LeaveResponse) => new Date(leave.applyOn).toLocaleDateString() },
-    { header: 'Reason', render: (leave: LeaveResponse) => leave.reason },
+    { header: 'Reason', render: (leave: LeaveResponse) => <span className="text-gray-600 line-clamp-1 w-50">{leave.reason}</span> },
   ]
 
   return (
