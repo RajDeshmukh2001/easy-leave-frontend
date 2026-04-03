@@ -1,6 +1,14 @@
 import { eachDayOfInterval, format } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 
+export const addHours = (timeString: string, hours: number): string => {
+  if (!timeString) return '';
+  const [h, m] = timeString.split(':').map(Number);
+  const date = new Date();
+  date.setHours(h + hours, m);
+  return date.toTimeString().slice(0, 5);
+};
+
 export const getDatesBetween = (range: DateRange | undefined): string[] => {
   const noDatesSelected = !range || !range.from;
   if (noDatesSelected) return [];

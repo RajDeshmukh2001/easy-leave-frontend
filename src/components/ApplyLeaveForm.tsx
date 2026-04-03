@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { applyLeave } from '@/api/leave.api';
 import type { LeaveApplicationRequest } from '@/types/leaves';
 import type { DateRange } from 'react-day-picker';
-import { getDatesBetween } from '@/utils/leaveApplicationForm';
+import { getDatesBetween, addHours } from '@/utils/time';
 import DatePicker from './ui/DatePicker';
 import { isAxiosError } from 'axios';
 import useLeaveCategories from '@/hooks/useLeaveCategories';
@@ -84,15 +84,6 @@ const ApplyLeaveForm = ({
         toast.error('Unexpected Error Occurred');
       }
     }
-  };
-
-  const addHours = (timeString: string, noOfHours: number): string => {
-    if (!timeString) return '';
-    const [hours, minutes] = timeString.split(':');
-    const date = new Date();
-    date.setHours(parseInt(hours) + noOfHours);
-    date.setMinutes(parseInt(minutes));
-    return date.toTimeString().slice(0, 5);
   };
 
   return (
