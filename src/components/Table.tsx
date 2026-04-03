@@ -13,14 +13,14 @@ type TableProps<T> = {
 
 function Table<T>({ data, columns, message }: TableProps<T>): React.JSX.Element {
   return (
-        <div className="w-full shadow-xs rounded-b-2xl overflow-x-auto">
+        <div className="w-full bg-white shadow-sm overflow-x-auto">
             <table className="w-full min-w-150 text-sm text-left md:min-w-full">
-                <thead className="text-sm text-body border-b border-neutral-200">
+                <thead className="bg-gray-200 text-gray-600 p-10 uppercase text-xs tracking-wider">
                     <tr>
                         {columns.map((col, index) => (
                             <th
                                 key={index}
-                                className="px-3 md:px-6 py-2 text-left font-semibold text-nowrap"
+                                className="px-3 md:px-6 py-3 text-center font-semibold text-nowrap"
                             >
                                 {col.header}
                             </th>
@@ -31,7 +31,7 @@ function Table<T>({ data, columns, message }: TableProps<T>): React.JSX.Element 
                     {data.length > 0 ? (
                         data.map((value, index) => (
                             <tr key={index}
-                                className="border-b last:border-b-0 border-neutral-200 cursor-pointer hover:bg-neutral-100"
+                                className="border-t border-gray-100 hover:bg-gray-50 transition"
                             >
                                 {columns.map((col, colIndex) => (
                                     <td
