@@ -50,7 +50,7 @@ describe('AuthContext test', () => {
   });
 
   it('should handle unknown error properly', async () => {
-    mockedGetUser.mockRejectedValue('Some random error'); // not Error object
+    mockedGetUser.mockRejectedValue('Some random error');
 
     render(
       <AuthProvider>
