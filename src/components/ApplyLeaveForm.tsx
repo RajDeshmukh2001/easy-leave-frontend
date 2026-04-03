@@ -117,7 +117,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
               name="leaveCategoryId"
               id="leaveCategoryId"
               disabled={categoriesLoading}
-              className="rounded-md border border-gray-300 p-2 cursor-pointer"
+              className="rounded-md border border-gray-300 bg-gray-50 p-2 cursor-pointer text-sm"
             >
               <option value="">
                 {categoriesLoading ? 'Loading categories...' : 'Select a category'}
@@ -131,8 +131,8 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
             <ErrorMessage name="leaveCategoryId" component="p" className="text-sm text-red-700" />
           </div>
 
-          <div>
-            <label>Date Range</label>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="dateRange">Date Range</label>
             <DatePicker
               date={values.dateRange}
               setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
@@ -147,7 +147,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
               as="select"
               name="duration"
               id="duration"
-              className="px-3 py-2 rounded-lg border border-neutral-300 text-sm cursor-pointer"
+              className="px-3 py-2 rounded-lg border bg-gray-50 border-neutral-300 text-sm cursor-pointer"
             >
               <option value="FULL_DAY">Full Day</option>
               <option value="HALF_DAY">Half Day</option>
@@ -161,7 +161,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
                 type="time"
                 id="startTime"
                 name="startTime"
-                className="px-3 py-2 rounded-lg border border-neutral-300 bg-white text-sm cursor-pointer"
+                className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-50 text-sm cursor-pointer"
               />
             </div>
 
@@ -189,7 +189,7 @@ const ApplyLeaveForm = ({ refresh }: { refresh: () => Promise<void> }): React.JS
               name="description"
               placeholder="Reason for taking leave..."
               rows="4"
-              className="px-3 py-2 rounded-lg border border-neutral-300 bg-white text-sm"
+              className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-50 text-sm"
             />
             <ErrorMessage name="description" component="p" className="text-sm text-red-700" />
           </div>
