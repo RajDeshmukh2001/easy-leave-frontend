@@ -2,21 +2,34 @@
 FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
 
 # Filter only TS/JS/TSX/JSX files for ESLint
-TS_FILES=$(echo "$FILES" | grep -E '\.(ts|tsx|js|jsx)$')
+TS_FILES=$(echo "$FILES" | awk '/\.(ts|tsx|js|jsx)$/')
 
 # Filter all Prettier-supported files
-PRETTIER_FILES=$(echo "$FILES" | grep -E '\.(ts|tsx|js|jsx|json|css|yaml|md)$')
+PRETTIER_FILES=$(echo "$FILES" | awk '/\.(ts|tsx|js|jsx|json|css|yaml|md)$/')
 
-if [ -z "$TS_FILES" ]; then
-  echo "✅ No JS/TS files to check."
-  exit 0
+# Run Prettier on supported files
+if [ -n "$PRETTIER_FILES" ]; then
+  echo "Running Prettier..."
+  echo "$PRETTIER_FILES" | xargs -r npx prettier --write --ignore-unknown
+  echo "$PRETTIER_FILES" | xargs -r git add
 fi
 
-echo "🧼 Running Prettier..."
-npx prettier $PRETTIER_FILES --write --ignore-unknown
+# Check ESLint only on TS/JS files
+if [ -n "$TS_FILES" ]; then
+  echo "Checking ESLint..."
+  echo "$TS_FILES" | xargs -r npx eslint || {
+    echo "❌ ESLint check failed. Please fix the above errors before committing."
+    exit 1
+  }
+else
+  echo "✅ No JS/TS files to lint."
+fi
 
-echo "🔍 Running ESLint..."
-npx eslint $TS_FILES --fix
+# Run TypeScript check
+echo "Running TypeScript check..."
+npx tsc --noEmit || {
+  echo "❌ TypeScript check failed. Please fix the above errors before committing."
+  exit 1
+}
 
-echo "🔎 Running TypeScript (only staged files)..."
-npx tsc -b --noEmit
+echo "✅ All checks passed!"
