@@ -49,4 +49,20 @@ describe('useLeaveCategories hook', () => {
     expect(result.current.error).toBe('failed to fetch categories');
     expect(result.current.categories).toEqual([]);
   });
+
+  test('should allow manual reload of leave categories', async () => {
+    vi.spyOn(leaveCategoryApi, 'fetchLeaveCategories').mockResolvedValue(mockCategories);
+
+    const { result } = renderHook(() => useLeaveCategories());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.categories).toEqual(mockCategories);
+
+    await result.current.loadLeaveCategories();
+
+    expect(leaveCategoryApi.fetchLeaveCategories).toHaveBeenCalledTimes(2);
+  });
 });
