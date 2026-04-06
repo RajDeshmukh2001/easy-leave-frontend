@@ -119,7 +119,7 @@ describe('ApplyLeaveForm', () => {
   });
 
   test('displays API error message on submission failure', async () => {
-    const errorMessage = 'Leave application submission failed';
+    const errorMessage = 'Leave already exists for selected date';
     vi.spyOn(leaveApi, 'applyLeave').mockRejectedValue(new Error(errorMessage));
 
     renderApplyLeaveForm();
@@ -133,6 +133,22 @@ describe('ApplyLeaveForm', () => {
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
-    expect(toast.error).toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith(errorMessage);
+  });
+
+  test('displays generic error message when submission fails', async () => {
+    vi.spyOn(leaveApi, 'applyLeave').mockRejectedValue('Leave Application submission failed');
+    renderApplyLeaveForm();
+
+    const leaveCategoryInput = await screen.findByLabelText('Leave Category');
+    await userEvent.selectOptions(leaveCategoryInput, '1');
+
+    await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
+
+    const descriptionInput = screen.getByLabelText('Reason');
+    fireEvent.change(descriptionInput, { target: { value: 'Test' } });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
+    expect(toast.error).toHaveBeenCalledWith('Leave Application submission failed');
   });
 });
