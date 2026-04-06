@@ -21,9 +21,8 @@ function AllEmployeeDetails(): React.JSX.Element {
       setLoading(true);
       setError(null);
 
-      const res = await getEmployees({page: currentPage, size: 5 });
-      setEmployee(prev => [...prev, ...res.content]);
-
+      const res = await getEmployees({page: currentPage, size: 20 });
+      setEmployee(prev => currentPage === 0 ? res.content : [...prev, ...res.content]);
       setHasMore(!res.last);
 
     } catch (err) {
