@@ -67,4 +67,32 @@ describe('ProtectedRoute tests', () => {
 
     expect(screen.getByText(/easy leave/i)).toBeInTheDocument();
   });
+
+  test('redirects when user does not have required role', async () => {
+    vi.mocked(useAuthUser).mockReturnValue({
+      user: { id: 'uuid', name: 'Raj', email: 'raj@technogise.com', role: 'EMPLOYEE' },
+      loading: false,
+      error: null,
+      setUser: vi.fn(),
+      fetchCurrentUser: vi.fn(),
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/manager-dashboard']}>
+        <Routes>
+          <Route
+            path="/manager-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['MANAGER']}>
+                <div>Manager Page</div>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<div>Login Page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByText(/login page/i)).toBeInTheDocument();
+  });
 });

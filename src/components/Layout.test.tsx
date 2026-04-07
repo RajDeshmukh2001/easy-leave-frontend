@@ -1,18 +1,21 @@
-import { render } from "@testing-library/react";
-import { describe, test } from "vitest";
-import Layout from "./Layout";
-import { MemoryRouter } from "react-router-dom";
+import { render } from '@testing-library/react';
+import { describe, test } from 'vitest';
+import Layout from './Layout';
+import { MemoryRouter } from 'react-router-dom';
+import { AuthProvider } from '@/context/AuthContext';
 
 const renderLayout = () => {
   render(
-    <MemoryRouter>
+    <AuthProvider>
+      <MemoryRouter>
         <Layout />
-    </MemoryRouter>
+      </MemoryRouter>
+    </AuthProvider>,
   );
 };
 
-describe("Leave Component", () => {
-  test("renders Leave component content", () => {
+describe('Leave Component', () => {
+  test('renders Leave component content', () => {
     renderLayout();
   });
 });

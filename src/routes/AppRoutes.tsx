@@ -1,11 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import Leave from '@/pages/Leave';
-import Dashboard from '@/pages/Dashboard';
 import Home from '@/components/Home';
 import ProtectedRoute from './ProtectedRoute';
 import type React from 'react';
 import PublicRoute from './PublicRoute';
+import { APP_ROUTES } from './routes.config';
 
 const AppRoutes = (): React.JSX.Element => {
   return (
@@ -17,8 +16,13 @@ const AppRoutes = (): React.JSX.Element => {
           </ProtectedRoute>
         }
       >
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/leave" element={<Leave />} />
+        {APP_ROUTES.map(({ path, element, roles }) => (
+          <Route
+            key={path}
+            path={path}
+            element={<ProtectedRoute allowedRoles={roles}>{element}</ProtectedRoute>}
+          />
+        ))}
       </Route>
 
       <Route

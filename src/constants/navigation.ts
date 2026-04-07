@@ -12,3 +12,10 @@ export const EMPLOYEE_NAV_ITEMS: NavItem[] = [
       href: "/leave",
     }
 ]
+export const MANAGER_NAV_ITEMS: NavItem[] = [
+    {
+      name: "Manager Dashboard",
+      icon: LayoutDashboard,
+      href: "/manager-dashboard",
+    }
+]

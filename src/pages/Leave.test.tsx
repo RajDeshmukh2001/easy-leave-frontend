@@ -46,7 +46,7 @@ describe('Leave Page Component', () => {
 
   test('renders filter dropdown with all status options', () => {
     renderLeavePage()
-    expect(screen.getByDisplayValue('all')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('All')).toBeInTheDocument()
   })
 
   test('shows loading state initially', () => {
@@ -68,7 +68,6 @@ describe('Leave Page Component', () => {
       expect(screen.getByText('Date')).toBeInTheDocument()
       expect(screen.getByText('Duration')).toBeInTheDocument()
       expect(screen.getByText('Status')).toBeInTheDocument()
-      expect(screen.getByText('Actions')).toBeInTheDocument()
     })
   })
 
@@ -83,7 +82,7 @@ describe('Leave Page Component', () => {
   test('calls fetchLeaves with upcoming status on filter change', async () => {
     const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves)
     renderLeavePage()
-    const dropdown = screen.getByDisplayValue('all')
+    const dropdown = screen.getByDisplayValue('All')
     await userEvent.selectOptions(dropdown, 'upcoming')
     await waitFor(() => {
       expect(spy).toHaveBeenCalledWith({ status: 'upcoming', scope: 'self' })

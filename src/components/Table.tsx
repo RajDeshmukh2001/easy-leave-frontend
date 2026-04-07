@@ -1,59 +1,58 @@
 import React, { type ReactNode } from 'react';
 
 type Column<T> = {
-    header: string;
-    render: (value: T) => ReactNode
+  header: string;
+  render: (value: T) => ReactNode;
 };
 
 type TableProps<T> = {
-    data: T[]
-    columns: Column<T>[]
-    message: string
+  data: T[];
+  columns: Column<T>[];
+  message: string;
+  getRowKey: (row: T) => string | number;
 };
 
-function Table<T>({ data, columns, message }: TableProps<T>): React.JSX.Element {
+function Table<T>({ data, columns, message, getRowKey }: TableProps<T>): React.JSX.Element {
   return (
-        <div className="w-full shadow-xs rounded-b-2xl overflow-x-auto">
-            <table className="w-full min-w-150 text-sm text-left md:min-w-full">
-                <thead className="text-sm text-body border-b border-neutral-200">
-                    <tr>
-                        {columns.map((col, index) => (
-                            <th
-                                key={index}
-                                className="px-3 md:px-6 py-2 text-left font-semibold text-nowrap"
-                            >
-                                {col.header}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.length > 0 ? (
-                        data.map((value, index) => (
-                            <tr key={index}
-                                className="border-b last:border-b-0 border-neutral-200 cursor-pointer hover:bg-neutral-100"
-                            >
-                                {columns.map((col, colIndex) => (
-                                    <td
-                                        key={colIndex}
-                                        className="px-3 py-2 md:px-6 md:py-4 wrap-break-words"
-                                    >
-                                        {col.render(value)}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={columns.length} className="text-center py-4">
-                                {message}
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
-    );
+    <div className="w-full bg-white rounded-b-2xl shadow-sm overflow-x-auto">
+      <table className="w-full min-w-150 text-sm text-left md:min-w-full">
+        <thead className=" text-gray-600 bg-sidebar  p-10 border-b sticky top-0 z-10 border-gray-300 uppercase text-xs tracking-wider">
+          <tr>
+            {columns.map((col) => (
+              <th
+                key={col.header}
+                className="px-3 md:px-6 py-3 text-left text-sidebar-foreground font-semibold text-nowrap"
+              >
+                {col.header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.length > 0 ? (
+            data.map((value) => (
+              <tr
+                key={getRowKey(value)}
+                className=" hover:bg-gray-50 transition border-b border-gray-300"
+              >
+                {columns.map((col) => (
+                  <td key={col.header} className="px-3 py-2 md:px-6 md:py-4 wrap-break-words">
+                    {col.render(value)}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={columns.length} className="text-center py-4">
+                {message}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default Table;
