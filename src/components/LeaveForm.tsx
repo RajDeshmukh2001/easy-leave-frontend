@@ -5,6 +5,7 @@ import DatePicker from './DatePicker';
 import { addHours } from '@/utils/time';
 import type { LeaveFormValues } from '@/types/leaveForm';
 import { validateLeaveForm } from '@/utils/leaveForm.validation';
+import { FULL_DAY_DURATION_HOURS, HALF_DAY_DURATION_HOURS } from '@/constants/leaveForm';
 
 type LeaveFormProps = {
   initialValues: LeaveFormValues;
@@ -13,9 +14,6 @@ type LeaveFormProps = {
   categoriesLoading: boolean;
   categoriesError?: string | null;
 };
-
-const FULL_DAY_DURATION_HOURS = 8;
-const HALF_DAY_DURATION_HOURS = 4;
 
 const LeaveForm = ({
   initialValues,
