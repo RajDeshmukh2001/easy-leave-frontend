@@ -1,4 +1,5 @@
 import React from 'react';
+import type { FormikHelpers } from 'formik';
 import { toast } from 'react-hot-toast';
 import { applyLeave } from '@/api/leave.api';
 import type { LeaveApplicationRequest } from '@/types/leaves';
@@ -23,7 +24,10 @@ const ApplyLeaveForm = ({
 }): React.JSX.Element => {
   const { categories, loading, error } = useLeaveCategories();
 
-  const handleSubmit = async (values: LeaveFormValues, { resetForm }: any): Promise<void> => {
+  const handleSubmit = async (
+    values: LeaveFormValues,
+    { resetForm }: FormikHelpers<LeaveFormValues>,
+  ): Promise<void> => {
     const leaveData: LeaveApplicationRequest = {
       leaveCategoryId: values.leaveCategoryId,
       dates: getDatesBetween(values.dateRange),
@@ -37,9 +41,9 @@ const ApplyLeaveForm = ({
       toast.success('Leave submitted successfully!');
       await refreshLeaves();
       resetForm();
-    } catch (err) {
-      if (isAxiosError(err)) {
-        toast.error(err.response?.data?.message || 'Leave Application submission failed');
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Leave Application submission failed');
       } else {
         toast.error('Unexpected Error Occurred');
       }
