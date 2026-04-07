@@ -9,10 +9,7 @@ vi.mock('@/api/auth.api');
 const mockedGetUser = vi.mocked(authApi.getAuthenticatedUser);
 
 const TestComponent = () => {
-  const { user, loading, error, setUser, fetchCurrentUser } = useAuthUser();
-
-  setUser(null);
-  fetchCurrentUser();
+  const { user, loading, error } = useAuthUser();
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -65,7 +62,9 @@ describe('AuthContext test', () => {
     );
   });
 
-  test('should handle default functions of AuthContext without AuthProvider', () => {
-    render(<TestComponent />);
+  test('should throw error if used outside AuthProvider', () => {
+    expect(() => render(<TestComponent />)).toThrow(
+      'useAuthUser must be used within an AuthProvider',
+    );
   });
 });

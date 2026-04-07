@@ -3,13 +3,7 @@ import type { AuthContextType } from '@/types/auth';
 import type { User } from '@/types/user';
 import { createContext, useEffect, useState } from 'react';
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  setUser: () => {},
-  loading: true,
-  error: null,
-  fetchCurrentUser: async () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
   const [user, setUser] = useState<User | null>(null);
