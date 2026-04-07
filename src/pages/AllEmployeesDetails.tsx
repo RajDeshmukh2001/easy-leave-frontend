@@ -22,7 +22,12 @@ function AllEmployeesDetails(): React.JSX.Element {
       setError(null);
 
       const res = await getEmployees({ page: currentPage, size: 20 });
-      setEmployee((prev) => (currentPage === 0 ? res.content : [...prev, ...res.content]));
+      setEmployee((prev) => {
+        if (currentPage === 0) return res.content;
+        const existingIds = new Set(prev.map((e) => e.id));
+        const newItems = res.content.filter((e) => !existingIds.has(e.id));
+        return [...prev, ...newItems];
+      });
       setHasMore(!res.last);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load employees');
