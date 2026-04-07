@@ -1,22 +1,12 @@
 import React from 'react';
-import { Formik, Form, type FormikHelpers, Field, ErrorMessage, type FormikErrors } from 'formik';
 import { toast } from 'react-hot-toast';
-import { Button } from './ui/button';
 import { applyLeave } from '@/api/leave.api';
 import type { LeaveApplicationRequest } from '@/types/leaves';
-import type { DateRange } from 'react-day-picker';
-import { getDatesBetween, addHours } from '@/utils/time';
-import DatePicker from './DatePicker';
-import useLeaveCategories from '@/hooks/useLeaveCategories';
+import { getDatesBetween } from '@/utils/time';
 import { isAxiosError } from 'axios';
+import useLeaveCategories from '@/hooks/useLeaveCategories';
 
-type LeaveFormValues = {
-  leaveCategoryId: string;
-  dateRange: DateRange | undefined;
-  startTime: string;
-  duration: 'FULL_DAY' | 'HALF_DAY';
-  description: string;
-};
+import LeaveForm, { type LeaveFormValues } from './LeaveForm';
 
 const initialValues: LeaveFormValues = {
   leaveCategoryId: '',
@@ -26,47 +16,17 @@ const initialValues: LeaveFormValues = {
   description: '',
 };
 
-const FULL_DAY_DURATION_HOURS = 8;
-const HALF_DAY_DURATION_HOURS = 4;
-
-const validate = (values: LeaveFormValues) => {
-  const errors: FormikErrors<LeaveFormValues> = {};
-
-  if (!values.leaveCategoryId) {
-    errors.leaveCategoryId = 'Leave category is required';
-  }
-
-  if (!values.dateRange || !values.dateRange.from) {
-    errors.dateRange = 'Please enter a date';
-  }
-
-  if (values.description.trim() === '') {
-    errors.description = 'Description is required';
-  }
-
-  if (values.description.length > 1000) {
-    errors.description = 'Description cannot be over 1000 characters';
-  }
-
-  return errors;
-};
-
 const ApplyLeaveForm = ({
   refreshLeaves,
 }: {
   refreshLeaves: () => Promise<void>;
 }): React.JSX.Element => {
-  const { categories, loading: categoriesLoading, error: categoriesError } = useLeaveCategories();
+  const { categories, loading, error } = useLeaveCategories();
 
-  const handleSubmit = async (
-    values: LeaveFormValues,
-    { resetForm }: FormikHelpers<LeaveFormValues>,
-  ): Promise<void> => {
-    const dates = getDatesBetween(values.dateRange);
-
+  const handleSubmit = async (values: LeaveFormValues, { resetForm }: any): Promise<void> => {
     const leaveData: LeaveApplicationRequest = {
       leaveCategoryId: values.leaveCategoryId,
-      dates,
+      dates: getDatesBetween(values.dateRange),
       duration: values.duration,
       startTime: values.startTime,
       description: values.description,
@@ -77,9 +37,9 @@ const ApplyLeaveForm = ({
       toast.success('Leave submitted successfully!');
       await refreshLeaves();
       resetForm();
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || 'Leave Application submission failed');
+    } catch (err) {
+      if (isAxiosError(err)) {
+        toast.error(err.response?.data?.message || 'Leave Application submission failed');
       } else {
         toast.error('Unexpected Error Occurred');
       }
@@ -87,112 +47,13 @@ const ApplyLeaveForm = ({
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit} validate={validate}>
-      {({ isSubmitting, values, setFieldValue }) => (
-        <Form className="flex flex-col gap-4 p-4 w-full">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="leaveCategoryId">Leave Category</label>
-            {categoriesError && <p className="text-sm text-red-700">{categoriesError}</p>}
-            <Field
-              as="select"
-              name="leaveCategoryId"
-              id="leaveCategoryId"
-              disabled={categoriesLoading}
-              className="rounded-md border border-gray-300 bg-gray-50 p-2 cursor-pointer text-sm"
-            >
-              <option value="">
-                {categoriesLoading ? 'Loading categories...' : 'Select a category'}
-              </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </Field>
-            <ErrorMessage name="leaveCategoryId" component="p" className="text-sm text-red-700" />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="date-range-picker" id="date-range-label">
-              Date Range
-            </label>
-            <DatePicker
-              date={values.dateRange}
-              setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
-              className="w-full cursor-pointer"
-            />
-            <ErrorMessage name="dateRange" component="p" className="text-sm text-red-700" />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="duration">Duration</label>
-            <Field
-              as="select"
-              name="duration"
-              id="duration"
-              className="px-3 py-2 rounded-lg border bg-gray-50 border-neutral-300 text-sm cursor-pointer"
-            >
-              <option value="FULL_DAY">Full Day</option>
-              <option value="HALF_DAY">Half Day</option>
-            </Field>
-          </div>
-
-          <div className="flex justify-between gap-3">
-            <div className="flex flex-1 flex-col">
-              <label htmlFor="startTime">Start Time</label>
-              <Field
-                type="time"
-                id="startTime"
-                name="startTime"
-                className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-50 text-sm cursor-pointer"
-              />
-            </div>
-
-            <div className="flex flex-1 flex-col">
-              <label htmlFor="endTime">End Time</label>
-              <Field
-                type="time"
-                id="endTime"
-                name="endTime"
-                disabled
-                value={
-                  values.duration === 'FULL_DAY'
-                    ? addHours(values.startTime, FULL_DAY_DURATION_HOURS)
-                    : addHours(values.startTime, HALF_DAY_DURATION_HOURS)
-                }
-                className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-100 text-sm cursor-not-allowed"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="description">Reason</label>
-            <Field
-              as="textarea"
-              id="description"
-              name="description"
-              placeholder="Reason for taking leave..."
-              rows="4"
-              className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-50 text-sm"
-            />
-            <ErrorMessage
-              name="description"
-              component="p"
-              data-testid="errors-description-input"
-              className="text-sm text-red-700"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-(--technogise-blue) cursor-pointer py-5"
-          >
-            Submit Leave
-          </Button>
-        </Form>
-      )}
-    </Formik>
+    <LeaveForm
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      categories={categories}
+      categoriesLoading={loading}
+      categoriesError={error}
+    />
   );
 };
 

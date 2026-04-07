@@ -1,0 +1,166 @@
+import React from 'react';
+import { Formik, Form, Field, ErrorMessage, type FormikHelpers, type FormikErrors } from 'formik';
+import { Button } from './ui/button';
+import type { DateRange } from 'react-day-picker';
+import DatePicker from './DatePicker';
+import { addHours } from '@/utils/time';
+
+export type LeaveFormValues = {
+  leaveCategoryId: string;
+  dateRange: DateRange | undefined;
+  startTime: string;
+  duration: 'FULL_DAY' | 'HALF_DAY';
+  description: string;
+};
+
+type LeaveFormProps = {
+  initialValues: LeaveFormValues;
+  onSubmit: (values: LeaveFormValues, helpers: FormikHelpers<LeaveFormValues>) => Promise<void>;
+  categories: { id: string; name: string }[];
+  categoriesLoading: boolean;
+  categoriesError?: string | null;
+};
+
+const FULL_DAY_DURATION_HOURS = 8;
+const HALF_DAY_DURATION_HOURS = 4;
+
+const validate = (values: LeaveFormValues) => {
+  const errors: FormikErrors<LeaveFormValues> = {};
+
+  if (!values.leaveCategoryId) {
+    errors.leaveCategoryId = 'Leave category is required';
+  }
+
+  if (!values.dateRange || !values.dateRange.from) {
+    errors.dateRange = 'Please enter a date';
+  }
+
+  if (values.description.trim() === '') {
+    errors.description = 'Description is required';
+  }
+
+  if (values.description.length > 1000) {
+    errors.description = 'Description cannot be over 1000 characters';
+  }
+
+  return errors;
+};
+
+const LeaveForm = ({
+  initialValues,
+  onSubmit,
+  categories,
+  categoriesLoading,
+  categoriesError,
+}: LeaveFormProps): React.JSX.Element => {
+  return (
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validate}>
+      {({ isSubmitting, values, setFieldValue }) => (
+        <Form className="flex flex-col gap-4 p-4 w-full">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="leaveCategoryId">Leave Category</label>
+            {categoriesError && <p className="text-sm text-red-700">{categoriesError}</p>}
+            <Field
+              as="select"
+              name="leaveCategoryId"
+              id="leaveCategoryId"
+              disabled={categoriesLoading}
+              className="rounded-md border border-gray-300 bg-gray-50 p-2 cursor-pointer text-sm"
+            >
+              <option value="">
+                {categoriesLoading ? 'Loading categories...' : 'Select a category'}
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </Field>
+            <ErrorMessage name="leaveCategoryId" component="p" className="text-sm text-red-700" />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="date-range-picker" id="date-range-label">
+              Date Range
+            </label>
+            <DatePicker
+              date={values.dateRange}
+              setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
+              className="w-full cursor-pointer"
+            />
+            <ErrorMessage name="dateRange" component="p" className="text-sm text-red-700" />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="duration">Duration</label>
+            <Field
+              as="select"
+              name="duration"
+              id="duration"
+              className="px-3 py-2 rounded-lg border bg-gray-50 border-neutral-300 text-sm cursor-pointer"
+            >
+              <option value="FULL_DAY">Full Day</option>
+              <option value="HALF_DAY">Half Day</option>
+            </Field>
+          </div>
+
+          <div className="flex justify-between gap-3">
+            <div className="flex flex-1 flex-col">
+              <label htmlFor="startTime">Start Time</label>
+              <Field
+                type="time"
+                id="startTime"
+                name="startTime"
+                className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-50 text-sm cursor-pointer"
+              />
+            </div>
+
+            <div className="flex flex-1 flex-col">
+              <label htmlFor="endTime">End Time</label>
+              <Field
+                type="time"
+                id="endTime"
+                name="endTime"
+                disabled
+                value={
+                  values.duration === 'FULL_DAY'
+                    ? addHours(values.startTime, FULL_DAY_DURATION_HOURS)
+                    : addHours(values.startTime, HALF_DAY_DURATION_HOURS)
+                }
+                className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-100 text-sm cursor-not-allowed"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="description">Reason</label>
+            <Field
+              as="textarea"
+              id="description"
+              name="description"
+              placeholder="Reason for taking leave..."
+              rows="4"
+              className="px-3 py-2 rounded-lg border border-neutral-300 bg-gray-50 text-sm"
+            />
+            <ErrorMessage
+              name="description"
+              component="p"
+              data-testid="errors-description-input"
+              className="text-sm text-red-700"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-(--technogise-blue) cursor-pointer py-5"
+          >
+            Submit Leave
+          </Button>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default LeaveForm;
