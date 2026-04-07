@@ -17,12 +17,12 @@ function ManagerDashboard(): React.JSX.Element {
   } = useLeaves('ongoing', 'organization');
 
   return (
-    <div className="w-full h-screen  p-6 bg-gray-50">
+    <div className="w-full h-screen flex flex-col p-6 bg-gray-50">
       <PageHeader pageTitle="Manager Dashboard" pageSubtitle="Team leave overview at a glance" />
-      <div className="flex flex-col md:flex-row gap-6 mt-6">
-        <div className="w-full overflow-y-scroll md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+      <div className="flex flex-col flex-1 min-h-0 md:flex-row gap-6 mt-6">
+        <div className="w-full md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm flex flex-col">
           <h2 className="font-bold text-lg mb-4 text-gray-800">Currently on Leave</h2>
-          <div className="flex flex-1 overflow-y-scroll flex-col gap-3">
+          <div className="flex-1 overflow-y-auto flex flex-col gap-3">
             {ongoingLeavesLoading && (
               <div className="flex justify-center items-center w-full">
                 <Loading />
@@ -47,9 +47,9 @@ function ManagerDashboard(): React.JSX.Element {
             )}
           </div>
         </div>
-        <div className="w-full md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+        <div className="w-full md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm flex flex-col">
           <h2 className="font-bold text-lg mb-4 text-gray-800">Upcoming Leaves</h2>
-          <div className="flex flex-1 overflow-y-scroll flex-col gap-3">
+          <div className="flex-1 overflow-y-auto flex flex-col gap-3">
             {upcomingLeavesLoading && (
               <div className="flex justify-center items-center w-full">
                 <Loading />
