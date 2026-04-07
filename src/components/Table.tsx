@@ -13,7 +13,7 @@ type TableProps<T> = {
 
 function Table<T>({ data, columns, message }: TableProps<T>): React.JSX.Element {
   return (
-    <div className="w-full bg-white rounded-2xl shadow-sm overflow-x-auto">
+    <div className="w-full bg-white rounded-b-2xl shadow-sm overflow-x-auto">
       <table className="w-full min-w-150 text-sm text-left md:min-w-full">
         <thead className=" text-gray-600 bg-sidebar  p-10 border-b sticky top-0 z-10 border-gray-300 uppercase text-xs tracking-wider">
           <tr>
