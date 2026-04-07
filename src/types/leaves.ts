@@ -1,11 +1,11 @@
-export type DurationType = 'FULL_DAY' | 'HALF_DAY';
+export type LeaveDuration = 'FULL_DAY' | 'HALF_DAY';
 
 export type LeaveResponse = {
   id: string;
   date: string;
   employeeName: string;
   type: string;
-  duration: 'FULL_DAY' | 'HALF_DAY';
+  duration: LeaveDuration;
   startTime: string;
   applyOn: string;
   reason: string;
@@ -14,7 +14,7 @@ export type LeaveResponse = {
 export type LeaveApplicationRequest = {
   leaveCategoryId: string;
   dates: string[];
-  duration: DurationType;
+  duration: LeaveDuration;
   startTime: string;
   description: string | undefined;
 };
@@ -23,7 +23,7 @@ export type LeaveApplicationResponse = {
   id: string;
   date: string;
   leaveCategoryName: string;
-  duration: DurationType;
+  duration: LeaveDuration;
   startTime: string | null;
   description: string | null;
 };

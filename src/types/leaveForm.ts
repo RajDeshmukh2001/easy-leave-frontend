@@ -1,10 +1,10 @@
 import type { DateRange } from 'react-day-picker';
-import type { DurationType } from './leaves';
+import type { LeaveDuration } from './leaves';
 
 export type LeaveFormValues = {
   leaveCategoryId: string;
   dateRange: DateRange | undefined;
   startTime: string;
-  duration: DurationType;
+  duration: LeaveDuration;
   description: string;
 };
