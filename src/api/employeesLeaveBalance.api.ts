@@ -12,7 +12,7 @@ export const fetchYears = async (): Promise<string[]> => {
 };
 export const fetchEmployees = async (
   year: string,
-  page: number = 0,
+  page = 0,
 ): Promise<PageResponse<EmployeeLeaveRecord>> => {
   const { data } = await axiosInstance.get(`/api/annual-leaves?year=${year}&page=${page}&size=20`);
   if (!data.success) throw new Error(data.message || 'Failed to fetch employees');

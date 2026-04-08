@@ -13,7 +13,7 @@ const mockEmployee: EmployeeLeaveRecord = {
   leavesRemaining: 24,
 };
 
-const mockPageResponse = (last: boolean = true): PageResponse<EmployeeLeaveRecord> => ({
+const mockPageResponse = (last = true): PageResponse<EmployeeLeaveRecord> => ({
   content: [mockEmployee],
   last,
   first: true,
