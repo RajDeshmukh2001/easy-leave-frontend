@@ -7,6 +7,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import type { LeaveApplicationResponse, LeaveResponse } from '@/types/leaves';
 import userEvent from '@testing-library/user-event';
 import toast from 'react-hot-toast';
+import type { LeaveResponse } from '@/types/leaves';
 
 vi.mock('@/api/leave.api');
 vi.mock('@/utils/leaveForm');
