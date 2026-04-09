@@ -80,24 +80,26 @@ function ManagerDashboard(): React.JSX.Element {
               </div>
             )}
             {ongoingLeavesError && <p className="text-sm text-red-500">{ongoingLeavesError}</p>}
-            {!ongoingLeavesLoading && !ongoingLeavesError && ongoingLeaves.length === 0 ? (
-              <p className="text-sm w-full flex justify-center items-center h-full text-gray-500">
-                "No Employee On Leave Today"
-              </p>
-            ) : (
-              ongoingLeaves.map((leave) => (
-                <LeaveCardItem
-                  key={leave.id}
-                  title={leave.employeeName}
-                  description={leave.duration
-                    .split('_')
-                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                    .join(' ')}
-                  badgeName={leave.type}
-                  style="bg-warning/5 border border-warning/10"
-                />
-              ))
-            )}
+            {!ongoingLeavesLoading &&
+              !ongoingLeavesError &&
+              (ongoingLeaves.length === 0 ? (
+                <p className="text-sm w-full flex justify-center items-center h-full text-gray-500">
+                  "No Employee On Leave Today"
+                </p>
+              ) : (
+                ongoingLeaves.map((leave) => (
+                  <LeaveCardItem
+                    key={leave.id}
+                    title={leave.employeeName}
+                    description={leave.duration
+                      .split('_')
+                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                      .join(' ')}
+                    badgeName={leave.type}
+                    style="bg-warning/5 border border-warning/10"
+                  />
+                ))
+              ))}
           </div>
         </div>
         <div className="flex flex-col md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm h-100 md:h-auto md:flex-1">
@@ -109,23 +111,25 @@ function ManagerDashboard(): React.JSX.Element {
               </div>
             )}
             {upcomingLeavesError && <p className="text-sm text-red-500">{upcomingLeavesError}</p>}
-            {!upcomingLeavesLoading && !upcomingLeavesError && upcomingLeaves.length === 0 ? (
-              <p className="text-sm w-full flex justify-center items-center h-full text-gray-500">
-                No Upcoming/Schedule leave
-              </p>
-            ) : (
-              [...upcomingLeaves]
-                .reverse()
-                .map((leave) => (
-                  <LeaveCardItem
-                    key={leave.id}
-                    title={leave.employeeName}
-                    description={leave.date}
-                    badgeName={leave.type}
-                    style="bg-muted"
-                  />
-                ))
-            )}
+            {!upcomingLeavesLoading &&
+              !upcomingLeavesError &&
+              (upcomingLeaves.length === 0 ? (
+                <p className="text-sm w-full flex justify-center items-center h-full text-gray-500">
+                  No Upcoming/Schedule leave
+                </p>
+              ) : (
+                [...upcomingLeaves]
+                  .reverse()
+                  .map((leave) => (
+                    <LeaveCardItem
+                      key={leave.id}
+                      title={leave.employeeName}
+                      description={leave.date}
+                      badgeName={leave.type}
+                      style="bg-muted"
+                    />
+                  ))
+              ))}
           </div>
         </div>
       </div>
