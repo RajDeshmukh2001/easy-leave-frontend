@@ -71,17 +71,19 @@ function ManagerDashboard(): React.JSX.Element {
         )}
       </div>
       <div className="flex flex-col flex-1 min-h-0 md:flex-row gap-6 mt-6">
-        <div className="w-full md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm flex flex-col">
+        <div className="flex flex-col md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm h-100 md:h-auto md:flex-1">
           <h2 className="font-bold text-lg mb-4 text-gray-800">Currently on Leave</h2>
           <div className="flex-1 overflow-y-auto flex flex-col gap-3">
             {ongoingLeavesLoading && (
-              <div className="flex justify-center items-center w-full">
+              <div className="flex justify-center items-center w-full h-full">
                 <Loading />
               </div>
             )}
             {ongoingLeavesError && <p className="text-sm text-red-500">{ongoingLeavesError}</p>}
             {!ongoingLeavesLoading && !ongoingLeavesError && ongoingLeaves.length === 0 ? (
-              <p className="text-sm text-gray-500">{ongoingLeavesError}</p>
+              <p className="text-sm w-full flex justify-center items-center h-full text-gray-500">
+                "No Employee On Leave Today"
+              </p>
             ) : (
               ongoingLeaves.map((leave) => (
                 <LeaveCardItem
@@ -98,17 +100,19 @@ function ManagerDashboard(): React.JSX.Element {
             )}
           </div>
         </div>
-        <div className="w-full md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm flex flex-col">
+        <div className="flex flex-col md:w-1/2 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm h-100 md:h-auto md:flex-1">
           <h2 className="font-bold text-lg mb-4 text-gray-800">Upcoming Leaves</h2>
           <div className="flex-1 overflow-y-auto flex flex-col gap-3">
             {upcomingLeavesLoading && (
-              <div className="flex justify-center items-center w-full">
+              <div className="flex justify-center items-center h-full w-full">
                 <Loading />
               </div>
             )}
             {upcomingLeavesError && <p className="text-sm text-red-500">{upcomingLeavesError}</p>}
             {!upcomingLeavesLoading && !upcomingLeavesError && upcomingLeaves.length === 0 ? (
-              <p className="text-sm text-gray-500">{upcomingLeavesError}</p>
+              <p className="text-sm w-full flex justify-center items-center h-full text-gray-500">
+                No Upcoming/Schedule leave
+              </p>
             ) : (
               [...upcomingLeaves]
                 .reverse()
