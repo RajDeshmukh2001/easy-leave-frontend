@@ -1,10 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { describe, expect, test, vi, beforeEach } from 'vitest'
-import { MemoryRouter } from 'react-router-dom'
-import Leave from './Leave'
-import * as leaveApi from '../api/leave.api'
-import type { LeaveResponse } from '../types/leaves'
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, test, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
+import Leave from './Leave';
+import * as leaveApi from '../api/leave.api';
+import type { LeaveResponse } from '../types/leaves';
 
 const mockLeaves: LeaveResponse[] = [
   {
@@ -16,100 +16,110 @@ const mockLeaves: LeaveResponse[] = [
     employeeName: 'Priyansh Saxena',
     startTime: '09:00',
     reason: 'Personal work',
-  }
-]
+  },
+];
 
 const renderLeavePage = () => {
   render(
     <MemoryRouter>
       <Leave />
-    </MemoryRouter>
-  )
-}
+    </MemoryRouter>,
+  );
+};
 
 describe('Leave Page Component', () => {
-
   beforeEach(() => {
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves)
-  })
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+  });
 
   test('renders page header', () => {
-    renderLeavePage()
-    expect(screen.getByText('Leaves')).toBeInTheDocument()
-    expect(screen.getByText('View and manage your leaves')).toBeInTheDocument()
-  })
+    renderLeavePage();
+    expect(screen.getByText('Leaves')).toBeInTheDocument();
+    expect(screen.getByText('View and manage your leaves')).toBeInTheDocument();
+  });
 
   test('renders My Leaves heading', () => {
-    renderLeavePage()
-    expect(screen.getByText('My Leaves')).toBeInTheDocument()
-  })
+    renderLeavePage();
+    expect(screen.getByText('My Leaves')).toBeInTheDocument();
+  });
 
   test('renders filter dropdown with all status options', () => {
-    renderLeavePage()
-    expect(screen.getByDisplayValue('All')).toBeInTheDocument()
-  })
+    renderLeavePage();
+    expect(screen.getByDisplayValue('All')).toBeInTheDocument();
+  });
 
   test('shows loading state initially', () => {
-    renderLeavePage()
-    expect(screen.getByText('Loading...')).toBeInTheDocument()
-  })
+    renderLeavePage();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
 
   test('renders leave data after loading', async () => {
-    renderLeavePage()
+    renderLeavePage();
     await waitFor(() => {
-      expect(screen.getByText('Annual Leave')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText('Annual Leave')).toBeInTheDocument();
+    });
+  });
 
   test('renders table columns', async () => {
-    renderLeavePage()
+    renderLeavePage();
     await waitFor(() => {
-      expect(screen.getByText('Type')).toBeInTheDocument()
-      expect(screen.getByText('Date')).toBeInTheDocument()
-      expect(screen.getByText('Duration')).toBeInTheDocument()
-      expect(screen.getByText('Status')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByRole('columnheader', { name: 'Type' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Duration' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Status' })).toBeInTheDocument();
+    });
+  });
 
   test('shows error message on API failure', async () => {
-    vi.spyOn(leaveApi, 'fetchLeaves').mockRejectedValue(new Error('Failed to fetch leaves'))
-    renderLeavePage()
+    vi.spyOn(leaveApi, 'fetchLeaves').mockRejectedValue(new Error('Failed to fetch leaves'));
+    renderLeavePage();
     await waitFor(() => {
-      expect(screen.getByText('Failed to fetch leaves')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText('Failed to fetch leaves')).toBeInTheDocument();
+    });
+  });
 
   test('calls fetchLeaves with upcoming status on filter change', async () => {
-    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves)
-    renderLeavePage()
-    const dropdown = screen.getByDisplayValue('All')
-    await userEvent.selectOptions(dropdown, 'upcoming')
+    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    renderLeavePage();
+    const dropdown = screen.getByDisplayValue('All');
+    await userEvent.selectOptions(dropdown, 'upcoming');
     await waitFor(() => {
-      expect(spy).toHaveBeenCalledWith({ status: 'upcoming', scope: 'self' })
-    })
-  })
+      expect(spy).toHaveBeenCalledWith({ status: 'upcoming', scope: 'self' });
+    });
+  });
 
   test('shows Ongoing status for leave today', async () => {
-    const todayLeave: LeaveResponse[] = [{
-      ...mockLeaves[0],
-      date: new Date().toISOString().split('T')[0],
-    }]
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayLeave)
-    renderLeavePage()
+    const todayLeave: LeaveResponse[] = [
+      {
+        ...mockLeaves[0],
+        date: new Date().toISOString().split('T')[0],
+      },
+    ];
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayLeave);
+    renderLeavePage();
     await waitFor(() => {
-      expect(screen.getByText('Ongoing')).toBeInTheDocument()
-    })
-  })
-  
+      expect(screen.getByText('Ongoing')).toBeInTheDocument();
+    });
+  });
+
   test('shows Completed leave ', async () => {
-    const todayLeave: LeaveResponse[] = [{
-      ...mockLeaves[0],
-      date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    }]
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayLeave)
-    renderLeavePage()
+    const todayLeave: LeaveResponse[] = [
+      {
+        ...mockLeaves[0],
+        date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      },
+    ];
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayLeave);
+    renderLeavePage();
     await waitFor(() => {
-      expect(screen.getByText('Completed')).toBeInTheDocument()
-    })
-  })
-})
+      expect(screen.getByText('Completed')).toBeInTheDocument();
+    });
+  });
+
+  test('renders ApplyLeaveForm component', async () => {
+    renderLeavePage();
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
+    });
+  });
+});
