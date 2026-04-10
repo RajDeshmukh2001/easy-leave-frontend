@@ -1,7 +1,7 @@
 import type { ApiResponse } from '@/types/response';
 import axiosInstance from './axiosInstance';
 import type { LeaveScope, LeaveStatus } from '../constants/LeaveStatus';
-import type { LeaveApplicationResponse, LeaveResponse } from '../types/leaves';
+import type { LeaveApplicationResponse, LeaveResponse, updateLeaveRequest } from '../types/leaves';
 import type { LeaveApplicationRequest } from '@/types/leaves';
 
 type Props = {
@@ -40,6 +40,21 @@ export const fetchLeaveById = async (id: string | undefined): Promise<LeaveRespo
   if (!data.success) {
     console.error(`Error fetching leave with ID ${id}:`, data.message);
     throw new Error(data.message || `Failed to fetch leave with ID ${id}`);
+  }
+  return data.data;
+};
+
+export const updateLeave = async (
+  id: string | undefined,
+  leaveData: Partial<updateLeaveRequest>,
+): Promise<LeaveApplicationResponse> => {
+  const { data } = await axiosInstance.patch<ApiResponse<LeaveApplicationResponse>>(
+    `/api/leaves/${id}`,
+    leaveData,
+  );
+  if (!data.success) {
+    console.error('Error applying for leave:', data.message);
+    throw new Error(data.message || 'Failed to apply for leave');
   }
   return data.data;
 };
