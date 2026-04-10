@@ -21,7 +21,7 @@ function AllEmployeesDetails(): React.JSX.Element {
       setLoading(true);
       setError(null);
 
-      const res = await getEmployees({ page: currentPage, size: 20 });
+      const res = await getEmployees({ page: currentPage, size: 2 });
       setEmployee((prev) => {
         if (currentPage === 0) return res.content;
         const existingIds = new Set(prev.map((e) => e.id));
@@ -54,10 +54,15 @@ function AllEmployeesDetails(): React.JSX.Element {
   ];
 
   return (
-    <div className="w-full h-screen p-3">
+    <div className="w-full h-screen flex flex-col p-4">
       <PageHeader pageTitle="Employees" pageSubtitle="Manage all employees and their roles" />
 
-      <div className="flex w-full rounded-2xl shadow-xs border border-neutral-200 ">
+      <div className="flex flex-col min-h-0 w-full mb-5 rounded-2xl shadow-xs border border-neutral-200">
+        <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
+          <h1 className="text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
+            All Employees
+          </h1>
+        </div>
         {loading && page === 0 && (
           <div className="w-full text-center p-4">
             <Loading />
@@ -75,16 +80,14 @@ function AllEmployeesDetails(): React.JSX.Element {
       </div>
 
       <div className="flex justify-center items-center p-4">
-        {hasMore ? (
+        {hasMore && (
           <button
             onClick={() => setPage((prev) => prev + 1)}
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
+            className="px-4 py-2 bg-sidebar hover:bg-sidebar/80 text-white rounded-md disabled:opacity-50"
           >
             {loading ? <Loading /> : 'Load More'}
           </button>
-        ) : (
-          <p className="text-gray-500">No more employees</p>
         )}
       </div>
     </div>
