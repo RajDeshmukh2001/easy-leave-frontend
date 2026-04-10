@@ -1,9 +1,10 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/inter';
 
 :root {
+  overscroll-behavior: none;
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
@@ -13,8 +14,7 @@
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -31,7 +31,7 @@
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
-  --warning:oklch(0.77 0.165 70.61);
+  --warning: oklch(0.77 0.165 70.61);
   --warning-foreground: oklch(0.985 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -52,7 +52,7 @@
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
   --sidebar: oklch(0.2081 0.0153 261.6); /* Sidebar Background Color */
-  --sidebar-foreground: oklch(84.14% 0.014 248.00); /* Sidebar inactice items background*/
+  --sidebar-foreground: oklch(84.14% 0.014 248); /* Sidebar inactice items background*/
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(92.27% 0.006 239.82);
   --sidebar-accent: oklch(27.08% 0.019 258.36); /* Sidebar Regular and Hover background */
