@@ -41,25 +41,6 @@ This feature adds a new page for managers to view a list of all employees along 
 4. View the list of employees with their leave taken and balance
 5. Click "Load More" to fetch additional results
 
-## Screenshots
-
-### Web View
-
-![Web View](https://github.com/user-attachments/assets/3b15fb51-1273-48fc-9a22-0fe49b48e319)
-
-### Mobile View
-
-![Mobile View 1](https://github.com/user-attachments/assets/f7bf9d37-8c75-4c2b-9912-a3e377909fcb)
-
-![Mobile View 2](https://github.com/user-attachments/assets/aafedf14-13c1-4531-9167-847ab61a5eae)
-
-## API Endpoints
-
-| Endpoint         | Method | Description                                                            |
-| ---------------- | ------ | ---------------------------------------------------------------------- |
-| `/api/employees` | GET    | Fetch paginated list of employees with leave balance for selected year |
-| `/api/years`     | GET    | Fetch available years for filtering                                    |
-
 ## Error Handling
 
 - Displays error message when API call fails
@@ -70,13 +51,3 @@ This feature adds a new page for managers to view a list of all employees along 
 - Fully responsive across desktop, tablet, and mobile devices
 - Navigation and filter dropdown adapts to screen size
 - Table view converts to card view on mobile
-
-## Testing
-
-- Unit tests for `useEmployees` hook
-- Unit tests for `AllEmployeesLeaveBalance` page component
-- Tests cover loading states, error states, empty states, and pagination
-
-## Related Tickets
-
-- [LMS-14 - Manager can get a display list of all employees with leaves taken and leave balance](https://trello.com/c/UDg6SBu3/14-lms-14-manager-can-get-a-display-list-of-all-employees-with-leaves-taken-and-leave-balance)
