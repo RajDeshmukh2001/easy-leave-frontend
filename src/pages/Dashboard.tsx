@@ -1,4 +1,3 @@
-import useAuthUser from '@/hooks/useAuthUser';
 import PageHeader from '../components/PageHeader';
 import Table from '../components/Table';
 import type { LeaveResponse } from '../types/leaves';
@@ -7,8 +6,6 @@ import useLeaves from '@/hooks/useLeaves';
 
 function Dashboard(): React.JSX.Element {
   const { leaves, loading, error } = useLeaves('upcoming', 'self');
-  const { user } = useAuthUser();
-
   const columns = [
     {
       header: 'Type',
@@ -41,7 +38,7 @@ function Dashboard(): React.JSX.Element {
     <div className="w-full h-screen flex flex-col p-4">
       <PageHeader
         pageTitle="Dashboard"
-        pageSubtitle={`Welcome ${user?.name}! Here you can find an overview of your Leaves`}
+        pageSubtitle={`Welcome to your dashboard! Here you can find an overview of your Leaves`}
       />
       <div className="flex flex-col min-h-0 w-full mb-5 rounded-2xl shadow-xs border border-neutral-200">
         <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
