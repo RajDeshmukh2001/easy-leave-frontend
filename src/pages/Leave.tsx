@@ -44,34 +44,31 @@ function Leave(): React.JSX.Element {
   ];
 
   return (
-    <div className="w-full h-screen flex flex-col p-3">
+    <div className="w-full md:h-screen flex flex-col p-4">
       <PageHeader pageTitle="Leaves" pageSubtitle="View and manage your leaves" />
-      <div className="flex flex-col h-full lg:flex-row wrap gap-4">
-        <div className="flex lg:flex-3 max-h-fit w-full bg-white rounded-2xl shadow-xs border border-neutral-200">
+      <div className="flex flex-col flex-1 min-h-0 md:flex-row gap-6 mt-6">
+        <div className="flex  md:w-1/3 bg-white rounded-2xl shadow-xs border border-neutral-200">
           <ApplyLeaveForm refreshLeaves={refreshLeaves} />
         </div>
-
-        <div className="flex flex-col lg:flex-7 flex-1 min-h-0 w-full rounded-2xl shadow-xs border border-neutral-200">
-          <div className="flex items-center justify-between bg-sidebar rounded-t-2xl p-3">
-            <h1 className="text-2xl text-sidebar-foreground font-bold mb-4">My Leaves</h1>
+        <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-screen">
+          <div className="flex items-center p-3 justify-between bg-sidebar/98 rounded-t-2xl ">
+            <h1 className="text-2xl text-sidebar-foreground font-bold px-4 py-2">My Leaves</h1>
             <FilterDropdown
               options={STATUS_OPTIONS}
               value={status}
               onChange={(val) => setStatus(val as LeaveStatus)}
             />
           </div>
-          <div className="flex-1 lg:overflow-y-auto">
-            {loading && <Loading />}
-            {error && <p className="p-3 text-red-700">{error}</p>}
-            {!loading && !error && (
-              <Table
-                data={leaves}
-                columns={columns}
-                message="No leave records found."
-                getRowKey={(leave: LeaveResponse) => leave.id}
-              />
-            )}
-          </div>
+          {loading && <Loading />}
+          {error && <p className="p-3 text-red-700">{error}</p>}
+          {!loading && !error && (
+            <Table
+              data={leaves}
+              columns={columns}
+              message="No leave records found."
+              getRowKey={(leave: LeaveResponse) => leave.id}
+            />
+          )}
         </div>
       </div>
     </div>
