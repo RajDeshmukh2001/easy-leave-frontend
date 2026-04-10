@@ -31,7 +31,7 @@ function ManagerDashboard(): React.JSX.Element {
       try {
         const data = await getManagerDashboardMetrics();
         setMetricsData(data);
-      } catch (err: any) {
+      } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch dashboard metrics');
       } finally {
         setLoading(false);
