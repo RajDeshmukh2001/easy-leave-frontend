@@ -14,9 +14,9 @@ type TableProps<T> = {
 
 function Table<T>({ data, columns, message, getRowKey }: TableProps<T>): React.JSX.Element {
   return (
-    <div className="w-full bg-white rounded-b-2xl shadow-sm md:overflow-x-auto overflow-x-scroll">
-      <table className="md:w-full min-w-full table-fixed text-sm text-left">
-        <thead className=" text-gray-600 bg-sidebar w-full p-10 border-b sticky top-0 z-10 border-gray-300 uppercase text-xs tracking-wider">
+    <div className="w-full overflow-x-auto">
+      <table className="min-w-full table-fixed text-sm text-left">
+        <thead className="text-gray-600 bg-sidebar/98 border-b sticky top-0 z-10 border-gray-300 uppercase text-xs tracking-wider">
           <tr>
             {columns.map((col) => (
               <th
@@ -33,7 +33,7 @@ function Table<T>({ data, columns, message, getRowKey }: TableProps<T>): React.J
             data.map((value) => (
               <tr
                 key={getRowKey(value)}
-                className="hover:bg-gray-50 transition border-b border-gray-300"
+                className="hover:bg-gray-50 transition border-b border-gray-300 bg-white"
               >
                 {columns.map((col) => (
                   <td key={col.header} className="px-3 py-2 md:px-6 md:py-4 wrap-break-words">
@@ -44,7 +44,7 @@ function Table<T>({ data, columns, message, getRowKey }: TableProps<T>): React.J
             ))
           ) : (
             <tr>
-              <td colSpan={columns.length} className="text-center py-4">
+              <td colSpan={columns.length} className="text-center py-4 bg-white">
                 {message}
               </td>
             </tr>
