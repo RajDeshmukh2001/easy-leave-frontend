@@ -95,7 +95,7 @@ const LeaveDetails = (): React.JSX.Element => {
     <div className="w-full p-3">
       <PageHeader pageTitle="Leave Details" pageSubtitle="View and manage your leave details" />
 
-      <div className="max-w-1/2 flex bg-white rounded-2xl shadow-xs border border-neutral-200 h-full">
+      <div className="w-full lg:max-w-1/2 flex bg-white rounded-2xl shadow-xs border border-neutral-200 h-full">
         <LeaveForm
           initialValues={updateLeaveInitialValues}
           onSubmit={handleUpdateLeave}
