@@ -1,12 +1,18 @@
-import { fetchLeaveById } from '@/api/leave.api';
+import { fetchLeaveById, updateLeave } from '@/api/leave.api';
 import LeaveForm from '@/components/LeaveForm';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
 import useLeaveCategories from '@/hooks/useLeaveCategories';
+import type { LeaveCategoryResponse } from '@/types/leaveCategory';
 import type { LeaveFormValues } from '@/types/leaveForm';
 import type { LeaveResponse } from '@/types/leaves';
+import { parseLocalDate } from '@/utils/date';
+import { buildUpdatePayload } from '@/utils/leaveForm';
+import { isAxiosError } from 'axios';
+import type { FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const LeaveDetails = (): React.JSX.Element => {
   const [leave, setLeave] = useState<LeaveResponse | null>(null);
@@ -14,6 +20,7 @@ const LeaveDetails = (): React.JSX.Element => {
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams();
   const { categories } = useLeaveCategories();
+  const navigate = useNavigate();
 
   const fetchLeaveDetails = async (id: string | undefined) => {
     try {
@@ -35,8 +42,29 @@ const LeaveDetails = (): React.JSX.Element => {
     fetchLeaveDetails(id);
   }, [id]);
 
-  const handleUpdateLeave = async (values: LeaveFormValues) => {
-    console.log(values);
+  const handleUpdateLeave = async (
+    values: LeaveFormValues,
+    { resetForm }: FormikHelpers<LeaveFormValues>,
+  ): Promise<void> => {
+    const leaveData = buildUpdatePayload(values, updateLeaveInitialValues);
+
+    if (Object.keys(leaveData).length === 0) {
+      toast.error('No changes made. At least one field must be provided to update the leave');
+      return;
+    }
+
+    try {
+      await updateLeave(id, leaveData);
+      toast.success('Leave updated successfully!');
+      resetForm();
+      navigate('/leave');
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Leave updation failed');
+      } else {
+        toast.error('Unexpected Error Occurred');
+      }
+    }
   };
 
   if (loading) {
@@ -51,11 +79,13 @@ const LeaveDetails = (): React.JSX.Element => {
     );
   }
 
-  const matchedCategory = categories.find((category) => category.name === leave.type);
+  const matchedCategory: LeaveCategoryResponse | undefined = categories.find(
+    (category) => category.name === leave.type,
+  );
 
   const updateLeaveInitialValues: LeaveFormValues = {
     leaveCategoryId: matchedCategory?.id || '',
-    dateRange: { from: new Date(leave.date), to: new Date(leave.date) },
+    dateRange: { from: parseLocalDate(leave.date), to: parseLocalDate(leave.date) },
     duration: leave.duration,
     startTime: leave.startTime,
     description: leave.reason,
