@@ -1,13 +1,13 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from 'formik';
 import { Button } from './ui/button';
-import DatePicker from './DatePicker';
 import { addHours } from '@/utils/time';
 import type { LeaveFormValues } from '@/types/leaveForm';
 import { validateLeaveForm } from '@/utils/leaveForm.validation';
 import { FULL_DAY_DURATION_HOURS, HALF_DAY_DURATION_HOURS } from '@/constants/leaveForm';
 import SelectField from './form/SelectField';
 import useLeaveCategories from '@/hooks/useLeaveCategories';
+import DatePickerField from './form/DatePickerField';
 
 type LeaveFormProps = {
   initialValues: LeaveFormValues;
@@ -16,18 +16,20 @@ type LeaveFormProps = {
     helpers: FormikHelpers<LeaveFormValues>,
   ) => void | Promise<void>;
   submitLabel?: string;
+  datePickerMode?: 'range' | 'single';
 };
 
 const LeaveForm = ({
   initialValues,
   onSubmit,
   submitLabel = 'Submit Leave',
+  datePickerMode = 'range',
 }: LeaveFormProps): React.JSX.Element => {
   const { categories, loading, error } = useLeaveCategories();
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validate={validateLeaveForm}>
-      {({ isSubmitting, values, setFieldValue }) => (
+      {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap-4 p-4 w-full">
           <SelectField
             name="leaveCategoryId"
@@ -39,17 +41,12 @@ const LeaveForm = ({
             placeholder="Select a category"
           />
 
-          <div className="flex flex-col gap-1">
-            <label htmlFor="date-range-picker" id="date-range-label">
-              Date Range
-            </label>
-            <DatePicker
-              date={values.dateRange}
-              setDate={(newDateRange) => setFieldValue('dateRange', newDateRange)}
-              className="w-full cursor-pointer"
-            />
-            <ErrorMessage name="dateRange" component="p" className="text-sm text-red-700" />
-          </div>
+          <DatePickerField
+            name="dateRange"
+            label="Date Range"
+            mode={datePickerMode}
+            value={values.dateRange}
+          />
 
           <SelectField
             name="duration"

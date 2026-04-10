@@ -58,7 +58,7 @@ const LeaveDetails = (): React.JSX.Element => {
     dateRange: { from: new Date(leave.date), to: new Date(leave.date) },
     duration: leave.duration,
     startTime: leave.startTime,
-    description: leave.reason ?? '',
+    description: leave.reason,
   };
 
   return (
@@ -70,6 +70,7 @@ const LeaveDetails = (): React.JSX.Element => {
           initialValues={updateLeaveInitialValues}
           onSubmit={handleUpdateLeave}
           submitLabel="Update Leave"
+          datePickerMode="single"
         />
       </div>
     </div>

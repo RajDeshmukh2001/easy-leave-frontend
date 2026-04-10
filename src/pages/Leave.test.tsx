@@ -50,7 +50,7 @@ describe('Leave Page Component', () => {
 
   test('shows loading state initially', () => {
     renderLeavePage();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...', { selector: 'p' })).toBeInTheDocument();
   });
 
   test('renders leave data after loading', async () => {

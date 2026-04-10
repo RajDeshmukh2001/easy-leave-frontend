@@ -18,6 +18,12 @@ const mockLeave: LeaveResponse = {
   reason: 'Personal work',
 };
 
+vi.mock('@/hooks/useLeaveCategories', () => ({
+  default: () => ({
+    categories: [{ id: 'cat-1', name: 'Annual Leave' }],
+  }),
+}));
+
 const renderWithRouter = () => {
   return render(
     <MemoryRouter initialEntries={['/leave/1']}>
@@ -63,5 +69,14 @@ describe('LeaveDetails Page Component', () => {
     await waitFor(() => {
       expect(screen.getByText('Leave not found')).toBeInTheDocument();
     });
+  });
+
+  test('populates leaveCategoryId when category matches leave type', async () => {
+    renderWithRouter();
+
+    await waitFor(() => {
+      expect(screen.getByText('Leave Details')).toBeInTheDocument();
+    });
+    expect(screen.getByDisplayValue('Annual Leave')).toBeInTheDocument();
   });
 });
