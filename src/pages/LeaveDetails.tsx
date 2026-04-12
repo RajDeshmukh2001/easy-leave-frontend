@@ -74,6 +74,7 @@ const LeaveDetails = (): React.JSX.Element => {
     try {
       await cancelLeave(id);
       toast.success('Leave canceled successfully.');
+      navigate('/leave');
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.response?.data?.message || 'Failed to cancel leave');
