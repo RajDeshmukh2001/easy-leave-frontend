@@ -229,4 +229,17 @@ describe('LeaveDetails Page Component', () => {
     await cancelLeave();
     await waitFor(() => expect(toast.success).toHaveBeenCalledWith('Leave canceled successfully.'));
   });
+
+  test('shows axios error toast messsage when cancel leave throws AxiosError', async () => {
+    const axiosErr = {
+      isAxiosError: true,
+      response: { data: { message: 'Cannot cancel past leave' } },
+    };
+
+    vi.spyOn(api, 'cancelLeave').mockRejectedValue(axiosErr);
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Cannot cancel past leave'));
+  });
 });
