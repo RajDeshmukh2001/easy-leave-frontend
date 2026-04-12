@@ -1,4 +1,4 @@
-import { fetchLeaveById, updateLeave } from '@/api/leave.api';
+import { cancelLeave, fetchLeaveById, updateLeave } from '@/api/leave.api';
 import CancelLeaveButton from '@/components/CancelLeaveButton';
 import LeaveForm from '@/components/LeaveForm';
 import Loading from '@/components/Loading';
@@ -70,6 +70,19 @@ const LeaveDetails = (): React.JSX.Element => {
     }
   };
 
+  const handleCancelLeave = async () => {
+    try {
+      await cancelLeave(id);
+      toast.success('Leave canceled successfully.');
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Failed to cancel leave');
+      } else {
+        toast.error('Failed to cancel leave');
+      }
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -108,7 +121,7 @@ const LeaveDetails = (): React.JSX.Element => {
           onSubmit={handleUpdateLeave}
           submitLabel="Update Leave"
           datePickerMode="single"
-          secondaryAction={<CancelLeaveButton />}
+          secondaryAction={<CancelLeaveButton handleCancelLeave={handleCancelLeave} />}
         />
       </div>
     </div>
