@@ -58,6 +58,13 @@ const submitForm = async () => {
   await userEvent.click(screen.getByRole('button', { name: /update leave/i }));
 };
 
+const cancelLeave = async () => {
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /cancel leave/i })).toBeInTheDocument(),
+  );
+  await userEvent.click(screen.getByRole('button', { name: /cancel leave/i }));
+};
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -213,5 +220,13 @@ describe('LeaveDetails Page Component', () => {
     await submitForm();
 
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Unexpected Error Occurred'));
+  });
+
+  test('shows success toast messsage when leave cancelled successfully', async () => {
+    vi.spyOn(api, 'cancelLeave').mockResolvedValue();
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() => expect(toast.success).toHaveBeenCalledWith('Leave canceled successfully.'));
   });
 });
