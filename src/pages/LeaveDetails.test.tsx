@@ -242,4 +242,12 @@ describe('LeaveDetails Page Component', () => {
     await cancelLeave();
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Cannot cancel past leave'));
   });
+
+  test('shows generic error toast messsage when cancel leave throws non-axios error', async () => {
+    vi.spyOn(api, 'cancelLeave').mockRejectedValue(new Error('Network error'));
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
+  });
 });
