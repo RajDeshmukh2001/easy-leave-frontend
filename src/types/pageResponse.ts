@@ -1,4 +1,4 @@
-export interface PageResponse<T> {
+export type PageResponse<T> = {
   content: T[];
   last: boolean;
   first: boolean;
@@ -6,4 +6,4 @@ export interface PageResponse<T> {
   totalElements: number;
   number: number;
   size: number;
-}
+};
