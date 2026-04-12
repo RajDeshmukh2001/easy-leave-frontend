@@ -250,4 +250,16 @@ describe('LeaveDetails Page Component', () => {
     await cancelLeave();
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
   });
+
+  test('shows fallback message when cancel leave throws axios error that has no response message', async () => {
+    const axiosErr = {
+      isAxiosError: true,
+      response: { data: {} },
+    };
+    vi.spyOn(api, 'cancelLeave').mockRejectedValue(axiosErr);
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
+  });
 });
