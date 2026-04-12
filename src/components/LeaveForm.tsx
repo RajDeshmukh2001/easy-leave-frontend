@@ -19,6 +19,7 @@ type LeaveFormProps = {
   ) => void | Promise<void>;
   submitLabel?: string;
   datePickerMode?: 'range' | 'single';
+  secondaryAction?: React.JSX.Element;
 };
 
 const LeaveForm = ({
@@ -26,6 +27,7 @@ const LeaveForm = ({
   onSubmit,
   submitLabel = 'Submit Leave',
   datePickerMode = 'range',
+  secondaryAction,
 }: LeaveFormProps): React.JSX.Element => {
   const { categories, loading, error } = useLeaveCategories();
 
@@ -90,6 +92,8 @@ const LeaveForm = ({
           >
             {submitLabel}
           </Button>
+
+          {secondaryAction}
         </Form>
       )}
     </Formik>
