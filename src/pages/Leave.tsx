@@ -46,7 +46,7 @@ function Leave(): React.JSX.Element {
   return (
     <div className="w-full md:h-screen flex flex-col p-4">
       <PageHeader pageTitle="Leaves" pageSubtitle="View and manage your leaves" />
-      <div className="flex flex-col flex-1 min-h-0 h-fit md:flex-row gap-6 mt-6">
+      <div className="flex flex-col flex-1 min-h-0 h-fit md:flex-row gap-6 mt-2">
         <div className="flex h-fit md:w-1/3 bg-white rounded-2xl shadow-xs border border-neutral-200">
           <ApplyLeaveForm refreshLeaves={refreshLeaves} />
         </div>
