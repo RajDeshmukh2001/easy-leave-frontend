@@ -7,11 +7,20 @@ import type { LeaveApplicationRequest } from '@/types/leaves';
 type Props = {
   status?: LeaveStatus;
   scope: LeaveScope;
+  empId?: string;
+  year?: string;
 };
 
-export const fetchLeaves = async ({ status, scope = 'self' }: Props): Promise<LeaveResponse[]> => {
+export const fetchLeaves = async ({
+  status,
+  scope = 'self',
+  empId,
+  year,
+}: Props): Promise<LeaveResponse[]> => {
   const params: Record<string, string> = { scope };
   if (status && status !== 'all') params.status = status;
+  if (empId) params.empId = empId;
+  if (year) params.year = year;
 
   const { data } = await axiosInstance.get<ApiResponse<LeaveResponse[]>>('/api/leaves', { params });
   if (!data.success) {
