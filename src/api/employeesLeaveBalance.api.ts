@@ -1,3 +1,4 @@
+import type { ApiResponse } from '@/types/response';
 import type { EmployeeLeaveRecord, SingleEmployeeLeaveRecord } from '@/types/employeeLeaveBalance';
 import axiosInstance from './axiosInstance';
 import type { PageResponse } from '@/types/pageResponse';
