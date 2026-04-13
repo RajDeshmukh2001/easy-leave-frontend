@@ -8,6 +8,7 @@ import SingleEmployeeLeaveDetails from '@/pages/SingleEmployeeLeaveDetails';
 import LeaveDetails from '@/pages/LeaveDetails';
 import Holidays from '@/pages/Holidays';
 
+import ViewSingleEmployeeLeaveDetail from '@/pages/ViewSingleEmployeeLeaveDetail';
 export type AppRoute = {
   path: string;
   element: React.ReactNode;
@@ -32,6 +33,12 @@ export const APP_ROUTES: AppRoute[] = [
     element: <ManagerDashboard />,
     roles: ['MANAGER'],
   },
+  {
+    path: '/employees/:id',
+    element: <ViewSingleEmployeeLeaveDetail />,
+    roles: ['MANAGER'],
+  },
+
   {
     path: '/admin/employees',
     element: <AllEmployeesDetails />,
