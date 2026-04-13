@@ -104,7 +104,7 @@ describe('Employees Page Component', () => {
     renderEmployeesPage();
     await waitFor(() => {
       expect(screen.getByText('Employee')).toBeInTheDocument();
-      expect(screen.getByText('Total Leaves Available')).toBeInTheDocument();
+      expect(screen.getByText('Total Annual Leaves')).toBeInTheDocument();
       expect(screen.getByText('Leaves Taken')).toBeInTheDocument();
       expect(screen.getByText('Leaves Remaining')).toBeInTheDocument();
     });
@@ -172,5 +172,32 @@ describe('Employees Page Component', () => {
     await waitFor(() => {
       expect(useEmployeesLeaveBalanceHook.default).toHaveBeenCalledWith('2025');
     });
+  });
+
+  test('shows leaves remaining in red when value is zero or negative', async () => {
+    const employeesWithZeroBalance: EmployeeLeaveRecord[] = [
+      {
+        employeeId: '1',
+        employeeName: 'Rakshit Saxena',
+        totalLeavesAvailable: 20,
+        leavesTaken: 20,
+        leavesRemaining: 0,
+      },
+    ];
+
+    vi.mocked(useEmployeesLeaveBalanceHook.default).mockReturnValue({
+      ...defaultHookValue,
+      employees: employeesWithZeroBalance,
+    });
+
+    renderEmployeesPage();
+
+    await waitFor(() => {
+      expect(screen.getByText('Rakshit Saxena')).toBeInTheDocument();
+    });
+
+    const leavesRemainingCell = screen.getByText('0');
+
+    expect(leavesRemainingCell).toHaveClass('text-red-600');
   });
 });

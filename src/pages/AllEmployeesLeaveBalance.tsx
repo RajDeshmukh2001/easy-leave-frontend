@@ -27,7 +27,7 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
       render: (emp: EmployeeLeaveRecord) => emp.employeeName,
     },
     {
-      header: 'Total Leaves Available',
+      header: 'Total Annual Leaves',
       render: (emp: EmployeeLeaveRecord) => emp.totalLeavesAvailable,
     },
     {
@@ -36,7 +36,11 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
     },
     {
       header: 'Leaves Remaining',
-      render: (emp: EmployeeLeaveRecord) => emp.leavesRemaining,
+      render: (emp: EmployeeLeaveRecord) => (
+        <span className={emp.leavesRemaining <= 0 ? 'text-red-600' : ''}>
+          {emp.leavesRemaining}
+        </span>
+      ),
     },
   ];
 
