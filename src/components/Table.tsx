@@ -14,7 +14,7 @@ type TableProps<T> = {
 
 function Table<T>({ data, columns, message, getRowKey }: TableProps<T>): React.JSX.Element {
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto rounded-b-2xl">
       <table className="min-w-full table-fixed text-sm text-left">
         <thead className="text-gray-600 bg-sidebar/98 border-b sticky top-0 z-10 border-gray-300 uppercase text-xs tracking-wider">
           <tr>
