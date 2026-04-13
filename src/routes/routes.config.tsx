@@ -33,7 +33,7 @@ export const APP_ROUTES: AppRoute[] = [
     roles: ['MANAGER'],
   },
   {
-    path: '/employees/:id',
+    path: '/manager/employees/:id',
     element: <ViewSingleEmployeeLeaveDetail />,
     roles: ['MANAGER'],
   },
