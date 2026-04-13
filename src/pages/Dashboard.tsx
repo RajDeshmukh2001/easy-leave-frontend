@@ -42,7 +42,7 @@ function Dashboard(): React.JSX.Element {
       />
       <div className="flex flex-col min-h-0 w-full mb-5 rounded-2xl shadow-xs border border-neutral-200">
         <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-          <h1 className="text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
+          <h1 className="text-xl md:text-2xl  text-sidebar-foreground font-bold mb-4 px-4 py-2">
             Upcoming Leaves
           </h1>
         </div>

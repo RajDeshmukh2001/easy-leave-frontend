@@ -21,7 +21,7 @@ function AllEmployeesDetails(): React.JSX.Element {
       setLoading(true);
       setError(null);
 
-      const res = await getEmployees({ page: currentPage, size: 2 });
+      const res = await getEmployees({ page: currentPage, size: 20 });
       setEmployee((prev) => {
         if (currentPage === 0) return res.content;
         const existingIds = new Set(prev.map((e) => e.id));
@@ -59,7 +59,7 @@ function AllEmployeesDetails(): React.JSX.Element {
 
       <div className="flex flex-col min-h-0 w-full mb-5 rounded-2xl shadow-xs border border-neutral-200">
         <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-          <h1 className="text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
+          <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
             All Employees
           </h1>
         </div>
