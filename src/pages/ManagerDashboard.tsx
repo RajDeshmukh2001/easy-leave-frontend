@@ -13,12 +13,12 @@ function ManagerDashboard(): React.JSX.Element {
     leaves: upcomingLeaves,
     loading: upcomingLeavesLoading,
     error: upcomingLeavesError,
-  } = useLeaves('upcoming', 'organization');
+  } = useLeaves({ status: 'upcoming', scope: 'organization' });
   const {
     leaves: ongoingLeaves,
     loading: ongoingLeavesLoading,
     error: ongoingLeavesError,
-  } = useLeaves('ongoing', 'organization');
+  } = useLeaves({ status: 'ongoing', scope: 'organization' });
 
   const [metricsData, setMetricsData] = useState<ManagerDashboardMetrics | null>(null);
   const [loading, setLoading] = useState(false);

@@ -5,7 +5,8 @@ import Loading from '@/components/Loading';
 import useLeaves from '@/hooks/useLeaves';
 
 function Dashboard(): React.JSX.Element {
-  const { leaves, loading, error } = useLeaves('upcoming', 'self');
+  const { leaves, loading, error } = useLeaves({ status: 'upcoming', scope: 'self' });
+
   const columns = [
     {
       header: 'Type',
