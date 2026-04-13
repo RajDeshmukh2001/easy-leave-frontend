@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import type { EmployeeLeaveRecord } from '../types/employees';
-import { fetchEmployees } from '@/api/employeesLeaveBalance.api';
+import type { EmployeeLeaveRecord } from '../types/employeeLeaveBalance';
+import { fetchEmployeesLeaveBalance } from '@/api/employeesLeaveBalance.api';
 import type { PageResponse } from '@/types/pageResponse';
 
-function useEmployees(year: string): {
+function useEmployeesLeaveBalance(year: string): {
   employees: EmployeeLeaveRecord[];
   loading: boolean;
   error: string | null;
@@ -30,7 +30,10 @@ function useEmployees(year: string): {
       try {
         setLoading(true);
         setError(null);
-        const data: PageResponse<EmployeeLeaveRecord> = await fetchEmployees(year, page);
+        const data: PageResponse<EmployeeLeaveRecord> = await fetchEmployeesLeaveBalance(
+          year,
+          page,
+        );
         setEmployees((prev) => (page === 0 ? data.content : [...prev, ...data.content]));
         setHasMore(!data.last);
       } catch (err) {
@@ -48,4 +51,4 @@ function useEmployees(year: string): {
   return { employees, loading, error, hasMore, loadMore };
 }
 
-export default useEmployees;
+export default useEmployeesLeaveBalance;
