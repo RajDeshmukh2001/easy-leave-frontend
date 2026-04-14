@@ -18,6 +18,11 @@ export const MANAGER_NAV_ITEMS: NavItem[] = [
     icon: LayoutDashboard,
     href: '/manager-dashboard',
   },
+  {
+    name: 'All Employees',
+    icon: Users,
+    href: '/manager/employees',
+  },
 ];
 export const ADMIN_NAV_ITEMS: NavItem[] = [
   {
