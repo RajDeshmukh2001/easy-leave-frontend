@@ -24,8 +24,14 @@ function ViewSingleEmployeeLeaveDetail(): React.JSX.Element {
   useEffect(() => {
     async function loadYears() {
       const data = await fetchYears();
-      setYears(data);
-      setSelectedYear(data[0] || new Date().getFullYear().toString());
+      if (data?.length > 0) {
+        setYears(data);
+        setSelectedYear(data[0]);
+      } else {
+        const currentYear = new Date().getFullYear().toString();
+        setYears([currentYear]);
+        setSelectedYear(currentYear);
+      }
     }
     loadYears();
   }, []);
@@ -85,7 +91,6 @@ function ViewSingleEmployeeLeaveDetail(): React.JSX.Element {
           </h1>
         </div>
         {loading && <Loading />}
-        {error && <p className="p-3 text-red-700">{error}</p>}
         {!loading && !error && (
           <Table
             data={leaves}

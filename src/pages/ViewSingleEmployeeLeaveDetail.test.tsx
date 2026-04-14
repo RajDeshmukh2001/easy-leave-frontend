@@ -64,6 +64,18 @@ describe('ViewSingleEmployeeLeaveDetail', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Back' }));
   });
 
+  test('displays inline error message for 500 errors', async () => {
+    vi.spyOn(leaveApi, 'fetchLeaves').mockRejectedValue({
+      response: { status: 500 },
+      message: 'Internal Server Error',
+      isAxiosError: true,
+    });
+    renderViewSingleEmployeeLeaveDetail();
+    await waitFor(() => {
+      expect(screen.queryByText('Employee not found.')).not.toBeInTheDocument();
+    });
+  });
+
   test('renders year dropdown with options', async () => {
     renderViewSingleEmployeeLeaveDetail();
     const dropdown = await screen.findByRole('combobox');
@@ -77,6 +89,14 @@ describe('ViewSingleEmployeeLeaveDetail', () => {
     const dropdown = await screen.findByRole('combobox');
     await userEvent.selectOptions(dropdown, '2025');
     expect(dropdown).toHaveValue('2025');
+  });
+
+  test('show current year from dropdown if no year is selected', async () => {
+    vi.mocked(yearApi.fetchYears).mockResolvedValue([]);
+    renderViewSingleEmployeeLeaveDetail();
+    const dropdown = await screen.findByRole('combobox');
+    expect(dropdown).toBeInTheDocument();
+    expect(screen.getByText(new Date().getFullYear().toString())).toBeInTheDocument();
   });
 
   test('renders table columns', async () => {
