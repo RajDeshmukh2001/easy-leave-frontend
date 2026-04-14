@@ -227,7 +227,9 @@ describe('LeaveDetails Page Component', () => {
 
     renderWithRouter();
     await cancelLeave();
-    await waitFor(() => expect(toast.success).toHaveBeenCalledWith('Leave canceled successfully.'));
+    await waitFor(() =>
+      expect(toast.success).toHaveBeenCalledWith('Leave cancelled successfully.'),
+    );
   });
 
   test('shows axios error toast messsage when cancel leave throws AxiosError', async () => {
