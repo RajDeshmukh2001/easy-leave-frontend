@@ -9,7 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-function ViewSingleEmployeeLeaveDetail(): React.JSX.Element {
+function ViewSingleEmployeeLeavesDetail(): React.JSX.Element {
   const { id } = useParams();
   const [years, setYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -104,4 +104,4 @@ function ViewSingleEmployeeLeaveDetail(): React.JSX.Element {
   );
 }
 
-export default ViewSingleEmployeeLeaveDetail;
+export default ViewSingleEmployeeLeavesDetail;

@@ -1,5 +1,5 @@
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import ViewSingleEmployeeLeaveDetail from './ViewSingleEmployeeLeaveDetail';
+import ViewSingleEmployeeLeaveDetail from './ViewSingleEmployeeLeavesDetail';
 import type { LeaveResponse } from '@/types/leaves';
 import * as leaveApi from '../api/leave.api';
 import * as yearApi from '@/api/employeesLeaveBalance.api';
