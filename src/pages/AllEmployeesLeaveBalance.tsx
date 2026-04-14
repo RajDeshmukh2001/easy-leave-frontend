@@ -48,7 +48,7 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
     <div className="w-full flex flex-col h-screen p-3">
       <PageHeader pageTitle="All Employees" pageSubtitle="View employees leave records" />
 
-      <div className="flex flex-1 overflow-y-scroll flex-col w-full rounded-2xl shadow-xs border border-neutral-200">
+      <div className="flex overflow-y-scroll flex-col w-full rounded-2xl shadow-2xs border border-neutral-200">
         <div className="flex bg-sidebar items-center rounded-t-2xl justify-between p-3">
           <div className="flex justify-end w-full">
             <FilterDropdown
