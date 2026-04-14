@@ -45,7 +45,7 @@ const LeaveForm = ({
 
           <DatePickerField
             name="dateRange"
-            label="Date Range"
+            label="Date"
             mode={datePickerMode}
             value={values.dateRange}
           />
