@@ -2,6 +2,7 @@ import { fetchLeaveById, updateLeave } from '@/api/leave.api';
 import LeaveForm from '@/components/LeaveForm';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
+import { Button } from '@/components/ui/button';
 import useLeaveCategories from '@/hooks/useLeaveCategories';
 import type { LeaveCategoryResponse } from '@/types/leaveCategory';
 import type { LeaveFormValues } from '@/types/leaveForm';
@@ -10,6 +11,7 @@ import { parseLocalDate } from '@/utils/date';
 import { buildUpdatePayload } from '@/utils/leaveForm';
 import { isAxiosError } from 'axios';
 import type { FormikHelpers } from 'formik';
+import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -93,6 +95,10 @@ const LeaveDetails = (): React.JSX.Element => {
 
   return (
     <div className="w-full p-3">
+      <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
+        <ArrowLeft /> Back
+      </Button>
+
       <PageHeader pageTitle="Leave Details" pageSubtitle="View and manage your leave details" />
 
       <div className="w-full lg:max-w-1/2 flex bg-white rounded-2xl shadow-xs border border-neutral-200 h-full">

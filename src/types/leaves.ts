@@ -28,7 +28,7 @@ export type LeaveApplicationResponse = {
   description: string | null;
 };
 
-export type updateLeaveRequest = {
+export type UpdateLeaveRequest = {
   leaveCategoryId: string;
   date: string;
   duration: LeaveDuration;
