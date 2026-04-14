@@ -74,10 +74,6 @@ beforeEach(async () => {
 });
 
 describe('LeaveDetails Page Component', () => {
-  beforeEach(() => {
-    vi.spyOn(api, 'fetchLeaveById').mockResolvedValue(mockLeave);
-  });
-
   test('renders page header', async () => {
     renderWithRouter();
 
