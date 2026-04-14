@@ -1,11 +1,11 @@
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import ViewSingleEmployeeLeaveDetail from './ViewSingleEmployeeLeavesDetail';
 import type { LeaveResponse } from '@/types/leaves';
 import * as leaveApi from '../api/leave.api';
 import * as yearApi from '@/api/employeesLeaveBalance.api';
 import { describe, test, vi, beforeEach } from 'vitest';
 import { screen, render, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import ViewSingleEmployeeLeavesDetail from './ViewSingleEmployeeLeavesDetail';
 
 const mockLeaves: LeaveResponse[] = [
   {
@@ -24,7 +24,7 @@ const renderViewSingleEmployeeLeaveDetail = () => {
   return render(
     <MemoryRouter initialEntries={['/employee/1']}>
       <Routes>
-        <Route path="/employee/:id" element={<ViewSingleEmployeeLeaveDetail />} />
+        <Route path="/employee/:id" element={<ViewSingleEmployeeLeavesDetail />} />
       </Routes>
     </MemoryRouter>,
   );
