@@ -1,5 +1,4 @@
 import { cancelLeave, fetchLeaveById, updateLeave } from '@/api/leave.api';
-import CancelLeaveButton from '@/components/CancelLeaveButton';
 import LeaveForm from '@/components/LeaveForm';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
@@ -122,7 +121,8 @@ const LeaveDetails = (): React.JSX.Element => {
           onSubmit={handleUpdateLeave}
           submitLabel="Update Leave"
           datePickerMode="single"
-          secondaryAction={<CancelLeaveButton handleCancelLeave={handleCancelLeave} />}
+          handleCancelLeave={handleCancelLeave}
+          cancelLabel="Cancel Leave"
         />
       </div>
     </div>
