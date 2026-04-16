@@ -1,3 +1,4 @@
+import { logout } from '@/api/auth.api';
 import {
   Sidebar,
   SidebarHeader,
@@ -11,10 +12,11 @@ import {
 import { ADMIN_NAV_ITEMS, EMPLOYEE_NAV_ITEMS, MANAGER_NAV_ITEMS } from '@/constants/navigation';
 import useAuthUser from '@/hooks/useAuthUser';
 import type { NavItem } from '@/types/navigation';
-import { CalendarDays } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { CalendarDays, LogOut } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { SidebarLogo } from './SidebarLogo';
 import { useSidebar } from '@/hooks/use-sidebar';
+import toast from 'react-hot-toast';
 
 const NavItemLink = ({ item }: { item: NavItem }): React.JSX.Element => {
   const { setOpenMobile } = useSidebar();
@@ -36,7 +38,19 @@ const NavItemLink = ({ item }: { item: NavItem }): React.JSX.Element => {
 };
 
 export const AppSidebar = (): React.JSX.Element => {
-  const { user } = useAuthUser();
+  const { user, setUser } = useAuthUser();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null);
+      navigate('/');
+    } catch {
+      toast.error('Something went wrong. Please try again');
+    }
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -54,11 +68,18 @@ export const AppSidebar = (): React.JSX.Element => {
               <NavItemLink key={item.href} item={item} />
             ))}
           </SidebarMenu>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={handleLogout} className="cursor-pointer mb-1 text-red-500">
+              <LogOut />
+              <span>Logout</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarGroup>
 
         {user?.role === 'MANAGER' && (
           <SidebarGroup>
-            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] text-xs tracking-widest group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
               Manager
             </SidebarGroupLabel>
 
@@ -72,7 +93,7 @@ export const AppSidebar = (): React.JSX.Element => {
 
         {user?.role === 'ADMIN' && (
           <SidebarGroup>
-            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] text-xs tracking-widest group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
               Admin
             </SidebarGroupLabel>
 
