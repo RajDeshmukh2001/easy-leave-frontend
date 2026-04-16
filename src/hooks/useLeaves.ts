@@ -46,7 +46,7 @@ function useLeaves({ status, scope, empId, year }: UseLeavesProps): UseLeavesRet
 
   useEffect(() => {
     loadLeaves();
-  }, [status, scope]);
+  }, [status, scope, empId, year]);
 
   return { leaves, loading, error, errorStatus, refreshLeaves: loadLeaves };
 }
