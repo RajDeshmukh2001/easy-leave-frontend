@@ -102,10 +102,10 @@ describe('ViewSingleEmployeeLeaveDetail', () => {
   test('renders table columns', async () => {
     renderViewSingleEmployeeLeaveDetail();
     await waitFor(() => {
-      expect(screen.getByText('Type')).toBeInTheDocument();
-      expect(screen.getByText('Date')).toBeInTheDocument();
-      expect(screen.getByText('Duration')).toBeInTheDocument();
-      expect(screen.getByText('Applied On')).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Type' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Duration' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Applied On' })).toBeInTheDocument();
     });
   });
 
