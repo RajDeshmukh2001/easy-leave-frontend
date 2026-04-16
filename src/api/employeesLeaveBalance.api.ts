@@ -2,7 +2,6 @@ import type { ApiResponse } from '@/types/response';
 import type { EmployeeLeaveRecord, SingleEmployeeLeaveRecord } from '@/types/employeeLeaveBalance';
 import axiosInstance from './axiosInstance';
 import type { PageResponse } from '@/types/pageResponse';
-import type { ApiResponse } from '@/types/response';
 
 export const fetchYears = async (): Promise<string[]> => {
   const { data } = await axiosInstance.get<ApiResponse<string[]>>('/api/annual-leaves/years');
