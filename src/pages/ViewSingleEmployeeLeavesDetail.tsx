@@ -74,9 +74,6 @@ function ViewSingleEmployeeLeavesDetail(): React.JSX.Element {
         <ArrowLeft /> Back
       </Button>
       <div className="flex justify-between mb-4">
-        <h2 className="text-xl md:text-2xl font-semibold">
-          {leaves?.length && `${leaves[0].employeeName}`}
-        </h2>
         <FilterDropdown
           options={years}
           value={selectedYear}
