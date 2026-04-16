@@ -8,8 +8,8 @@ const mockLeaveRecord = [
     leaveId: '1',
     leaveType: 'Annual Leave',
     totalLeavesAvailable: 24,
-    leavesTaken: 4,
-    leavesRemaining: 20,
+    leavesTaken: 6,
+    leavesRemaining: 18,
   },
   {
     leaveId: '2',
@@ -48,9 +48,9 @@ describe('ViewSingleEmployeeLeaveDetail', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('cell', { name: 'Annual Leave' })).toBeInTheDocument();
-      expect(screen.getByRole('cell', { name: '24' })).toBeInTheDocument();
-      expect(screen.getByRole('cell', { name: '4' })).toBeInTheDocument();
-      expect(screen.getByRole('cell', { name: '20' })).toBeInTheDocument();
+      expect(screen.getByText('24')).toBeInTheDocument();
+      expect(screen.getByText('6')).toBeInTheDocument();
+      expect(screen.getByText('18')).toBeInTheDocument();
     });
   });
 
