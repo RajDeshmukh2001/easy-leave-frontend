@@ -3,8 +3,14 @@ import { describe, test, expect, vi } from 'vitest';
 import { AppSidebar } from './AppSidebar';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
+import useAuthUser from '@/hooks/useAuthUser';
+import { TooltipProvider } from './ui/tooltip';
+import { Toaster } from 'react-hot-toast';
+import { logout } from '@/api/auth.api';
+import userEvent from '@testing-library/user-event';
+import type { Role } from '@/types/auth';
 
-// Mock useAuthUser hook
+
 vi.mock('@/hooks/useAuthUser', () => ({
   default: vi.fn(),
 }));
@@ -23,14 +29,17 @@ vi.mock('@/hooks/use-sidebar', () => ({
   })),
 }));
 
-import useAuthUser from '@/hooks/useAuthUser';
-import type { Role } from '@/types/auth';
-import { TooltipProvider } from './ui/tooltip';
+vi.mock('@/hooks/useAuthUser', () => ({
+  default: vi.fn(),
+}));
+vi.mock('@/api/auth.api', () => ({
+  logout: vi.fn(),
+}));
 
-const renderAppSidebar = (role?: string) => {
+const renderAppSidebar = (role?: string, setUser = vi.fn()) => {
   vi.mocked(useAuthUser).mockReturnValue({
     user: role ? { id: '1', name: 'Test User', email: 'test@test.com', role: role as Role } : null,
-    setUser: vi.fn(),
+    setUser,
     loading: false,
     error: null,
     fetchCurrentUser: vi.fn().mockResolvedValue(undefined),
@@ -40,6 +49,7 @@ const renderAppSidebar = (role?: string) => {
     <AuthProvider>
       <TooltipProvider>
         <MemoryRouter>
+          <Toaster />
           <AppSidebar />
         </MemoryRouter>
       </TooltipProvider>
@@ -74,5 +84,38 @@ describe('AppSidebar Component', () => {
     fireEvent.click(screen.getAllByRole('link')[0]);
 
     expect(setOpenMobile).toHaveBeenCalledWith(false);
+  });
+
+  test('renders logout button', () => {
+    renderAppSidebar();
+
+    expect(screen.getByText('Logout')).toBeInTheDocument();
+  });
+
+  test('calls logout API and clears user on logout click', async () => {
+    const setUser = vi.fn();
+    vi.mocked(useAuthUser).mockReturnValue({
+      user: { id: '1', name: 'Test User', email: 'test@test.com', role: 'EMPLOYEE' },
+      setUser,
+      loading: false,
+      error: null,
+      fetchCurrentUser: vi.fn().mockResolvedValue(undefined),
+    });
+    vi.mocked(logout).mockResolvedValue(undefined);
+
+    renderAppSidebar('EMPLOYEE', setUser);
+    await userEvent.click(screen.getByText('Logout'));
+
+    expect(logout).toHaveBeenCalled();
+    expect(setUser).toHaveBeenCalledWith(null);
+  });
+
+  test('shows error toast when logout API fails', async () => {
+    vi.mocked(logout).mockRejectedValue(new Error('Network error'));
+
+    renderAppSidebar();
+    await userEvent.click(screen.getByText('Logout'));
+
+    expect(await screen.findByText('Something went wrong. Please try again')).toBeInTheDocument();
   });
 });
