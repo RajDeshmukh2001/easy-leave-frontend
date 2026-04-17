@@ -1,10 +1,18 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import Leave from './Leave';
 import * as leaveApi from '../api/leave.api';
 import type { LeaveResponse } from '../types/leaves';
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
+});
 
 const mockLeaves: LeaveResponse[] = [
   {
@@ -50,7 +58,7 @@ describe('Leave Page Component', () => {
 
   test('shows loading state initially', () => {
     renderLeavePage();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...', { selector: 'p' })).toBeInTheDocument();
   });
 
   test('renders leave data after loading', async () => {
@@ -121,5 +129,42 @@ describe('Leave Page Component', () => {
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
     });
+  });
+
+  test('navigates to leave detail page when a row is clicked', async () => {
+    const mockNavigate = vi.fn();
+    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
+
+    renderLeavePage();
+
+    await waitFor(() => expect(screen.getByText('Annual Leave')).toBeInTheDocument());
+
+    await userEvent.click(screen.getByText('Annual Leave'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/leave/1');
+  });
+
+  test('does not navigate when leave date is in the past', async () => {
+    const mockNavigate = vi.fn();
+    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
+
+    const pastLeave: LeaveResponse[] = [
+      {
+        ...mockLeaves[0],
+        date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      },
+    ];
+
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(pastLeave);
+
+    renderLeavePage();
+
+    await waitFor(() => {
+      expect(screen.getByText('Annual Leave')).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByText('Annual Leave'));
+
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

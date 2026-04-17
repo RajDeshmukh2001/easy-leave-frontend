@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import Table from './Table';
 import { describe, expect, test } from 'vitest';
+import userEvent from '@testing-library/user-event';
 
 type Leave = {
   id: number;
@@ -56,5 +57,23 @@ describe('Table Component', () => {
     expect(screen.getByText('Annual Leave')).toBeInTheDocument();
     expect(screen.getByText('Priyansh Saxena')).toBeInTheDocument();
     expect(screen.getByText('10/1/2026')).toBeInTheDocument();
+  });
+
+  test('calls onRowClick with correct row data when a row is clicked', async () => {
+    const onRowClick = vi.fn();
+    render(
+      <Table
+        data={mockData}
+        columns={mockColumns}
+        message="No data to show"
+        getRowKey={(leave) => leave.id}
+        onRowClick={onRowClick}
+      />,
+    );
+
+    await userEvent.click(screen.getByText('Annual Leave'));
+
+    expect(onRowClick).toHaveBeenCalledOnce();
+    expect(onRowClick).toHaveBeenCalledWith(mockData[0]);
   });
 });

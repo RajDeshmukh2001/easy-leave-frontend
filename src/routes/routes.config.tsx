@@ -4,6 +4,8 @@ import Leave from '@/pages/Leave';
 import ManagerDashboard from '@/pages/ManagerDashboard';
 import AllEmployeesDetails from '@/pages/AllEmployeesDetails';
 import AllEmployeesLeaveBalance from '@/pages/AllEmployeesLeaveBalance';
+import LeaveDetails from '@/pages/LeaveDetails';
+
 export type AppRoute = {
   path: string;
   element: React.ReactNode;
@@ -18,6 +20,10 @@ export const APP_ROUTES: AppRoute[] = [
   {
     path: '/leave',
     element: <Leave />,
+  },
+  {
+    path: '/leave/:id',
+    element: <LeaveDetails />,
   },
   {
     path: '/manager-dashboard',
