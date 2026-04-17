@@ -97,7 +97,7 @@ const LeaveForm = ({
 
           {handleCancelLeave && (
             <Button
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer py-5"
               type="button"
               variant="destructive"
               onClick={handleCancelLeave}
