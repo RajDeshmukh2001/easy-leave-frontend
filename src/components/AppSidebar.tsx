@@ -45,6 +45,7 @@ export const AppSidebar = (): React.JSX.Element => {
     try {
       await logout();
       setUser(null);
+      toast.success('Logged out successfully');
       navigate('/');
     } catch {
       toast.error('Something went wrong. Please try again');
@@ -69,41 +70,40 @@ export const AppSidebar = (): React.JSX.Element => {
             ))}
           </SidebarMenu>
 
+          {user?.role === 'MANAGER' && (
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
+                Manager
+              </SidebarGroupLabel>
+
+              <SidebarMenu>
+                {MANAGER_NAV_ITEMS.map((item) => (
+                  <NavItemLink key={item.href} item={item} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
+
+          {user?.role === 'ADMIN' && (
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
+                Admin
+              </SidebarGroupLabel>
+
+              <SidebarMenu>
+                {ADMIN_NAV_ITEMS.map((item) => (
+                  <NavItemLink key={item.href} item={item} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout} className="cursor-pointer mb-1 text-red-500">
-              <LogOut />
+            <SidebarMenuButton onClick={handleLogout} className="cursor-pointer mb-1">
+              <LogOut className="text-red-600" />
               <span>Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarGroup>
-
-        {user?.role === 'MANAGER' && (
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
-              Manager
-            </SidebarGroupLabel>
-
-            <SidebarMenu>
-              {MANAGER_NAV_ITEMS.map((item) => (
-                <NavItemLink key={item.href} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        )}
-
-        {user?.role === 'ADMIN' && (
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
-              Admin
-            </SidebarGroupLabel>
-
-            <SidebarMenu>
-              {ADMIN_NAV_ITEMS.map((item) => (
-                <NavItemLink key={item.href} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        )}
       </SidebarContent>
     </Sidebar>
   );
