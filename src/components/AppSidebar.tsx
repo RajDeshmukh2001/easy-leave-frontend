@@ -69,40 +69,44 @@ export const AppSidebar = (): React.JSX.Element => {
               <NavItemLink key={item.href} item={item} />
             ))}
           </SidebarMenu>
+        </SidebarGroup>
 
-          {user?.role === 'MANAGER' && (
-            <SidebarGroup>
-              <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
-                Manager
-              </SidebarGroupLabel>
+        {user?.role === 'MANAGER' && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
+              Manager
+            </SidebarGroupLabel>
 
-              <SidebarMenu>
-                {MANAGER_NAV_ITEMS.map((item) => (
-                  <NavItemLink key={item.href} item={item} />
-                ))}
-              </SidebarMenu>
-            </SidebarGroup>
-          )}
+            <SidebarMenu>
+              {MANAGER_NAV_ITEMS.map((item) => (
+                <NavItemLink key={item.href} item={item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
 
-          {user?.role === 'ADMIN' && (
-            <SidebarGroup>
-              <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
-                Admin
-              </SidebarGroupLabel>
+        {user?.role === 'ADMIN' && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
+              Admin
+            </SidebarGroupLabel>
 
-              <SidebarMenu>
-                {ADMIN_NAV_ITEMS.map((item) => (
-                  <NavItemLink key={item.href} item={item} />
-                ))}
-              </SidebarMenu>
-            </SidebarGroup>
-          )}
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout} className="cursor-pointer mb-1">
-              <LogOut className="text-red-600" />
-              <span>Logout</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+            <SidebarMenu>
+              {ADMIN_NAV_ITEMS.map((item) => (
+                <NavItemLink key={item.href} item={item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={handleLogout} tooltip="Logout" className="cursor-pointer">
+                <LogOut className="text-red-600" />
+                <span>Logout</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
