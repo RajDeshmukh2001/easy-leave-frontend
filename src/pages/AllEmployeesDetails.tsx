@@ -2,7 +2,7 @@ import { getEmployees, updateUserRole } from '@/api/employee.api';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
 import Table from '@/components/Table';
-import { ROLES } from '@/constants/auth';
+import { ROLES } from '@/constants/userRole';
 import useAuthUser from '@/hooks/useAuthUser';
 import type { Role } from '@/types/auth';
 import type { UserResponse } from '@/types/Users';
@@ -31,7 +31,7 @@ function AllEmployeesDetails(): React.JSX.Element {
     }
     try {
       setUpdatingId(userId);
-      await updateUserRole(userId, newRole);
+      await updateUserRole({ employeeId: userId, role: newRole });
       setEmployees((prev) =>
         prev.map((emp) => (emp.id === userId ? { ...emp, role: newRole } : emp)),
       );
