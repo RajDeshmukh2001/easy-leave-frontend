@@ -219,3 +219,63 @@ This feature allows authenticated users to securely log out of the application v
    - You are redirected to `/`
 5. Try navigating back via the browser back button:
    - You should be redirected to `/` because the auth check fails
+
+### Single Employee Leave Details Page
+
+#### Overview
+
+This feature provides a detailed view of an individual employee’s leave information, including both their leave balance summary and applied leave history for a selected year.
+It helps managers and admins analyze an employee’s leave usage in a structured and year-based view.
+
+---
+
+#### Key Highlights
+
+- Displays leave balance summary (total, taken, remaining leaves per type)
+- Shows all applied leaves for the selected employee
+- Year-based filtering using global year selector
+- Fetches data from multiple APIs in parallel:
+  - Leave balance record
+  - Leave application history
+- Integrated loading states for both datasets
+- Unified error handling for API failures
+- Back navigation support
+- Responsive table layout for both datasets
+
+---
+
+#### API Integration
+
+##### Fetch Employee Leave Balance
+
+```http
+GET /api/annual-leaves?year={year}&page={page}&size=20
+```
+
+- Returns leave balance breakdown per leave type for the selected employee and year.
+
+##### Fetch Employee Leave History
+
+```
+GET /api/leaves?empId={id}&year={year}&scope=organization&status=all
+```
+
+##### Fetch Available Years
+
+```
+GET /api/annual-leaves/years
+```
+
+- Used to populate the year dropdown filter.
+
+#### How It Works
+
+1. User navigates to an employee’s detail page
+2. Employee ID is taken from route params
+3. Selected year is fetched from global year hook
+4. Two API calls run in parallel
+   - Leave balance summary
+   - Leave history records
+5. Data is displayed in two sections:
+   - Leaves Record (Summary Table)
+   - All Leaves (History Table)
