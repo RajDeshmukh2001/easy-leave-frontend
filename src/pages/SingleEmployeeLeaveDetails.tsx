@@ -20,7 +20,6 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const {
     leaves: leavesDetails,
     loading: leavesDetailsLoading,
-    errorStatus,
     error: leavesDetailsError,
   } = useLeaves({
     status: 'all',
@@ -87,17 +86,6 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
       render: (leave: LeaveResponse) => new Date(leave.applyOn).toLocaleDateString(),
     },
   ];
-
-  if (errorStatus === 404 || errorStatus === 500) {
-    return (
-      <div className="w-full h-screen flex justify-center items-center flex-col p-4">
-        <p className="p-3 text-red-700">Employee not found.</p>
-        <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
-          <ArrowLeft /> Back
-        </Button>
-      </div>
-    );
-  }
 
   if (leavesRecordloading || leavesDetailsLoading) {
     return (
