@@ -3,6 +3,8 @@ import ManagerDashboard from './ManagerDashboard';
 import { render, screen, waitFor } from '@testing-library/react';
 import type { LeaveResponse } from '@/types/leaves';
 import * as leaveApi from '../api/leave.api';
+import * as dashboardApi from '../api/dashboard.api';
+import type { ManagerDashboardMetrics } from '@/types/dashboard';
 
 const renderManagerDashboard = () => {
   return render(
@@ -25,9 +27,16 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockEmployeesMetrics: ManagerDashboardMetrics = {
+  totalEmployees: 20,
+  totalEmployeesOnLeaveToday: 5,
+  totalEmployeesOnLeaveTomorrow: 3,
+};
+
 describe('ManagerDashboard', () => {
   beforeEach(() => {
     vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(dashboardApi, 'getManagerDashboardMetrics').mockResolvedValue(mockEmployeesMetrics);
   });
 
   test('renders page header', () => {
@@ -63,6 +72,43 @@ describe('ManagerDashboard', () => {
     renderManagerDashboard();
     await waitFor(() => {
       expect(screen.getAllByText('Failed to fetch leaves')[0]).toBeInTheDocument();
+    });
+  });
+
+  test('render employee metrics title in each card', async () => {
+    renderManagerDashboard();
+    await waitFor(() => {
+      expect(screen.getByText('Total Employees')).toBeInTheDocument();
+      expect(screen.getByText('On Leave Today')).toBeInTheDocument();
+      expect(screen.getByText('On Leave Tomorrow')).toBeInTheDocument();
+    });
+  });
+
+  test('render employee metrics data in each card', async () => {
+    renderManagerDashboard();
+    await waitFor(() => {
+      expect(screen.getByText('20')).toBeInTheDocument();
+      expect(screen.getByText('5')).toBeInTheDocument();
+      expect(screen.getByText('3')).toBeInTheDocument();
+    });
+  });
+
+  test('displays error message when API rejects with Error object', async () => {
+    vi.spyOn(dashboardApi, 'getManagerDashboardMetrics').mockRejectedValue(
+      new Error('Failed to fetch data'),
+    );
+    renderManagerDashboard();
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch data')).toBeInTheDocument();
+    });
+  });
+  test('displays error message on network error', async () => {
+    vi.spyOn(dashboardApi, 'getManagerDashboardMetrics').mockRejectedValue(
+      'Failed to fetch dashboard metrics',
+    );
+    renderManagerDashboard();
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch dashboard metrics')).toBeInTheDocument();
     });
   });
 });
