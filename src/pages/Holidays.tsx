@@ -1,21 +1,46 @@
+import { addHoliday } from '@/api/holiday.api';
 import DatePickerField from '@/components/form/DatePickerField';
 import SelectField from '@/components/form/SelectField';
 import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { HOLIDAY_TYPES } from '@/constants/holidayTypes';
-import type { Holiday } from '@/types/holiday';
+import type { HolidayFromValues, HolidayRequest } from '@/types/holiday';
 import { validateHolidayForm } from '@/utils/holiday.validation';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { isAxiosError } from 'axios';
+import { format } from 'date-fns';
+import { ErrorMessage, Field, Form, Formik, type FormikHelpers } from 'formik';
+import toast from 'react-hot-toast';
 
-const initialValues: Holiday = {
+const initialValues: HolidayFromValues = {
   name: '',
   type: 'FIXED',
   date: undefined,
 };
 
 const Holidays = (): React.JSX.Element => {
-  const handleSubmit = async (values: Holiday): Promise<void> => {
-    console.log(values);
+  const handleSubmit = async (
+    values: HolidayFromValues,
+    { resetForm }: FormikHelpers<HolidayFromValues>,
+  ): Promise<void> => {
+    if (!values.date?.from) return;
+
+    const holidayData: HolidayRequest = {
+      name: values.name,
+      type: values.type,
+      date: format(values.date.from, 'yyyy-MM-dd'),
+    };
+
+    try {
+      await addHoliday(holidayData);
+      toast.success('Holiday added successfully!');
+      resetForm();
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Failed to add holiday');
+      } else {
+        toast.error('Unexpected Error Occurred');
+      }
+    }
   };
 
   return (
