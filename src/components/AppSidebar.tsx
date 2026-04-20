@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ADMIN_NAV_ITEMS, EMPLOYEE_NAV_ITEMS, MANAGER_NAV_ITEMS } from '@/constants/navigation';
 import useAuthUser from '@/hooks/useAuthUser';
@@ -98,17 +99,23 @@ export const AppSidebar = (): React.JSX.Element => {
             </SidebarMenu>
           </SidebarGroup>
         )}
-        <SidebarGroup>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton onClick={handleLogout} tooltip="Logout" className="cursor-pointer">
-                <LogOut className="text-red-600" />
-                <span>Logout</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={handleLogout}
+              tooltip="Logout"
+              className="text-center flex cursor-pointer px-2 py-4 border border-white/20"
+            >
+              <span className="group-data-[collapsible=icon]:hidden w-full text-lg font-semibold">
+                Logout
+              </span>
+              <LogOut className="text-red-600" />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 };
