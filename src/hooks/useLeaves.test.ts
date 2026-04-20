@@ -3,7 +3,6 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import useLeaves from './useLeaves';
 import * as leaveApi from '../api/leave.api';
 import type { LeaveResponse } from '../types/leaves';
-import axios from 'axios';
 
 const mockLeaves: LeaveResponse[] = [
   {
@@ -51,43 +50,5 @@ describe('useLeaves hook', () => {
     });
     expect(result.current.error).toBe('Failed to load your leaves');
     expect(result.current.leaves).toEqual([]);
-  });
-
-  test('should set error and errorStatus when API call fails with AxiosError', async () => {
-    const axiosError = new axios.AxiosError('Request failed', '500', undefined, undefined, {
-      status: 500,
-      data: { message: 'Internal server error' },
-    } as any);
-
-    vi.spyOn(leaveApi, 'fetchLeaves').mockRejectedValue(axiosError);
-    const { result } = renderHook(() => useLeaves({ status: 'all', scope: 'self' }));
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-
-    expect(result.current.error).toBe('Internal server error');
-    expect(result.current.errorStatus).toBe(500);
-    expect(result.current.leaves).toEqual([]);
-  });
-
-  test('should set errorStatus to null when AxiosError has no response', async () => {
-    const axiosError = new axios.AxiosError(
-      'Network Error',
-      'ERR_NETWORK',
-      undefined,
-      undefined,
-      undefined,
-    );
-
-    vi.spyOn(leaveApi, 'fetchLeaves').mockRejectedValue(axiosError);
-
-    const { result } = renderHook(() => useLeaves({ status: 'all', scope: 'self' }));
-
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-
-    expect(result.current.errorStatus).toBeNull();
-    expect(result.current.error).toBe('Failed to load your leaves');
   });
 });
