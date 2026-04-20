@@ -22,12 +22,10 @@ const Holidays = (): React.JSX.Element => {
     values: HolidayFromValues,
     { resetForm }: FormikHelpers<HolidayFromValues>,
   ): Promise<void> => {
-    if (!values.date?.from) return;
-
     const holidayData: HolidayRequest = {
       name: values.name,
       type: values.type,
-      date: format(values.date.from, 'yyyy-MM-dd'),
+      date: format(values.date!.from!, 'yyyy-MM-dd'),
     };
 
     try {
