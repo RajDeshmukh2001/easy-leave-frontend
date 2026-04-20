@@ -17,7 +17,7 @@ describe('DatePicker', () => {
   });
 
   test('displays full range when both "from" and "to" are provided', () => {
-    render(<DatePicker date={{ from: mockFrom, to: mockTo }} setDate={vi.fn()} />);
+    render(<DatePicker date={{ from: mockFrom, to: mockTo }} setDate={vi.fn()} mode="range" />);
 
     const expected = `${format(mockFrom, 'LLL dd, y')} - ${format(mockTo, 'LLL dd, y')}`;
     expect(screen.getByText(expected)).toBeInTheDocument();
