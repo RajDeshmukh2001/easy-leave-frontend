@@ -361,3 +361,34 @@ GET /api/annual-leaves/years
 5. Data is displayed in two sections:
    - Leaves Record (Summary Table)
    - All Leaves (History Table)
+
+---
+
+### Cancel Leave
+
+#### Overview
+
+Allows employees to cancel their leave requests from the Leave Details page, providing a straightforward way to manage and update leave plans.
+
+#### Key Highlights
+
+- Cancel leave requests directly from the Leave Details page
+- Toast message confirmation upon successful cancellation
+- Redirect to the Leave page after cancellation
+
+#### API Integration
+
+Endpoint used:
+
+```
+DELETE /api/leaves/{leaveId}
+```
+
+### How to Test
+
+1. Go to Leave page
+2. Click on any upcoming leave record
+3. Click "Cancel Leave" button
+4. Expect: Success toast + redirect to `/leave`
+
+---
