@@ -74,9 +74,9 @@ function AllEmployeesDetails(): React.JSX.Element {
       render: (employee: UserResponse) => (
         <select
           value={employee.role}
-          disabled={updatingId === employee.id}
+          disabled={updatingId === employee.id || employee.id === user?.id}
           onChange={(e) => handleRoleChange(employee.id, e.target.value as Role)}
-          className="border rounded px-2 py-1 bg-white"
+          className="border cursor-pointer rounded px-2 py-1 bg-white"
         >
           {ROLES.map((role) => (
             <option key={role} value={role}>
