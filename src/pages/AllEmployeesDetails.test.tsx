@@ -15,7 +15,7 @@ vi.mock('react-hot-toast', () => ({
 }));
 
 vi.mock('@/hooks/useAuthUser');
-
+const mockedUseAuthUser = vi.mocked(useAuthUser);
 const mockEmployees: UserResponse[] = [
   { id: '1', name: 'Priyansh Saxena', email: 'priyansh.saxena@technogise.com', role: 'ADMIN' },
   { id: '2', name: 'Raj', email: 'raj@technogise.com', role: 'EMPLOYEE' },
@@ -36,8 +36,17 @@ const renderEmployeeDetails = () => {
 describe('AllEmployeeDetails Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAuthUser as any).mockReturnValue({
-      user: { id: '1', role: 'ADMIN' },
+    mockedUseAuthUser.mockReturnValue({
+      user: {
+        id: '1',
+        name: 'Admin User',
+        email: 'admin@test.com',
+        role: 'ADMIN',
+      },
+      setUser: vi.fn(),
+      loading: false,
+      error: null,
+      fetchCurrentUser: vi.fn(),
     });
 
     vi.spyOn(userApi, 'getEmployees').mockResolvedValue({
