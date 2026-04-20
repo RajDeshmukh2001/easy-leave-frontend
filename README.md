@@ -198,6 +198,31 @@ Reusable card component to display:
 
 ---
 
+### All Employees Details Page
+
+#### Overview
+
+This component displays a paginated list of employees and allows an admin to update user roles.
+
+- Fetches and displays employees with pagination
+- Role management via dropdown
+- Prevents admin from changing their own role
+- Loading and error handling states
+- "Load More" pagination support
+- Optimistic UI update after role change
+- Duplicate prevention when loading more data
+
+#### How to Test
+
+1. Navigate to the **Employees** page
+2. Locate any employee in the list
+3. Change their role using the dropdown
+4. Verify:
+   - Success toast appears on update
+   - Role updates instantly in the UI
+5. Try changing your own role:
+   - Error toast should appear
+
 ### Logout Feature
 
 #### Overview
