@@ -4,6 +4,8 @@ import type { FormikErrors } from 'formik';
 export const validateHolidayForm = (values: HolidayFromValues): FormikErrors<HolidayFromValues> => {
   const errors: FormikErrors<HolidayFromValues> = {};
 
+  const nameRegex = /^[a-zA-Z\s]+$/;
+
   if (!values.type) {
     errors.type = 'Holiday type is required';
   }
@@ -14,6 +16,10 @@ export const validateHolidayForm = (values: HolidayFromValues): FormikErrors<Hol
 
   if (values.name.trim().length > 50) {
     errors.name = 'Holiday name must be less than 50 characters';
+  }
+
+  if (!nameRegex.test(values.name.trim())) {
+    errors.name = 'Holiday name can only contain letters and spaces';
   }
 
   if (!values.date || !values.date.from) {
