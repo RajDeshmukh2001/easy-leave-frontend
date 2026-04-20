@@ -1,16 +1,14 @@
 import { fetchSingleEmployeeLeaveRecord } from '@/api/employeesLeaveBalance.api';
 import Loading from '@/components/Loading';
 import Table from '@/components/Table';
-import useFetchYears from '@/hooks/useFetchYears';
 import type { SingleEmployeeLeaveRecord } from '@/types/employeeLeaveBalance';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import useLeaves from '@/hooks/useLeaves';
 import type { LeaveResponse } from '@/types/leaves';
 import { ArrowLeft } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import useFetchYears from '@/hooks/useFetchYears';
 
 function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const { id } = useParams();
@@ -19,8 +17,6 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const [leavesRecordError, setLeavesRecordError] = useState<string | null>(null);
 
   const { selectedYear } = useFetchYears();
-  const [years, setYears] = useState<string[]>([]);
-  const [selectedYear, setSelectedYear] = useState<string>('');
   const { leaves, loading, errorStatus, error } = useLeaves({
     status: 'all',
     scope: 'organization',
@@ -42,20 +38,9 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
         );
       } finally {
         setLeavesRecordLoading(false);
-    async function loadYears() {
-      const data = await fetchYears();
-      if (data?.length > 0) {
-        setYears(data);
-        setSelectedYear(data[0]);
-      } else {
-        const currentYear = new Date().getFullYear().toString();
-        setYears([currentYear]);
-        setSelectedYear(currentYear);
       }
     };
-
     fetchLeavesRecord();
-    loadYears();
   }, [id, selectedYear]);
 
   const columns = [
@@ -98,7 +83,6 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
     },
   ];
 
-
   if (errorStatus === 404 || errorStatus === 500) {
     return (
       <div className="w-full h-screen flex justify-center items-center flex-col p-4">
@@ -114,46 +98,39 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
       <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
         <ArrowLeft /> Back
       </Button>
-      <div className="flex justify-between mb-4">
-        <FilterDropdown
-          options={years}
-          value={selectedYear}
-          onChange={(val) => setSelectedYear(val)}
-        />
+      <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
+        <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
+          <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
+            Leaves Record
+          </h1>
+        </div>
+        {leavesRecordloading && <Loading />}
+        {leavesRecordError && <p className="p-3 text-red-700">{leavesRecordError}</p>}
+        {!leavesRecordloading && !leavesRecordError && leavesRecord && (
+          <Table
+            data={leavesRecord}
+            columns={columns}
+            message="No leave records found."
+            getRowKey={(leavesRecord: SingleEmployeeLeaveRecord) => leavesRecord.leaveId}
+          />
+        )}
       </div>
       <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-              <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-                <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
-                  Leaves Record
-                </h1>
-              </div>
-              {leavesRecordloading && <Loading />}
-              {leavesRecordError && <p className="p-3 text-red-700">{leavesRecordError}</p>}
-              {!leavesRecordloading && !leavesRecordError && leavesRecord && (
-                <Table
-                  data={leavesRecord}
-                  columns={columns}
-                  message="No upcoming leave records found."
-                  getRowKey={(leavesRecord: SingleEmployeeLeaveRecord) => leavesRecord.leaveId}
-                />
-              )}
-            </div>
-      <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-              <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-                <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
-                  All Leaves
-                </h1>
-              </div>
-              {loading && <Loading />}
-              {!loading && !error && (
-                <Table
-                  data={leaves}
-                  columns={columns}
-                  message="No upcoming leave records found."
-                  getRowKey={(leave: LeaveResponse) => leave.id}
-                />
-              )}
-            </div>
+        <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
+          <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
+            All Leaves
+          </h1>
+        </div>
+        {loading && <Loading />}
+        {!loading && !error && (
+          <Table
+            data={leaves}
+            columns={leavesColumns}
+            message="No upcoming leave records found."
+            getRowKey={(leave: LeaveResponse) => leave.id}
+          />
+        )}
+      </div>
     </div>
   );
 }

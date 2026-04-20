@@ -24,6 +24,10 @@ function useLeaves({ status, scope, empId, year }: UseLeavesProps): UseLeavesRet
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorStatus, setErrorStatus] = useState<number | null>(null);
+  console.log(empId);
+  console.log(year);
+  console.log(status);
+  console.log(scope);
 
   async function loadLeaves() {
     try {
