@@ -6,7 +6,6 @@ import AllEmployeesDetails from '@/pages/AllEmployeesDetails';
 import AllEmployeesLeaveBalance from '@/pages/AllEmployeesLeaveBalance';
 import SingleEmployeeLeaveDetails from '@/pages/SingleEmployeeLeaveDetails';
 import LeaveDetails from '@/pages/LeaveDetails';
-import SingleEmployeeLeaveDetails from '@/pages/SingleEmployeeLeaveDetails';
 
 export type AppRoute = {
   path: string;
