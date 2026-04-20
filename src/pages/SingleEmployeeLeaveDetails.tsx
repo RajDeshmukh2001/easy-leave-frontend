@@ -17,7 +17,12 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const [leavesRecordError, setLeavesRecordError] = useState<string | null>(null);
 
   const { selectedYear } = useFetchYears();
-  const { leaves, loading, errorStatus, error } = useLeaves({
+  const {
+    leaves: leavesDetails,
+    loading: leavesDetailsLoading,
+    errorStatus,
+    error: leavesDetailsError,
+  } = useLeaves({
     status: 'all',
     scope: 'organization',
     empId: id,
@@ -93,6 +98,24 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
       </div>
     );
   }
+
+  if (leavesRecordloading || leavesDetailsLoading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center p-4">
+        <Loading />
+      </div>
+    );
+  }
+  if (leavesRecordError || leavesDetailsError) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center flex-col p-4">
+        <p className="p-3 text-red-700">{leavesRecordError || leavesDetailsError}</p>
+        <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
+          <ArrowLeft /> Back
+        </Button>
+      </div>
+    );
+  }
   return (
     <div className="w-full h-screen flex flex-col p-4">
       <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
@@ -104,9 +127,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
             Leaves Record
           </h1>
         </div>
-        {leavesRecordloading && <Loading />}
-        {leavesRecordError && <p className="p-3 text-red-700">{leavesRecordError}</p>}
-        {!leavesRecordloading && !leavesRecordError && leavesRecord && (
+        {leavesRecord && (
           <Table
             data={leavesRecord}
             columns={columns}
@@ -121,12 +142,11 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
             All Leaves
           </h1>
         </div>
-        {loading && <Loading />}
-        {!loading && !error && (
+        {leavesDetails && (
           <Table
-            data={leaves}
+            data={leavesDetails}
             columns={leavesColumns}
-            message="No upcoming leave records found."
+            message="No leave records found."
             getRowKey={(leave: LeaveResponse) => leave.id}
           />
         )}

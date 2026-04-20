@@ -34,12 +34,6 @@ export const APP_ROUTES: AppRoute[] = [
     roles: ['MANAGER'],
   },
   {
-    path: '/manager/employees/:id',
-    element: <SingleEmployeeLeaveDetails />,
-    roles: ['MANAGER'],
-  },
-
-  {
     path: '/admin/employees',
     element: <AllEmployeesDetails />,
     roles: ['ADMIN'],
