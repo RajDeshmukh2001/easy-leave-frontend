@@ -1,8 +1,8 @@
-import type { Holiday } from '@/types/holiday';
+import type { HolidayFromValues } from '@/types/holiday';
 import type { FormikErrors } from 'formik';
 
-export const validateHolidayForm = (values: Holiday): FormikErrors<Holiday> => {
-  const errors: FormikErrors<Holiday> = {};
+export const validateHolidayForm = (values: HolidayFromValues): FormikErrors<HolidayFromValues> => {
+  const errors: FormikErrors<HolidayFromValues> = {};
 
   if (!values.type) {
     errors.type = 'Holiday type is required';
