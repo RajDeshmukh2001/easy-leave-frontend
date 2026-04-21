@@ -50,7 +50,7 @@ vi.mock('@/components/DatePicker', () => ({
   ),
 }));
 
-const renderHolidayForm = () => {
+const renderHolidayPage = () => {
   render(<Holidays />);
 };
 
@@ -61,7 +61,7 @@ describe('Add Holiday', () => {
   });
 
   test('renders all add holiday form fields', async () => {
-    renderHolidayForm();
+    renderHolidayPage();
 
     expect(await screen.findByLabelText('Holiday Type')).toBeInTheDocument();
     expect(screen.getByLabelText('Holiday Name')).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('Add Holiday', () => {
   });
 
   test('display required field validation errors', async () => {
-    renderHolidayForm();
+    renderHolidayPage();
 
     await screen.findByLabelText('Holiday Type');
 
@@ -81,7 +81,7 @@ describe('Add Holiday', () => {
   });
 
   test('does not submit form when date is not selected', async () => {
-    renderHolidayForm();
+    renderHolidayPage();
 
     const nameInput = screen.getByLabelText('Holiday Name');
     await userEvent.type(nameInput, 'Diwali');
@@ -94,7 +94,7 @@ describe('Add Holiday', () => {
   });
 
   test('submits form with correct data', async () => {
-    renderHolidayForm();
+    renderHolidayPage();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -114,7 +114,7 @@ describe('Add Holiday', () => {
     };
     vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(axiosError);
 
-    renderHolidayForm();
+    renderHolidayPage();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -128,7 +128,7 @@ describe('Add Holiday', () => {
   test('displays generic error message when submission fails with non-axios error', async () => {
     vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(new Error('Network failure'));
 
-    renderHolidayForm();
+    renderHolidayPage();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -146,7 +146,7 @@ describe('Add Holiday', () => {
     };
     vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(axiosError);
 
-    renderHolidayForm();
+    renderHolidayPage();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -158,7 +158,7 @@ describe('Add Holiday', () => {
   });
 
   test('shows error when name exceeds 50 characters', async () => {
-    renderHolidayForm();
+    renderHolidayPage();
 
     const nameInput = screen.getByLabelText('Holiday Name');
     await userEvent.type(nameInput, 'a'.repeat(51));
@@ -171,7 +171,7 @@ describe('Add Holiday', () => {
   });
 
   test('shows error when type is missing', async () => {
-    renderHolidayForm();
+    renderHolidayPage();
 
     const select = screen.getByLabelText('Holiday Type');
     await userEvent.selectOptions(select, '');
@@ -185,7 +185,7 @@ describe('Add Holiday', () => {
   });
 
   test('shows error for invalid name format', async () => {
-    renderHolidayForm();
+    renderHolidayPage();
 
     const nameInput = screen.getByLabelText('Holiday Name');
     await userEvent.type(nameInput, 'Diwali123');
