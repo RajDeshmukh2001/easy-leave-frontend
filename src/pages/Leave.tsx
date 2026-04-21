@@ -14,7 +14,7 @@ function Leave(): React.JSX.Element {
   const [status, setStatus] = useState<LeaveStatus>('all');
   const navigate = useNavigate();
 
-  const { leaves, loading, error, refreshLeaves } = useLeaves(status, 'self');
+  const { leaves, loading, error, refreshLeaves } = useLeaves({ status, scope: 'self' });
 
   const columns = [
     {
@@ -58,7 +58,7 @@ function Leave(): React.JSX.Element {
         <div className="flex h-fit md:w-1/3 bg-white rounded-2xl shadow-xs border border-neutral-200">
           <ApplyLeaveForm refreshLeaves={refreshLeaves} />
         </div>
-        <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-screen shadow-xs border border-neutral-200">
+        <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-fit shadow-xs border border-neutral-200">
           <div className="flex items-center p-3 justify-between bg-sidebar/98 rounded-t-2xl ">
             <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold px-3 py-2">
               My Leaves
@@ -69,19 +69,17 @@ function Leave(): React.JSX.Element {
               onChange={(val) => setStatus(val as LeaveStatus)}
             />
           </div>
-          <div className="flex-1 lg:overflow-y-auto">
-            {loading && <Loading />}
-            {error && <p className="p-3 text-red-700">{error}</p>}
-            {!loading && !error && (
-              <Table
-                data={leaves}
-                columns={columns}
-                message="No leave records found."
-                getRowKey={(leave: LeaveResponse) => leave.id}
-                onRowClick={handleRowClick}
-              />
-            )}
-          </div>
+          {loading && <Loading />}
+          {error && <p className="p-3 text-red-700">{error}</p>}
+          {!loading && !error && (
+            <Table
+              data={leaves}
+              columns={columns}
+              message="No leave records found."
+              getRowKey={(leave: LeaveResponse) => leave.id}
+              onRowClick={handleRowClick}
+            />
+          )}
         </div>
       </div>
     </div>
