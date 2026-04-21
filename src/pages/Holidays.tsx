@@ -2,15 +2,22 @@ import { addHoliday } from '@/api/holiday.api';
 import FilterDropdown from '@/components/FilterDropdown';
 import DatePickerField from '@/components/form/DatePickerField';
 import SelectField from '@/components/form/SelectField';
+import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
 import Table from '@/components/Table';
 import { Button } from '@/components/ui/button';
-import { HOLIDAY_TYPES } from '@/constants/holidayTypes';
+import {
+  HOLIDAY_LIST_OPTIONS,
+  HOLIDAY_TYPES,
+  type HolidayListOptions,
+} from '@/constants/holidayTypes';
+import useHolidays from '@/hooks/useHolidays';
 import type { HolidayFromValues, HolidayRequest, HolidayListResponse } from '@/types/holiday';
 import { validateHolidayForm } from '@/utils/holiday.validation';
 import { isAxiosError } from 'axios';
 import { format } from 'date-fns';
 import { ErrorMessage, Field, Form, Formik, type FormikHelpers } from 'formik';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 const initialValues: HolidayFromValues = {
@@ -19,32 +26,32 @@ const initialValues: HolidayFromValues = {
   date: undefined,
 };
 
-const mockHolidaysData: HolidayListResponse[] = [
-  { id: '1', name: 'Indian Replublic Day', date: '26-01-2025', type: 'FIXED' },
-  { id: '2', name: 'Indian Independence Day', date: '15-08-2025', type: 'FIXED' },
+const holidayTableColumns = [
+  {
+    header: 'Holiday Name',
+    render: (holiday: HolidayListResponse) => (
+      <span className="font-medium text-gray-800">{holiday.name}</span>
+    ),
+  },
+  {
+    header: 'Date',
+    render: (holiday: HolidayListResponse) => (
+      <span className="font-medium text-gray-800">
+        {new Date(holiday.date).toLocaleDateString()}
+      </span>
+    ),
+  },
+  {
+    header: 'Type',
+    render: (holiday: HolidayListResponse) => (
+      <span className="font-medium text-gray-800">{holiday.type}</span>
+    ),
+  },
 ];
 
 const Holidays = (): React.JSX.Element => {
-  const holidayTableColumns = [
-    {
-      header: 'Holiday Name',
-      render: (holiday: HolidayListResponse) => (
-        <span className="font-medium text-gray-800">{holiday.name}</span>
-      ),
-    },
-    {
-      header: 'Date',
-      render: (holiday: HolidayListResponse) => (
-        <span className="font-medium text-gray-800">{holiday.date}</span>
-      ),
-    },
-    {
-      header: 'Type',
-      render: (holiday: HolidayListResponse) => (
-        <span className="font-medium text-gray-800">{holiday.type}</span>
-      ),
-    },
-  ];
+  const [holidayType, setHolidayType] = useState<HolidayListOptions>('all');
+  const { holidays, loading, error } = useHolidays(holidayType);
 
   const handleSubmit = async (
     values: HolidayFromValues,
@@ -123,18 +130,22 @@ const Holidays = (): React.JSX.Element => {
               All Holidays
             </h1>
             <FilterDropdown
-              options={['OPTIONAL', 'FIXED']}
-              value={'OPTIONAL'}
-              onChange={(val) => console.log(val)}
+              options={HOLIDAY_LIST_OPTIONS}
+              value={holidayType}
+              onChange={(val) => setHolidayType(val as HolidayListOptions)}
             />
           </div>
           <div className="flex-1 lg:overflow-y-auto">
-            <Table
-              data={mockHolidaysData}
-              columns={holidayTableColumns}
-              message="No holidays found."
-              getRowKey={(holiday: HolidayListResponse) => holiday.id}
-            />
+            {loading && <Loading />}
+            {error && <p className="p-3 text-red-700">{error}</p>}
+            {!loading && !error && (
+              <Table
+                data={holidays}
+                columns={holidayTableColumns}
+                message="No holidays found."
+                getRowKey={(holiday: HolidayListResponse) => holiday.id}
+              />
+            )}
           </div>
         </div>
       </div>
