@@ -20,7 +20,7 @@
 
 ### Apply Leave
 
-### Overview
+#### Overview
 
 Allows employees to apply for leave from the Leave page by selecting a date range, choosing a leave category, and providing necessary details, ensuring a smooth and structured leave application process.
 
@@ -64,7 +64,7 @@ Allows users to update existing leaves from the Leave Details page.
 
 Ensures only modified fields are sent to the backend, improving efficiency and reducing unnecessary updates.
 
-### Key Highlights
+#### Key Highlights
 
 - Update existing leave records
 - Pre-filled form with existing leave data
@@ -72,7 +72,7 @@ Ensures only modified fields are sent to the backend, improving efficiency and r
 - Prevents submission when no changes are made
 - Displays success and error feedback via toast notifications
 
-### API Integration
+#### API Integration
 
 Endpoint used:
 
@@ -85,7 +85,7 @@ Uses `buildUpdatePayload` utility to:
 - Compare old vs new values
 - Send only modified fields
 
-### How to Test
+#### How to Test
 
 1. Go to Leave page
 2. Click on any leave record
@@ -132,15 +132,13 @@ This feature adds a new page for managers to view a list of all employees along 
 - Navigation and filter dropdown adapts to screen size
 - Table view converts to card view on mobile
 
-## Features
+---
 
-## Manager Dashboard Page
+### Manager Dashboard Page
 
 The **Manager Dashboard** provides a centralised overview of all employees' leave activity, enabling managers to monitor employee availability.
 
----
-
-### Features
+#### Key Highlights
 
 - **Dashboard Metrics**
   - Total number of employees
@@ -160,9 +158,7 @@ The **Manager Dashboard** provides a centralised overview of all employees' leav
   - Loading indicators for API calls
   - Graceful error messages when data fetching fails
 
----
-
-### Component Structure
+#### Component Structure
 
 #### 1. `ManagerDashboard`
 
@@ -244,3 +240,64 @@ This feature allows authenticated users to securely log out of the application v
    - You are redirected to `/`
 5. Try navigating back via the browser back button:
    - You should be redirected to `/` because the auth check fails
+
+---
+
+### Add Holiday
+
+#### Overview
+
+This feature allows users to create a new holiday by providing name, type, and date.
+
+#### Key Highlights
+
+- Added holiday form using Formik
+- Integrated API to create holiday
+- Added validation for required fields
+- Added validation for name format (only letters and spaces)
+- Added success and error toast messages
+
+#### API Integration
+
+- Submit leave request via:
+
+```
+POST /api/holidays
+```
+
+**Request Body**
+
+```json
+{
+  "name": "Diwali",
+  "type": "FIXED",
+  "date": "2026-11-08"
+}
+```
+
+**Success Response (201)**
+
+```json
+{
+  "success": true,
+  "message": "Holiday created successfully",
+  "data": {
+    "id": "uuid",
+    "name": "Diwali",
+    "type": "FIXED",
+    "date": "2026-11-08"
+  }
+}
+```
+
+#### How to Test
+
+1. Open Holidays page
+2. Fill name, type, and date
+3. Click Add Holiday
+4. Verify success toast and API call
+5. Validation:
+   - Empty name → error
+   - Invalid name → error
+   - No date → error
+   - Name > 50 chars → error

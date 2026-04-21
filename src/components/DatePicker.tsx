@@ -37,7 +37,7 @@ export const DatePicker = ({
         >
           <CalendarIcon />
           {date?.from ? (
-            date.to ? (
+            mode === 'range' && date.to ? (
               <>
                 {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
               </>
