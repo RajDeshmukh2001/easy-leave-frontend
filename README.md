@@ -392,3 +392,36 @@ DELETE /api/leaves/{leaveId}
 4. Expect: Success toast + redirect to `/leave`
 
 ---
+
+---
+
+### Holiday List with Type Filter
+
+#### Overview
+
+This feature allows users to view a list of holidays with the ability to filter by holiday type (e.g., FIXED, OPTIONAL).
+
+#### Key Highlights
+
+- Fetches holiday list from API with optional type filter
+- Displays holidays in a table format
+- Added dropdown to select holiday type filter
+- Shows loading state while fetching data
+- Displays error message if API call fails
+- Refreshes holiday list after adding a new holiday
+
+#### API Integration
+
+```
+GET /api/holidays?type={type}
+```
+
+- `type` can be `FIXED`, `OPTIONAL`, or `all` (default: `all`)
+
+#### How to Test
+
+1. Open Holidays page
+2. Verify holiday list is displayed
+3. Select different types from the dropdown (e.g., FIXED, OPTIONAL)
+4. Verify the list updates according to the selected type
+5. Add new holiday and verify if list refreshes and includes new holiday
