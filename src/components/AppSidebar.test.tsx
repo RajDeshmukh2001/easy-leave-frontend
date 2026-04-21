@@ -90,31 +90,23 @@ describe('AppSidebar Component', () => {
 
     expect(screen.getByText('Logout')).toBeInTheDocument();
   });
-
-  test('calls logout API and clears user on logout click', async () => {
+  test('calls logout and clears user on successful logout', async () => {
     const setUser = vi.fn();
-    vi.mocked(useAuthUser).mockReturnValue({
-      user: { id: '1', name: 'Test User', email: 'test@test.com', role: 'EMPLOYEE' },
-      setUser,
-      loading: false,
-      error: null,
-      fetchCurrentUser: vi.fn().mockResolvedValue(undefined),
-    });
     vi.mocked(logout).mockResolvedValue(undefined);
-
     renderAppSidebar('EMPLOYEE', setUser);
+
     await userEvent.click(screen.getByText('Logout'));
 
     expect(logout).toHaveBeenCalled();
     expect(setUser).toHaveBeenCalledWith(null);
   });
 
-  test('shows error toast when logout API fails', async () => {
+  test('shows error toast when logout fails', async () => {
     vi.mocked(logout).mockRejectedValue(new Error('Network error'));
-
     renderAppSidebar();
+
     await userEvent.click(screen.getByText('Logout'));
 
-    expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
+    expect(await screen.findByText('Something went wrong. Please try again')).toBeInTheDocument();
   });
 });
