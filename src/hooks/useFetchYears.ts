@@ -15,7 +15,7 @@ const useFetchYears = (): UseFetchYearsProp => {
     async function loadYears() {
       const data = await fetchYears();
       setYears(data);
-      setSelectedYear(data[0] || new Date().getFullYear().toString());
+      setSelectedYear(new Date().getFullYear().toString());
     }
     loadYears();
   }, []);

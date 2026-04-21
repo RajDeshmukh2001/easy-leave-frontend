@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useFetchYears from '@/hooks/useFetchYears';
 import { type UserDetails, fetchUserDetails } from '@/api/user.api';
 import { getInitials } from '@/utils/getNameInitials';
+import FilterDropdown from '@/components/FilterDropdown';
 
 function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const { id } = useParams();
@@ -22,7 +23,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const [userDetailsLoading, setUserDetailsLoading] = useState(false);
   const [userDetailsError, setUserDetailsError] = useState<string | null>(null);
 
-  const { selectedYear } = useFetchYears();
+  const { selectedYear, years, setSelectedYear } = useFetchYears();
   const {
     leaves: leavesDetails,
     loading: leavesDetailsLoading,
@@ -135,7 +136,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col p-4 space-y-6">
+    <div className="w-full flex flex-col p-4 space-y-6">
       <Button variant="outline" className="w-max" onClick={() => navigate(-1)}>
         <ArrowLeft /> Back
       </Button>
@@ -150,6 +151,14 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
             <h1 className="text-base md:text-lg font-bold text-foreground">{userDetails?.name}</h1>
             <h3 className="text-sm text-muted-foreground">{userDetails?.email}</h3>
           </div>
+        </div>
+
+        <div className="flex justify-end w-full">
+          <FilterDropdown
+            options={years}
+            value={selectedYear}
+            onChange={(value) => setSelectedYear(value)}
+          />
         </div>
       </div>
 

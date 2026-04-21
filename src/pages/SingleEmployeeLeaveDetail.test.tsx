@@ -210,4 +210,18 @@ describe('SingleEmployeeLeaveDetails', () => {
     const error = await screen.findByText('Failed to fetch user details');
     expect(error).toBeInTheDocument();
   });
+
+  test('updates selected year when dropdown changes', async () => {
+    renderSingleEmployeeLeaveDetails();
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('2026')).toBeInTheDocument();
+    });
+
+    const dropdown = screen.getByDisplayValue('2026');
+    await userEvent.selectOptions(dropdown, '2025');
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('2025')).toBeInTheDocument();
+    });
+  });
 });
