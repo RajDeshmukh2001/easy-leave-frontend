@@ -132,7 +132,6 @@ This feature adds a new page for managers to view a list of all employees along 
 - Navigation and filter dropdown adapts to screen size
 - Table view converts to card view on mobile
 
-
 ## Features
 
 ## Manager Dashboard Page
@@ -198,3 +197,25 @@ Reusable card component to display:
 - Leave type badge
 
 ---
+
+### Logout Feature
+
+#### Overview
+
+This feature allows authenticated users to securely log out of the application via a logout button in the sidebar.
+
+- Calls `POST /api/auth/logout` to clear the JWT cookie on the backend
+- Redirects to `/` after successful logout
+- Shows success toast on logout
+- Shows error toast if the logout API call fails
+
+#### How to Test
+
+1. Log in via Google OAuth
+2. Verify you are redirected to the dashboard
+3. Click the **Logout** button at the bottom of the sidebar
+4. Verify:
+   - Success toast appears saying _"Logged out successfully"_
+   - You are redirected to `/`
+5. Try navigating back via the browser back button:
+   - You should be redirected to `/` because the auth check fails

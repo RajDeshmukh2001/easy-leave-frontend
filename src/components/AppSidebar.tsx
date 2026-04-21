@@ -1,3 +1,4 @@
+import { logout } from '@/api/auth.api';
 import {
   Sidebar,
   SidebarHeader,
@@ -7,14 +8,16 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ADMIN_NAV_ITEMS, EMPLOYEE_NAV_ITEMS, MANAGER_NAV_ITEMS } from '@/constants/navigation';
 import useAuthUser from '@/hooks/useAuthUser';
 import type { NavItem } from '@/types/navigation';
-import { CalendarDays } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { CalendarDays, LogOut } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { SidebarLogo } from './SidebarLogo';
 import { useSidebar } from '@/hooks/use-sidebar';
+import toast from 'react-hot-toast';
 
 const NavItemLink = ({ item }: { item: NavItem }): React.JSX.Element => {
   const { setOpenMobile } = useSidebar();
@@ -36,7 +39,20 @@ const NavItemLink = ({ item }: { item: NavItem }): React.JSX.Element => {
 };
 
 export const AppSidebar = (): React.JSX.Element => {
-  const { user } = useAuthUser();
+  const { user, setUser } = useAuthUser();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null);
+      toast.success('Logged out successfully');
+      navigate('/');
+    } catch {
+      toast.error('Something went wrong. Please try again');
+    }
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -58,7 +74,7 @@ export const AppSidebar = (): React.JSX.Element => {
 
         {user?.role === 'MANAGER' && (
           <SidebarGroup>
-            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] text-xs tracking-widest group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
               Manager
             </SidebarGroupLabel>
 
@@ -72,7 +88,7 @@ export const AppSidebar = (): React.JSX.Element => {
 
         {user?.role === 'ADMIN' && (
           <SidebarGroup>
-            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] text-xs tracking-widest group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel className="text-gray-500 uppercase text-[10px] tracking-widest group-data-[collapsible=icon]:hidden">
               Admin
             </SidebarGroupLabel>
 
@@ -84,6 +100,22 @@ export const AppSidebar = (): React.JSX.Element => {
           </SidebarGroup>
         )}
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={handleLogout}
+              tooltip="Logout"
+              className="text-center flex cursor-pointer px-2 py-4 border border-white/20"
+            >
+              <span className="group-data-[collapsible=icon]:hidden w-full text-lg font-semibold">
+                Logout
+              </span>
+              <LogOut className="text-red-600" />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 };
