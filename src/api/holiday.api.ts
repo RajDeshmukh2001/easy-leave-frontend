@@ -2,6 +2,10 @@ import type { HolidayListResponse, HolidayRequest, HolidayResponse } from '@/typ
 import axiosInstance from './axiosInstance';
 import type { ApiResponse } from '@/types/response';
 
+type FetchHolidaysParams = {
+  type?: string;
+};
+
 export const addHoliday = async (values: HolidayRequest): Promise<HolidayResponse> => {
   const { data } = await axiosInstance.post<ApiResponse<HolidayResponse>>(`/api/holidays`, values);
 
@@ -11,12 +15,23 @@ export const addHoliday = async (values: HolidayRequest): Promise<HolidayRespons
   return data.data;
 };
 
-export const fetchHolidays = async (): Promise<HolidayListResponse[]> => {
-  const { data } = await axiosInstance.get<ApiResponse<HolidayListResponse[]>>(`/api/holidays`);
+export const fetchHolidays = async ({
+  type,
+}: FetchHolidaysParams): Promise<HolidayListResponse[]> => {
+  const params: Record<string, string> = {};
+
+  if (type && type !== 'all') {
+    params.type = type;
+  }
+
+  const { data } = await axiosInstance.get<ApiResponse<HolidayListResponse[]>>('/api/holidays', {
+    params,
+  });
 
   if (!data.success) {
     console.error('Error fetching holidays:', data.message);
     throw new Error(data.message || 'Failed to fetch holidays');
   }
+
   return data.data;
 };

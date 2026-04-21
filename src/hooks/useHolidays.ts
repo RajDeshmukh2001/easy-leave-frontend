@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { HolidayListResponse } from '@/types/holiday';
 import { fetchHolidays } from '@/api/holiday.api';
+import type { HolidayListOptions } from '@/constants/holidayTypes';
 
 type UseHolidaysReturn = {
   holidays: HolidayListResponse[];
@@ -9,7 +10,7 @@ type UseHolidaysReturn = {
   loadHolidays: () => Promise<void>;
 };
 
-function useHolidays(): UseHolidaysReturn {
+function useHolidays(type: HolidayListOptions): UseHolidaysReturn {
   const [holidays, setHolidays] = useState<HolidayListResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +20,7 @@ function useHolidays(): UseHolidaysReturn {
       setLoading(true);
       setError(null);
 
-      const data = await fetchHolidays();
+      const data = await fetchHolidays({ type });
       setHolidays(data);
     } catch (err) {
       if (err instanceof Error) {
@@ -34,7 +35,7 @@ function useHolidays(): UseHolidaysReturn {
 
   useEffect(() => {
     loadHolidays();
-  }, []);
+  }, [type]);
 
   return { holidays, loading, error, loadHolidays };
 }
