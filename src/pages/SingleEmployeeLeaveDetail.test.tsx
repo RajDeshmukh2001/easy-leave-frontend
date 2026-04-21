@@ -2,7 +2,8 @@ import { screen, render, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import * as employeeLeaveBalance from '@/api/employeesLeaveBalance.api';
 import SingleEmployeeLeaveDetails from './SingleEmployeeLeaveDetails';
-import * as leaveApi from '../api/leave.api';
+import * as leaveApi from '@/api/leave.api';
+import * as userApi from '@/api/user.api';
 import type { LeaveResponse } from '@/types/leaves';
 import userEvent from '@testing-library/user-event';
 
@@ -64,6 +65,10 @@ describe('SingleEmployeeLeaveDetails', () => {
     );
     vi.spyOn(employeeLeaveBalance, 'fetchYears').mockResolvedValue(['2025', '2026']);
     vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(userApi, 'fetchUserDetails').mockResolvedValue({
+      name: 'Priyansh Saxena',
+      email: 'test@gmail.com',
+    });
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
   });
 
@@ -99,7 +104,7 @@ describe('SingleEmployeeLeaveDetails', () => {
     expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
-  test('shows error message when error is not type of Error instance', async () => {
+  test('shows error message when error is not type of Error instance - fetchLeavesRecord', async () => {
     vi.spyOn(employeeLeaveBalance, 'fetchSingleEmployeeLeaveRecord').mockRejectedValue(
       'Failed to fetch leave record',
     );
@@ -180,6 +185,29 @@ describe('SingleEmployeeLeaveDetails', () => {
     );
     renderSingleEmployeeLeaveDetails();
     const error = await screen.findByText('Failed to fetch leave record Details');
+    expect(error).toBeInTheDocument();
+  });
+
+  test('shows error message when error is not type of Error instance - fetchUser', async () => {
+    vi.spyOn(userApi, 'fetchUserDetails').mockRejectedValue('Failed to fetch user details');
+
+    renderSingleEmployeeLeaveDetails();
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch user details')).toBeInTheDocument();
+    });
+
+    const backButton = screen.getByRole('button', { name: /back/i });
+    await userEvent.click(backButton);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
+  });
+
+  test('shows error from userDetailsError', async () => {
+    vi.spyOn(userApi, 'fetchUserDetails').mockRejectedValue(
+      new Error('Failed to fetch user details'),
+    );
+    renderSingleEmployeeLeaveDetails();
+    const error = await screen.findByText('Failed to fetch user details');
     expect(error).toBeInTheDocument();
   });
 });

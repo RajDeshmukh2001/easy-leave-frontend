@@ -9,12 +9,18 @@ import { ArrowLeft } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useFetchYears from '@/hooks/useFetchYears';
+import { type UserDetails, fetchUserDetails } from '@/api/user.api';
+import { getInitials } from '@/utils/getNameInitials';
 
 function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const { id } = useParams();
   const [leavesRecord, setLeavesRecord] = useState<SingleEmployeeLeaveRecord[] | null>(null);
-  const [leavesRecordloading, setLeavesRecordLoading] = useState(false);
+  const [leavesRecordLoading, setLeavesRecordLoading] = useState(false);
   const [leavesRecordError, setLeavesRecordError] = useState<string | null>(null);
+
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
+  const [userDetailsLoading, setUserDetailsLoading] = useState(false);
+  const [userDetailsError, setUserDetailsError] = useState<string | null>(null);
 
   const { selectedYear } = useFetchYears();
   const {
@@ -47,6 +53,25 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
     fetchLeavesRecord();
   }, [id, selectedYear]);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      setUserDetailsLoading(true);
+      setUserDetailsError(null);
+      try {
+        const data = await fetchUserDetails(id);
+        setUserDetails(data);
+      } catch (error) {
+        setUserDetailsError(
+          error instanceof Error ? error.message : 'Failed to fetch user details',
+        );
+      } finally {
+        setUserDetailsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [id]);
+
   const columns = [
     {
       header: 'Leave Type',
@@ -65,6 +90,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
       render: (leavesRecord: SingleEmployeeLeaveRecord) => leavesRecord.leavesRemaining,
     },
   ];
+
   const leavesColumns = [
     {
       header: 'Type',
@@ -87,28 +113,46 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
     },
   ];
 
-  if (leavesRecordloading || leavesDetailsLoading) {
+  if (leavesRecordLoading || leavesDetailsLoading || userDetailsLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center p-4">
         <Loading />
       </div>
     );
   }
-  if (leavesRecordError || leavesDetailsError) {
+
+  if (leavesRecordError || leavesDetailsError || userDetailsError) {
     return (
       <div className="w-full h-screen flex justify-center items-center flex-col p-4">
-        <p className="p-3 text-red-700">{leavesRecordError || leavesDetailsError}</p>
+        <p className="p-3 text-red-700">
+          {leavesRecordError || leavesDetailsError || userDetailsError}
+        </p>
         <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
           <ArrowLeft /> Back
         </Button>
       </div>
     );
   }
+
   return (
-    <div className="w-full h-screen flex flex-col p-4">
-      <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
+    <div className="w-full h-screen flex flex-col p-4 space-y-6">
+      <Button variant="outline" className="w-max" onClick={() => navigate(-1)}>
         <ArrowLeft /> Back
       </Button>
+
+      <div className="flex items-center justify-between flex-col md:flex-row gap-y-2.5">
+        <div className="w-full flex items-center gap-2.5 md:gap-4">
+          <h1 className="text-lg md:text-xl text-(--technogise-blue) font-extrabold h-12 w-12 md:h-14 md:w-14 flex items-center justify-center bg-(--technogise-blue)/10 rounded-full">
+            {getInitials(userDetails?.name)}
+          </h1>
+
+          <div>
+            <h1 className="text-base md:text-lg font-bold text-foreground">{userDetails?.name}</h1>
+            <h3 className="text-sm text-muted-foreground">{userDetails?.email}</h3>
+          </div>
+        </div>
+      </div>
+
       <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
         <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
           <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
@@ -124,7 +168,8 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
           />
         )}
       </div>
-      <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
+
+      <div className="flex flex-col max-h-175 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
         <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
           <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
             All Leaves
