@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchLeaves } from '../api/leave.api';
 import type { LeaveScope, LeaveStatus } from '@/constants/LeaveStatus';
 import type { LeaveResponse } from '@/types/leaves';
@@ -22,7 +22,7 @@ function useLeaves({ status, scope, empId, year }: UseLeavesProps): UseLeavesRet
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadLeaves() {
+  const loadLeaves = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -34,11 +34,11 @@ function useLeaves({ status, scope, empId, year }: UseLeavesProps): UseLeavesRet
     } finally {
       setLoading(false);
     }
-  }
+  }, [status, scope, empId, year]);
 
   useEffect(() => {
     loadLeaves();
-  }, [status, scope, empId, year]);
+  }, [loadLeaves]);
 
   return { leaves, loading, error, refreshLeaves: loadLeaves };
 }
