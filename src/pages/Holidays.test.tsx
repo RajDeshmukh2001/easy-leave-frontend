@@ -1,7 +1,7 @@
 import type { HolidayRequest, HolidayResponse } from '@/types/holiday';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
-import * as addHolidayApi from '@/api/holiday.api';
+import * as holidayApi from '@/api/holiday.api';
 import Holidays from './Holidays';
 import userEvent from '@testing-library/user-event';
 import toast from 'react-hot-toast';
@@ -50,18 +50,18 @@ vi.mock('@/components/DatePicker', () => ({
   ),
 }));
 
-const renderAddHolidayForm = () => {
+const renderHolidayForm = () => {
   render(<Holidays />);
 };
 
 describe('Add Holiday', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(addHolidayApi, 'addHoliday').mockResolvedValue(mockHolidayResponse);
+    vi.spyOn(holidayApi, 'addHoliday').mockResolvedValue(mockHolidayResponse);
   });
 
   test('renders all add holiday form fields', async () => {
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     expect(await screen.findByLabelText('Holiday Type')).toBeInTheDocument();
     expect(screen.getByLabelText('Holiday Name')).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('Add Holiday', () => {
   });
 
   test('display required field validation errors', async () => {
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     await screen.findByLabelText('Holiday Type');
 
@@ -81,7 +81,7 @@ describe('Add Holiday', () => {
   });
 
   test('does not submit form when date is not selected', async () => {
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     const nameInput = screen.getByLabelText('Holiday Name');
     await userEvent.type(nameInput, 'Diwali');
@@ -89,12 +89,12 @@ describe('Add Holiday', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
 
     await waitFor(() => {
-      expect(addHolidayApi.addHoliday).not.toHaveBeenCalled();
+      expect(holidayApi.addHoliday).not.toHaveBeenCalled();
     });
   });
 
   test('submits form with correct data', async () => {
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -102,7 +102,7 @@ describe('Add Holiday', () => {
     fireEvent.change(nameInput, { target: { value: 'Diwali' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
-    expect(addHolidayApi.addHoliday).toHaveBeenCalledWith(mockHolidayRequest);
+    expect(holidayApi.addHoliday).toHaveBeenCalledWith(mockHolidayRequest);
     expect(toast.success).toHaveBeenCalled();
   });
 
@@ -112,9 +112,9 @@ describe('Add Holiday', () => {
       isAxiosError: true,
       response: { data: { message: errorMessage } },
     };
-    vi.spyOn(addHolidayApi, 'addHoliday').mockRejectedValue(axiosError);
+    vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(axiosError);
 
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -126,9 +126,9 @@ describe('Add Holiday', () => {
   });
 
   test('displays generic error message when submission fails with non-axios error', async () => {
-    vi.spyOn(addHolidayApi, 'addHoliday').mockRejectedValue(new Error('Network failure'));
+    vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(new Error('Network failure'));
 
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -144,9 +144,9 @@ describe('Add Holiday', () => {
       isAxiosError: true,
       response: { data: {} },
     };
-    vi.spyOn(addHolidayApi, 'addHoliday').mockRejectedValue(axiosError);
+    vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(axiosError);
 
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     await userEvent.click(screen.getByRole('button', { name: 'Date' }));
 
@@ -158,7 +158,7 @@ describe('Add Holiday', () => {
   });
 
   test('shows error when name exceeds 50 characters', async () => {
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     const nameInput = screen.getByLabelText('Holiday Name');
     await userEvent.type(nameInput, 'a'.repeat(51));
@@ -171,7 +171,7 @@ describe('Add Holiday', () => {
   });
 
   test('shows error when type is missing', async () => {
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     const select = screen.getByLabelText('Holiday Type');
     await userEvent.selectOptions(select, '');
@@ -185,7 +185,7 @@ describe('Add Holiday', () => {
   });
 
   test('shows error for invalid name format', async () => {
-    renderAddHolidayForm();
+    renderHolidayForm();
 
     const nameInput = screen.getByLabelText('Holiday Name');
     await userEvent.type(nameInput, 'Diwali123');
