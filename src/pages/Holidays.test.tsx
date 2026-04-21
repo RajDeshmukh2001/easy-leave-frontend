@@ -1,7 +1,7 @@
 import type { HolidayRequest, HolidayResponse } from '@/types/holiday';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
-import * as holidayApi from '@/api/holiday.api';
+import * as holidaysApi from '@/api/holiday.api';
 import Holidays from './Holidays';
 import userEvent from '@testing-library/user-event';
 import toast from 'react-hot-toast';
@@ -19,6 +19,15 @@ const mockHolidayResponse: HolidayResponse = {
   type: 'FIXED',
   date: '2026-03-02',
 };
+
+const mockHolidaysList: HolidayResponse[] = [
+  {
+    id: '1',
+    name: 'Republic Day',
+    date: '2026-01-26',
+    type: 'FIXED',
+  },
+];
 
 vi.mock('react-hot-toast', () => {
   const toast = {
@@ -57,7 +66,7 @@ const renderHolidayPage = () => {
 describe('Add Holiday', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(holidayApi, 'addHoliday').mockResolvedValue(mockHolidayResponse);
+    vi.spyOn(holidaysApi, 'addHoliday').mockResolvedValue(mockHolidayResponse);
   });
 
   test('renders all add holiday form fields', async () => {
@@ -89,7 +98,7 @@ describe('Add Holiday', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
 
     await waitFor(() => {
-      expect(holidayApi.addHoliday).not.toHaveBeenCalled();
+      expect(holidaysApi.addHoliday).not.toHaveBeenCalled();
     });
   });
 
@@ -102,7 +111,7 @@ describe('Add Holiday', () => {
     fireEvent.change(nameInput, { target: { value: 'Diwali' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
-    expect(holidayApi.addHoliday).toHaveBeenCalledWith(mockHolidayRequest);
+    expect(holidaysApi.addHoliday).toHaveBeenCalledWith(mockHolidayRequest);
     expect(toast.success).toHaveBeenCalled();
   });
 
@@ -112,7 +121,7 @@ describe('Add Holiday', () => {
       isAxiosError: true,
       response: { data: { message: errorMessage } },
     };
-    vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(axiosError);
+    vi.spyOn(holidaysApi, 'addHoliday').mockRejectedValue(axiosError);
 
     renderHolidayPage();
 
@@ -126,7 +135,7 @@ describe('Add Holiday', () => {
   });
 
   test('displays generic error message when submission fails with non-axios error', async () => {
-    vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(new Error('Network failure'));
+    vi.spyOn(holidaysApi, 'addHoliday').mockRejectedValue(new Error('Network failure'));
 
     renderHolidayPage();
 
@@ -144,7 +153,7 @@ describe('Add Holiday', () => {
       isAxiosError: true,
       response: { data: {} },
     };
-    vi.spyOn(holidayApi, 'addHoliday').mockRejectedValue(axiosError);
+    vi.spyOn(holidaysApi, 'addHoliday').mockRejectedValue(axiosError);
 
     renderHolidayPage();
 
@@ -195,5 +204,40 @@ describe('Add Holiday', () => {
     expect(
       await screen.findByText('Holiday name can only contain letters and spaces'),
     ).toBeInTheDocument();
+  });
+});
+
+describe('Holiday Table', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(holidaysApi, 'fetchHolidays').mockResolvedValue(mockHolidaysList);
+  });
+
+  test('renders holiday table columns', async () => {
+    render(<Holidays />);
+
+    expect(await screen.findByText('Holiday Name')).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: 'Holiday Name' })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: 'Type' })).toBeInTheDocument();
+  });
+
+  test('displays error message when API call fails', async () => {
+    vi.spyOn(holidaysApi, 'fetchHolidays').mockRejectedValue(new Error('Failed to fetch holidays'));
+
+    render(<Holidays />);
+
+    expect(await screen.findByText('Failed to fetch holidays')).toBeInTheDocument();
+  });
+
+  test('calls fetchHolidays with correct type when holidayType state changes', async () => {
+    const spy = vi.spyOn(holidaysApi, 'fetchHolidays').mockResolvedValue(mockHolidaysList);
+    render(<Holidays />);
+
+    const dropdown = await screen.getByDisplayValue('All');
+    await userEvent.selectOptions(dropdown, 'FIXED');
+    await waitFor(() => {
+      expect(spy).toHaveBeenCalledWith({ type: 'FIXED' });
+    });
   });
 });
