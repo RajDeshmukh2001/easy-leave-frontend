@@ -6,7 +6,6 @@ export const addHoliday = async (values: HolidayRequest): Promise<HolidayRespons
   const { data } = await axiosInstance.post<ApiResponse<HolidayResponse>>(`/api/holidays`, values);
 
   if (!data.success) {
-    console.error('Error adding holiday:', data.message);
     throw new Error(data.message || 'Failed to add holiday');
   }
   return data.data;
