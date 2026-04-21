@@ -76,9 +76,7 @@ describe('Add Holiday', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
 
-    expect(
-      screen.getByText('Holiday name can only contain letters and spaces'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Holiday name is required')).toBeInTheDocument();
     expect(screen.getByText('Please choose a date')).toBeInTheDocument();
   });
 
@@ -184,5 +182,18 @@ describe('Add Holiday', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
 
     expect(await screen.findByText('Holiday type is required')).toBeInTheDocument();
+  });
+
+  test('shows error for invalid name format', async () => {
+    renderAddHolidayForm();
+
+    const nameInput = screen.getByLabelText('Holiday Name');
+    await userEvent.type(nameInput, 'Diwali123');
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
+
+    expect(
+      await screen.findByText('Holiday name can only contain letters and spaces'),
+    ).toBeInTheDocument();
   });
 });
