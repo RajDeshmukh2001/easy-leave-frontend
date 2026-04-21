@@ -51,7 +51,7 @@ const holidayTableColumns = [
 
 const Holidays = (): React.JSX.Element => {
   const [holidayType, setHolidayType] = useState<HolidayListOptions>('all');
-  const { holidays, loading, error } = useHolidays(holidayType);
+  const { holidays, loading, error, loadHolidays } = useHolidays(holidayType);
 
   const handleSubmit = async (
     values: HolidayFromValues,
@@ -67,6 +67,7 @@ const Holidays = (): React.JSX.Element => {
       await addHoliday(holidayData);
       toast.success('Holiday added successfully!');
       resetForm();
+      loadHolidays();
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.response?.data?.message || 'Failed to add holiday');

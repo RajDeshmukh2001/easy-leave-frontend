@@ -240,4 +240,22 @@ describe('Holiday Table', () => {
       expect(spy).toHaveBeenCalledWith({ type: 'FIXED' });
     });
   });
+
+  test('reloads the holiday list after adding a new holiday', async () => {
+    const loadHolidaysSpy = vi
+      .spyOn(holidaysApi, 'fetchHolidays')
+      .mockResolvedValue(mockHolidaysList);
+    vi.spyOn(holidaysApi, 'addHoliday').mockResolvedValue(mockHolidayResponse);
+
+    render(<Holidays />);
+
+    const nameInput = await screen.findByLabelText('Holiday Name');
+    fireEvent.change(nameInput, { target: { value: 'Diwali' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Date' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add Holiday' }));
+
+    await waitFor(() => {
+      expect(loadHolidaysSpy).toHaveBeenCalled();
+    });
+  });
 });
