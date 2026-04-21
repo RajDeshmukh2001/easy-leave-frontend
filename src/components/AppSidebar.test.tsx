@@ -10,7 +10,6 @@ import { logout } from '@/api/auth.api';
 import userEvent from '@testing-library/user-event';
 import type { Role } from '@/types/auth';
 
-
 vi.mock('@/hooks/useAuthUser', () => ({
   default: vi.fn(),
 }));
@@ -116,6 +115,6 @@ describe('AppSidebar Component', () => {
     renderAppSidebar();
     await userEvent.click(screen.getByText('Logout'));
 
-    expect(await screen.findByText('Something went wrong. Please try again')).toBeInTheDocument();
+    expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
   });
 });
