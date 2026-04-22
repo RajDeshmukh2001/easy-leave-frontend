@@ -75,4 +75,12 @@ describe('LeaveAndRequest Page', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
     expect(screen.queryByRole('button', { name: 'Submit Leave' })).not.toBeInTheDocument();
   });
+
+  test('switches back to Leave tab when Leave button is clicked', async () => {
+    renderLeaveAndRequest();
+    await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
+    expect(screen.getByText('Request Tab')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Leave' }));
+    expect(await screen.findByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
+  });
 });
