@@ -1,6 +1,5 @@
 import LeaveTab from '@/components/leave/LeaveTab';
 import PageHeader from '@/components/PageHeader';
-import RequestTab from '@/components/request/RequestTab';
 import { useState } from 'react';
 
 function LeaveAndRequest(): React.JSX.Element {
@@ -27,7 +26,7 @@ function LeaveAndRequest(): React.JSX.Element {
         </button>
       </div>
       <div className="flex justify-between gap-5">
-        {activeTab === 'leave' ? <LeaveTab /> : <RequestTab />}
+        {activeTab === 'leave' ? <LeaveTab /> : <div>Request Tab</div>}
       </div>
     </div>
   );
