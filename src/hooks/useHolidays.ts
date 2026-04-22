@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { HolidayListResponse } from '@/types/holiday';
 import { fetchHolidays } from '@/api/holiday.api';
 import type { HolidayListOptions } from '@/constants/holidayTypes';
@@ -15,7 +15,7 @@ function useHolidays(type: HolidayListOptions): UseHolidaysReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadHolidays() {
+  const loadHolidays = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -23,19 +23,15 @@ function useHolidays(type: HolidayListOptions): UseHolidaysReturn {
       const data = await fetchHolidays({ type });
       setHolidays(data);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Failed to fetch holidays');
-      }
+      setError(err instanceof Error ? err.message : 'Failed to fetch holidays');
     } finally {
       setLoading(false);
     }
-  }
+  }, [type]);
 
   useEffect(() => {
     loadHolidays();
-  }, [type]);
+  }, [loadHolidays]);
 
   return { holidays, loading, error, loadHolidays };
 }
