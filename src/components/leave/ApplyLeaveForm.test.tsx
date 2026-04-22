@@ -40,7 +40,7 @@ const renderApplyLeaveForm = () => {
   render(<ApplyLeaveForm refreshLeaves={vi.fn()} />);
 };
 
-vi.mock('./DatePicker', () => ({
+vi.mock('../DatePicker', () => ({
   default: ({ setDate }: { setDate: (range: DateRange) => void }) => (
     <button type="button" onClick={() => setDate({ from: mockToday, to: undefined })}>
       Pick a date
