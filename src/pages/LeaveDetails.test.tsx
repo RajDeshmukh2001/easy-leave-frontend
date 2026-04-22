@@ -57,6 +57,13 @@ const submitForm = async () => {
   await userEvent.click(screen.getByRole('button', { name: /update leave/i }));
 };
 
+const cancelLeave = async () => {
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /cancel leave/i })).toBeInTheDocument(),
+  );
+  await userEvent.click(screen.getByRole('button', { name: /cancel leave/i }));
+};
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -212,5 +219,48 @@ describe('LeaveDetails Page Component', () => {
     await submitForm();
 
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Unexpected Error Occurred'));
+  });
+
+  test('shows success toast messsage when leave cancelled successfully', async () => {
+    vi.spyOn(api, 'cancelLeave').mockResolvedValue();
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() =>
+      expect(toast.success).toHaveBeenCalledWith('Leave cancelled successfully.'),
+    );
+  });
+
+  test('shows axios error toast messsage when cancel leave throws AxiosError', async () => {
+    const axiosErr = {
+      isAxiosError: true,
+      response: { data: { message: 'Cannot cancel past leave' } },
+    };
+
+    vi.spyOn(api, 'cancelLeave').mockRejectedValue(axiosErr);
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Cannot cancel past leave'));
+  });
+
+  test('shows generic error toast messsage when cancel leave throws non-axios error', async () => {
+    vi.spyOn(api, 'cancelLeave').mockRejectedValue(new Error('Network error'));
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
+  });
+
+  test('shows fallback message when cancel leave throws axios error that has no response message', async () => {
+    const axiosErr = {
+      isAxiosError: true,
+      response: { data: {} },
+    };
+    vi.spyOn(api, 'cancelLeave').mockRejectedValue(axiosErr);
+
+    renderWithRouter();
+    await cancelLeave();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
   });
 });

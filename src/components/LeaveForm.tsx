@@ -19,6 +19,8 @@ type LeaveFormProps = {
   ) => void | Promise<void>;
   submitLabel?: string;
   datePickerMode?: 'range' | 'single';
+  handleCancelLeave?: () => void;
+  cancelLabel?: string;
 };
 
 const LeaveForm = ({
@@ -26,6 +28,8 @@ const LeaveForm = ({
   onSubmit,
   submitLabel = 'Submit Leave',
   datePickerMode = 'range',
+  handleCancelLeave,
+  cancelLabel = 'Cancel Leave',
 }: LeaveFormProps): React.JSX.Element => {
   const { categories, loading, error } = useLeaveCategories();
 
@@ -90,6 +94,17 @@ const LeaveForm = ({
           >
             {submitLabel}
           </Button>
+
+          {handleCancelLeave && (
+            <Button
+              className="w-full cursor-pointer py-5"
+              type="button"
+              variant="destructive"
+              onClick={handleCancelLeave}
+            >
+              {cancelLabel}
+            </Button>
+          )}
         </Form>
       )}
     </Formik>

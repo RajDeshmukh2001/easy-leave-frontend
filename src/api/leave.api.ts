@@ -67,3 +67,7 @@ export const updateLeave = async (
   }
   return data.data;
 };
+
+export const cancelLeave = async (id: string | undefined): Promise<void> => {
+  await axiosInstance.delete(`/api/leaves/${id}`);
+};
