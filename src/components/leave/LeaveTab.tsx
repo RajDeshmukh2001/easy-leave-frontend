@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import Table from '../Table';
-import FilterDropdown from '../FilterDropdown';
-import type { LeaveResponse } from '../../types/leaves';
-import { STATUS_OPTIONS, type LeaveStatus } from '../../constants/LeaveStatus';
-import Loading from '@/components/Loading';
+import type { LeaveResponse } from '@/types/leaves';
+import { STATUS_OPTIONS, type LeaveStatus } from '@/constants/LeaveStatus';
 import useLeaves from '@/hooks/useLeaves';
 import Badge from '@/components/Badge';
 import { useNavigate } from 'react-router-dom';
-import ApplyLeaveForm from './ApplyLeaveForm';
+import ApplyLeaveForm from '@/components/leave/ApplyLeaveForm';
+import FilterableTableSection from '../FilterableTableSection';
 
 function LeaveTab(): React.JSX.Element {
   const [status, setStatus] = useState<LeaveStatus>('all');
@@ -56,29 +54,19 @@ function LeaveTab(): React.JSX.Element {
         <div className="flex h-fit md:w-1/3 bg-white rounded-2xl shadow-xs border border-neutral-200">
           <ApplyLeaveForm refreshLeaves={refreshLeaves} />
         </div>
-        <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-fit shadow-xs border border-neutral-200">
-          <div className="flex items-center p-3 justify-between bg-sidebar/98 rounded-t-2xl ">
-            <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold px-3 py-2">
-              My Leaves
-            </h1>
-            <FilterDropdown
-              options={STATUS_OPTIONS}
-              value={status}
-              onChange={(val) => setStatus(val as LeaveStatus)}
-            />
-          </div>
-          {loading && <Loading />}
-          {error && <p className="p-3 text-red-700">{error}</p>}
-          {!loading && !error && (
-            <Table
-              data={leaves}
-              columns={columns}
-              message="No leave records found."
-              getRowKey={(leave: LeaveResponse) => leave.id}
-              onRowClick={handleRowClick}
-            />
-          )}
-        </div>
+        <FilterableTableSection
+          title="My Leaves"
+          data={leaves}
+          columns={columns}
+          loading={loading}
+          error={error}
+          filterOptions={STATUS_OPTIONS}
+          filterValue={status}
+          onFilterChange={(val) => setStatus(val as LeaveStatus)}
+          getRowKey={(leave: LeaveResponse) => leave.id}
+          onRowClick={handleRowClick}
+          emptyMessage="No leave records found."
+        />
       </div>
     </div>
   );

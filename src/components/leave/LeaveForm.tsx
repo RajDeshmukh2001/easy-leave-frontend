@@ -1,15 +1,15 @@
 import React from 'react';
 import { Formik, Form, type FormikHelpers } from 'formik';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { addHours } from '@/utils/time';
 import type { LeaveFormValues } from '@/types/leaveForm';
 import { validateLeaveForm } from '@/utils/leaveForm';
 import { FULL_DAY_DURATION_HOURS, HALF_DAY_DURATION_HOURS } from '@/constants/leaveForm';
-import SelectField from '../form/SelectField';
+import SelectField from '@/components/form/SelectField';
 import useLeaveCategories from '@/hooks/useLeaveCategories';
-import DatePickerField from '../form/DatePickerField';
-import TextareaField from '../form/TextareaField';
-import TimeField from '../form/TimeField';
+import DatePickerField from '@/components/form/DatePickerField';
+import TextareaField from '@/components/form/TextareaField';
+import TimeField from '@/components/form/TimeField';
 
 type LeaveFormProps = {
   initialValues: LeaveFormValues;

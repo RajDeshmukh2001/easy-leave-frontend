@@ -5,7 +5,7 @@ import { applyLeave } from '@/api/leave.api';
 import type { LeaveApplicationRequest } from '@/types/leaves';
 import { getDatesBetween } from '@/utils/time';
 import { isAxiosError } from 'axios';
-import LeaveForm from './LeaveForm';
+import LeaveForm from '@/components/leave/LeaveForm';
 import type { LeaveFormValues } from '@/types/leaveForm';
 
 const initialValues: LeaveFormValues = {

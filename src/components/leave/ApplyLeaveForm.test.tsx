@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
-import ApplyLeaveForm from './ApplyLeaveForm';
+import ApplyLeaveForm from '@/components/leave/ApplyLeaveForm';
 import * as leaveCategoriesApi from '@/api/leaveCategories.api';
 import userEvent from '@testing-library/user-event';
 import type { LeaveApplicationRequest, LeaveApplicationResponse } from '@/types/leaves';

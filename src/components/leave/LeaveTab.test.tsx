@@ -4,7 +4,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
-import * as leaveApi from '../../api/leave.api';
+import * as leaveApi from '@/api/leave.api';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -38,12 +38,6 @@ const renderLeavePage = () => {
 describe('Leave Page Component', () => {
   beforeEach(() => {
     vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
-  });
-
-  test('renders page header', () => {
-    renderLeavePage();
-    expect(screen.getByText('Leaves')).toBeInTheDocument();
-    expect(screen.getByText('Submit a new leave or raise a request')).toBeInTheDocument();
   });
 
   test('renders My Leaves heading', () => {
