@@ -15,7 +15,7 @@ import FilterDropdown from '@/components/FilterDropdown';
 
 function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const { id } = useParams();
-  const [leavesRecord, setLeavesRecord] = useState<SingleEmployeeLeaveRecord[] | null>(null);
+  const [leavesRecord, setLeavesRecord] = useState<SingleEmployeeLeaveRecord[]>([]);
   const [leavesRecordLoading, setLeavesRecordLoading] = useState(false);
   const [leavesRecordError, setLeavesRecordError] = useState<string | null>(null);
 
@@ -112,7 +112,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
     },
   ];
 
-  if (leavesRecordLoading || leavesDetailsLoading || userDetailsLoading) {
+  if (userDetailsLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center p-4">
         <Loading />
@@ -120,12 +120,10 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
     );
   }
 
-  if (leavesRecordError || leavesDetailsError || userDetailsError) {
+  if (userDetailsError) {
     return (
       <div className="w-full h-screen flex justify-center items-center flex-col p-4">
-        <p className="p-3 text-red-700">
-          {leavesRecordError || leavesDetailsError || userDetailsError}
-        </p>
+        <p className="p-3 text-red-700">{userDetailsError}</p>
         <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
           <ArrowLeft /> Back
         </Button>
@@ -165,7 +163,9 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
             Leaves Record
           </h1>
         </div>
-        {leavesRecord && (
+        {leavesRecordLoading && <Loading />}
+        {leavesRecordError && <p className="p-3 text-red-700">{leavesRecordError}</p>}
+        {!leavesRecordLoading && !leavesRecordError && (
           <Table
             data={leavesRecord}
             columns={columns}
@@ -180,7 +180,9 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
             All Leaves
           </h1>
         </div>
-        {leavesDetails && (
+        {leavesDetailsLoading && <Loading />}
+        {leavesDetailsError && <p className="p-3 text-red-700">{leavesDetailsError}</p>}
+        {!leavesDetailsLoading && !leavesDetailsError && (
           <Table
             data={leavesDetails}
             columns={leavesColumns}
