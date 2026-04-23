@@ -1,14 +1,23 @@
 import { addHoliday } from '@/api/holiday.api';
+import FilterDropdown from '@/components/FilterDropdown';
 import DatePickerField from '@/components/form/DatePickerField';
 import SelectField from '@/components/form/SelectField';
+import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
+import Table from '@/components/Table';
 import { Button } from '@/components/ui/button';
-import { HOLIDAY_TYPES } from '@/constants/holidayTypes';
-import type { HolidayFromValues, HolidayRequest } from '@/types/holiday';
+import {
+  HOLIDAY_LIST_OPTIONS,
+  HOLIDAY_TYPES,
+  type HolidayListOptions,
+} from '@/constants/holidayTypes';
+import useHolidays from '@/hooks/useHolidays';
+import type { HolidayFromValues, HolidayRequest, HolidayResponse } from '@/types/holiday';
 import { validateHolidayForm } from '@/utils/holiday.validation';
 import { isAxiosError } from 'axios';
 import { format } from 'date-fns';
 import { ErrorMessage, Field, Form, Formik, type FormikHelpers } from 'formik';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 const initialValues: HolidayFromValues = {
@@ -17,7 +26,33 @@ const initialValues: HolidayFromValues = {
   date: undefined,
 };
 
+const holidayTableColumns = [
+  {
+    header: 'Name',
+    render: (holiday: HolidayResponse) => (
+      <span className="font-medium text-gray-800">{holiday.name}</span>
+    ),
+  },
+  {
+    header: 'Date',
+    render: (holiday: HolidayResponse) => (
+      <span className="font-medium text-gray-800">
+        {new Date(holiday.date).toLocaleDateString()}
+      </span>
+    ),
+  },
+  {
+    header: 'Type',
+    render: (holiday: HolidayResponse) => (
+      <span className="font-medium text-gray-800">{holiday.type}</span>
+    ),
+  },
+];
+
 const Holidays = (): React.JSX.Element => {
+  const [holidayType, setHolidayType] = useState<HolidayListOptions>('all');
+  const { holidays, loading, error, loadHolidays } = useHolidays(holidayType);
+
   const handleSubmit = async (
     values: HolidayFromValues,
     { resetForm }: FormikHelpers<HolidayFromValues>,
@@ -32,6 +67,7 @@ const Holidays = (): React.JSX.Element => {
       await addHoliday(holidayData);
       toast.success('Holiday added successfully!');
       resetForm();
+      loadHolidays();
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.response?.data?.message || 'Failed to add holiday');
@@ -88,6 +124,28 @@ const Holidays = (): React.JSX.Element => {
               </Form>
             )}
           </Formik>
+        </div>
+        <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-screen shadow-xs border border-neutral-200">
+          <div className="flex items-center p-3 justify-between bg-sidebar/98 rounded-t-2xl">
+            <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold px-3 py-2">
+              All Holidays
+            </h1>
+            <FilterDropdown
+              options={HOLIDAY_LIST_OPTIONS}
+              value={holidayType}
+              onChange={(val) => setHolidayType(val as HolidayListOptions)}
+            />
+          </div>
+          {loading && <Loading />}
+          {error && <p className="p-3 text-red-700">{error}</p>}
+          {!loading && !error && (
+            <Table
+              data={holidays}
+              columns={holidayTableColumns}
+              message="No holidays found."
+              getRowKey={(holiday: HolidayResponse) => holiday.id}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -13,3 +13,6 @@ export const HOLIDAY_TYPES: HolidayOptions[] = [
     label: 'Optional',
   },
 ];
+
+export type HolidayListOptions = 'all' | 'FIXED' | 'OPTIONAL';
+export const HOLIDAY_LIST_OPTIONS = ['all', 'FIXED', 'OPTIONAL'];
