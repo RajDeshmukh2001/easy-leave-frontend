@@ -2,10 +2,6 @@ import type { HolidayRequest, HolidayResponse } from '@/types/holiday';
 import axiosInstance from './axiosInstance';
 import type { ApiResponse } from '@/types/response';
 
-type FetchHolidaysParams = {
-  type?: string;
-};
-
 export const addHoliday = async (values: HolidayRequest): Promise<HolidayResponse> => {
   const { data } = await axiosInstance.post<ApiResponse<HolidayResponse>>(`/api/holidays`, values);
 
@@ -15,7 +11,7 @@ export const addHoliday = async (values: HolidayRequest): Promise<HolidayRespons
   return data.data;
 };
 
-export const fetchHolidays = async ({ type }: FetchHolidaysParams): Promise<HolidayResponse[]> => {
+export const fetchHolidays = async ({ type }: { type?: string }): Promise<HolidayResponse[]> => {
   const params: Record<string, string> = {};
 
   if (type && type !== 'all') {
