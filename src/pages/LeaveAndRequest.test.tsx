@@ -43,7 +43,7 @@ describe('LeaveAndRequest Page', () => {
   test('renders page header', () => {
     renderLeaveAndRequest();
     expect(screen.getByText('Leaves')).toBeInTheDocument();
-    expect(screen.getByText('Submit a new leave or raise a request')).toBeInTheDocument();
+    expect(screen.getByText('View and manage your leaves')).toBeInTheDocument();
   });
 
   test('renders Leave and Raise Request tab buttons', () => {

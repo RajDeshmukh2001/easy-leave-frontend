@@ -7,7 +7,7 @@ function LeaveAndRequest(): React.JSX.Element {
 
   return (
     <div className="w-full md:h-screen flex flex-col p-4">
-      <PageHeader pageTitle="Leaves" pageSubtitle="Submit a new leave or raise a request" />
+      <PageHeader pageTitle="Leaves" pageSubtitle="View and manage your leaves" />
 
       <div className="flex w-fit rounded-lg border border-neutral-200 bg-white mt-2">
         <button
