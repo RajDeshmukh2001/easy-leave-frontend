@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import useLeaves from '@/hooks/useLeaves';
 import type { LeaveResponse } from '@/types/leaves';
 import { ArrowLeft } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useFetchYears from '@/hooks/useFetchYears';
 import { fetchUserDetails, type UserDetails } from '@/api/user.api';
@@ -36,43 +36,40 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   });
 
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchLeavesRecord = async () => {
-      setLeavesRecordLoading(true);
-      setLeavesRecordError(null);
-      try {
-        const data = await fetchSingleEmployeeLeaveRecord(id, selectedYear);
-        setLeavesRecord(data);
-      } catch (error) {
-        setLeavesRecordError(
-          error instanceof Error ? error.message : 'Failed to fetch leave record',
-        );
-      } finally {
-        setLeavesRecordLoading(false);
-      }
-    };
 
-    fetchLeavesRecord();
+  const fetchLeavesRecord = useCallback(async () => {
+    setLeavesRecordLoading(true);
+    setLeavesRecordError(null);
+    try {
+      const data = await fetchSingleEmployeeLeaveRecord(id, selectedYear);
+      setLeavesRecord(data);
+    } catch (error) {
+      setLeavesRecordError(error instanceof Error ? error.message : 'Failed to fetch leave record');
+    } finally {
+      setLeavesRecordLoading(false);
+    }
   }, [id, selectedYear]);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      setUserDetailsLoading(true);
-      setUserDetailsError(null);
-      try {
-        const data = await fetchUserDetails(id);
-        setUserDetails(data);
-      } catch (error) {
-        setUserDetailsError(
-          error instanceof Error ? error.message : 'Failed to fetch user details',
-        );
-      } finally {
-        setUserDetailsLoading(false);
-      }
-    };
+    fetchLeavesRecord();
+  }, [fetchLeavesRecord]);
 
-    fetchUser();
+  const fetchUser = useCallback(async () => {
+    setUserDetailsLoading(true);
+    setUserDetailsError(null);
+    try {
+      const data = await fetchUserDetails(id);
+      setUserDetails(data);
+    } catch (error) {
+      setUserDetailsError(error instanceof Error ? error.message : 'Failed to fetch user details');
+    } finally {
+      setUserDetailsLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   const columns = [
     {
