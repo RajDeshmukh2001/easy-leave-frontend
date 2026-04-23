@@ -12,7 +12,7 @@ import {
   type HolidayListOptions,
 } from '@/constants/holidayTypes';
 import useHolidays from '@/hooks/useHolidays';
-import type { HolidayFromValues, HolidayRequest, HolidayListResponse } from '@/types/holiday';
+import type { HolidayFromValues, HolidayRequest, HolidayResponse } from '@/types/holiday';
 import { validateHolidayForm } from '@/utils/holiday.validation';
 import { isAxiosError } from 'axios';
 import { format } from 'date-fns';
@@ -29,13 +29,13 @@ const initialValues: HolidayFromValues = {
 const holidayTableColumns = [
   {
     header: 'Holiday Name',
-    render: (holiday: HolidayListResponse) => (
+    render: (holiday: HolidayResponse) => (
       <span className="font-medium text-gray-800">{holiday.name}</span>
     ),
   },
   {
     header: 'Date',
-    render: (holiday: HolidayListResponse) => (
+    render: (holiday: HolidayResponse) => (
       <span className="font-medium text-gray-800">
         {new Date(holiday.date).toLocaleDateString()}
       </span>
@@ -43,7 +43,7 @@ const holidayTableColumns = [
   },
   {
     header: 'Type',
-    render: (holiday: HolidayListResponse) => (
+    render: (holiday: HolidayResponse) => (
       <span className="font-medium text-gray-800">{holiday.type}</span>
     ),
   },
@@ -144,7 +144,7 @@ const Holidays = (): React.JSX.Element => {
                 data={holidays}
                 columns={holidayTableColumns}
                 message="No holidays found."
-                getRowKey={(holiday: HolidayListResponse) => holiday.id}
+                getRowKey={(holiday: HolidayResponse) => holiday.id}
               />
             )}
           </div>

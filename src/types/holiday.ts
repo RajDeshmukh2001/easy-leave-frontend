@@ -15,10 +15,3 @@ export type HolidayRequest = Pick<HolidayFromValues, 'name' | 'type'> & {
 export type HolidayResponse = HolidayRequest & {
   id: string;
 };
-
-export type HolidayListResponse = {
-  id: string;
-  name: string;
-  date: string;
-  type: HolidayType;
-};

@@ -2,9 +2,9 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import useHolidays from './useHolidays';
 import * as holidayApi from '../api/holiday.api';
-import type { HolidayListResponse } from '@/types/holiday';
+import type { HolidayResponse } from '@/types/holiday';
 
-const mockHolidays: HolidayListResponse[] = [
+const mockHolidays: HolidayResponse[] = [
   {
     id: '1',
     name: 'Republic Day',

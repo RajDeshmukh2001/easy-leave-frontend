@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { HolidayListResponse } from '@/types/holiday';
+import type { HolidayResponse } from '@/types/holiday';
 import { fetchHolidays } from '@/api/holiday.api';
 import type { HolidayListOptions } from '@/constants/holidayTypes';
 
 type UseHolidaysReturn = {
-  holidays: HolidayListResponse[];
+  holidays: HolidayResponse[];
   loading: boolean;
   error: string | null;
   loadHolidays: () => Promise<void>;
 };
 
 function useHolidays(type: HolidayListOptions): UseHolidaysReturn {
-  const [holidays, setHolidays] = useState<HolidayListResponse[]>([]);
+  const [holidays, setHolidays] = useState<HolidayResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
