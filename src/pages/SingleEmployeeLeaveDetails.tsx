@@ -10,7 +10,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useFetchYears from '@/hooks/useFetchYears';
 import { fetchUserDetails, type UserDetails } from '@/api/user.api';
-import { getInitials } from '@/utils/getNameInitials';
 import FilterDropdown from '@/components/FilterDropdown';
 
 function SingleEmployeeLeaveDetails(): React.JSX.Element {
@@ -77,15 +76,15 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
       render: (leavesRecord: SingleEmployeeLeaveRecord) => leavesRecord.leaveType,
     },
     {
-      header: 'Total Leaves',
+      header: 'Total',
       render: (leavesRecord: SingleEmployeeLeaveRecord) => leavesRecord.totalLeavesAvailable,
     },
     {
-      header: 'Leaves Taken',
+      header: 'Taken',
       render: (leavesRecord: SingleEmployeeLeaveRecord) => leavesRecord.leavesTaken,
     },
     {
-      header: 'Leaves Remaining',
+      header: 'Remaining',
       render: (leavesRecord: SingleEmployeeLeaveRecord) => leavesRecord.leavesRemaining,
     },
   ];
@@ -139,7 +138,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
       <div className="flex items-center justify-between flex-col md:flex-row gap-y-2.5">
         <div className="w-full flex items-center gap-2.5 md:gap-4">
           <h1 className="text-lg md:text-xl text-(--technogise-blue) font-extrabold h-12 w-12 md:h-14 md:w-14 flex items-center justify-center bg-(--technogise-blue)/10 rounded-full">
-            {getInitials(userDetails?.name)}
+            {userDetails?.name.charAt(0).toLocaleUpperCase()}
           </h1>
 
           <div>
