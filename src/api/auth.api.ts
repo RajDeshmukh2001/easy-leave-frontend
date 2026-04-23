@@ -1,5 +1,5 @@
 import type { User } from '@/types/user';
-import axiosInstance from './axiosInstance';
+import axiosInstance from '@/api/axiosInstance';
 import type { ApiResponse } from '@/types/response';
 
 export const getAuthenticatedUser = async (): Promise<User> => {
