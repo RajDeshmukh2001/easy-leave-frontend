@@ -28,7 +28,7 @@ const initialValues: HolidayFromValues = {
 
 const holidayTableColumns = [
   {
-    header: 'Holiday Name',
+    header: 'Name',
     render: (holiday: HolidayResponse) => (
       <span className="font-medium text-gray-800">{holiday.name}</span>
     ),

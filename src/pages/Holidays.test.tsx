@@ -216,10 +216,11 @@ describe('Holiday Table', () => {
   test('renders holiday table columns', async () => {
     render(<Holidays />);
 
-    expect(await screen.findByText('Holiday Name')).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: 'Holiday Name' })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: 'Type' })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('columnheader', { name: 'Name' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Type' })).toBeInTheDocument();
+    });
   });
 
   test('displays error message when API call fails', async () => {
