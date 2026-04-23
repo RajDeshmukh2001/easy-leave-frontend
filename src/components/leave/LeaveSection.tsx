@@ -49,7 +49,7 @@ function LeaveSection(): React.JSX.Element {
   };
 
   return (
-    <div className="w-full md:h-screen flex flex-col p-4">
+    <div className="w-full md:max-h-150 flex flex-col py-4">
       <div className="flex flex-col flex-1 min-h-0 h-fit md:flex-row gap-6 mt-2">
         <div className="flex h-fit md:w-1/3 bg-white rounded-2xl shadow-xs border border-neutral-200">
           <ApplyLeaveForm refreshLeaves={refreshLeaves} />
