@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ApplyLeaveForm from '@/components/leave/ApplyLeaveForm';
 import FilterableTableSection from '../FilterableTableSection';
 
-function LeaveTab(): React.JSX.Element {
+function LeaveSection(): React.JSX.Element {
   const [status, setStatus] = useState<LeaveStatus>('all');
   const navigate = useNavigate();
 
@@ -72,4 +72,4 @@ function LeaveTab(): React.JSX.Element {
   );
 }
 
-export default LeaveTab;
+export default LeaveSection;
