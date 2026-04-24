@@ -6,6 +6,7 @@ import { fetchRequests } from '@/api/request.api';
 type UseRequestReturn = {
   requests: RequestResponse[];
   loading: boolean;
+  loadingMore: boolean;
   error: string | null;
   hasMore: boolean;
   refreshRequests: () => Promise<void>;
@@ -20,12 +21,17 @@ type UseRequestProps = {
 function useRequest({ status, scope, page }: UseRequestProps): UseRequestReturn {
   const [requests, setRequests] = useState<RequestResponse[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
 
   const loadRequests = useCallback(async () => {
     try {
-      setLoading(true);
+      if (page === 0) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
       setError(null);
       const result = await fetchRequests({ status, scope, page });
       setRequests((prev) => {
@@ -39,6 +45,7 @@ function useRequest({ status, scope, page }: UseRequestProps): UseRequestReturn 
       setError(err instanceof Error ? err.message : 'Failed to load your requests');
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   }, [status, scope, page]);
 
@@ -51,7 +58,7 @@ function useRequest({ status, scope, page }: UseRequestProps): UseRequestReturn 
     loadRequests();
   }, [loadRequests]);
 
-  return { requests, loading, error, hasMore, refreshRequests: loadRequests };
+  return { requests, loading, loadingMore, error, hasMore, refreshRequests: loadRequests };
 }
 
 export default useRequest;

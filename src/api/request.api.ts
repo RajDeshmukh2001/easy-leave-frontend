@@ -15,7 +15,7 @@ export const fetchRequests = async ({
   status,
   page,
 }: Props): Promise<PageResponse<RequestResponse>> => {
-  const params: Record<string, string | number> = { scope, page, size: 1 };
+  const params: Record<string, string | number> = { scope, page, size: 20 };
   if (status && status !== 'ALL') {
     params.status = status;
   }
