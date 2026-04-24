@@ -4,6 +4,7 @@ import type { RequestResponse } from '@/types/request';
 import React, { useState } from 'react';
 import FilterableTableSection from '@/components/FilterableTableSection';
 import Badge from '@/components/Badge';
+import { REQUEST_STATUS_CONFIG } from '@/config/status.congig';
 
 function RequestSection(): React.JSX.Element {
   const [status, setStatus] = useState<RequestStatus>('ALL');
@@ -38,11 +39,8 @@ function RequestSection(): React.JSX.Element {
     {
       header: 'Status',
       render: (request: RequestResponse) => {
-        if (request.status === 'PENDING')
-          return <Badge name={'Pending'} style="bg-blue-100 text-blue-700" />;
-        else if (request.status === 'REJECTED')
-          return <Badge name={'Rejected'} style="bg-gray-100 text-gray-600" />;
-        else return <Badge name={'APPROVED'} style="bg-green-100 text-green-700" />;
+        const config = REQUEST_STATUS_CONFIG[request.status];
+        return <Badge name={config.label} style={config.style} />;
       },
     },
   ];
@@ -60,7 +58,7 @@ function RequestSection(): React.JSX.Element {
           filterValue={status}
           onFilterChange={(val) => setStatus(val as RequestStatus)}
           getRowKey={(request: RequestResponse) => request.id}
-          emptyMessage="No request records found."
+          emptyMessage="No Request(s) Found"
           hasMore={hasMore}
           onLoadMore={() => setPage((prev) => prev + 1)}
           loadingMore={loadingMore}

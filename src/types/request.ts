@@ -1,4 +1,5 @@
-import type { RequestDuration, RequestStatus, RequestType } from '@/constants/request';
+import type { RequestStatus, RequestType } from '@/constants/request';
+import type { LeaveDuration } from './leaves';
 
 export type RequestResponse = {
   id: string;
@@ -8,6 +9,6 @@ export type RequestResponse = {
   leaveCategory?: string;
   status: RequestStatus;
   type: RequestType;
-  duration: RequestDuration;
+  duration: LeaveDuration;
   appliedDate: string;
 };
