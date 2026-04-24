@@ -1,8 +1,9 @@
-import { REQUEST_STATUS_OPTIONS, type RequestStatus } from '@/constants/Request';
+import { REQUEST_STATUS_OPTIONS, type RequestStatus } from '@/constants/request';
 import useRequest from '@/hooks/useRequest';
 import type { RequestResponse } from '@/types/request';
 import React, { useState } from 'react';
-import FilterableTableSection from '../FilterableTableSection';
+import FilterableTableSection from '@/components/FilterableTableSection';
+import Badge from '@/components/Badge';
 
 function RequestSection(): React.JSX.Element {
   const [status, setStatus] = useState<RequestStatus>('ALL');
@@ -36,7 +37,13 @@ function RequestSection(): React.JSX.Element {
     },
     {
       header: 'Status',
-      render: (request: RequestResponse) => formatEnumLabel(request.status),
+      render: (request: RequestResponse) => {
+        if (request.status === 'PENDING')
+          return <Badge name={'Pending'} style="bg-blue-100 text-blue-700" />;
+        else if (request.status === 'REJECTED')
+          return <Badge name={'Rejected'} style="bg-gray-100 text-gray-600" />;
+        else return <Badge name={'APPROVED'} style="bg-green-100 text-green-700" />;
+      },
     },
   ];
 
