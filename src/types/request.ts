@@ -1,5 +1,11 @@
-import type { RequestStatus, RequestType } from '@/constants/request';
+import type { RequestScope, RequestStatus, RequestType } from '@/constants/request';
 import type { LeaveDuration } from './leaves';
+
+export type RequestProps = {
+  scope: RequestScope;
+  status?: RequestStatus;
+  page: number;
+};
 
 export type RequestResponse = {
   id: string;

@@ -4,7 +4,7 @@ import type { RequestResponse } from '@/types/request';
 import React, { useState } from 'react';
 import FilterableTableSection from '@/components/FilterableTableSection';
 import Badge from '@/components/Badge';
-import { REQUEST_STATUS_CONFIG } from '@/config/status.congig';
+import { REQUEST_STATUS_CONFIG } from '@/config/status.config';
 
 function RequestSection(): React.JSX.Element {
   const [status, setStatus] = useState<RequestStatus>('ALL');
@@ -49,7 +49,7 @@ function RequestSection(): React.JSX.Element {
     <div className="w-full md:max-h-150 flex flex-col py-4">
       <div className="flex flex-col flex-1 min-h-0 h-fit md:flex-row gap-6 mt-2">
         <FilterableTableSection
-          title="My Requets"
+          title="My Requests"
           data={requests}
           columns={columns}
           loading={loading}

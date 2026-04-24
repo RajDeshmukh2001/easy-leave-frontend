@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { RequestScope, RequestStatus } from '@/constants/request';
-import type { RequestResponse } from '@/types/request';
+import type { RequestProps, RequestResponse } from '@/types/request';
 import { fetchRequests } from '@/api/request.api';
 
 type UseRequestReturn = {
@@ -12,13 +11,7 @@ type UseRequestReturn = {
   refreshRequests: () => Promise<void>;
 };
 
-type UseRequestProps = {
-  status: RequestStatus;
-  scope: RequestScope;
-  page: number;
-};
-
-function useRequest({ status, scope, page }: UseRequestProps): UseRequestReturn {
+function useRequest({ status, scope, page }: RequestProps): UseRequestReturn {
   const [requests, setRequests] = useState<RequestResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
