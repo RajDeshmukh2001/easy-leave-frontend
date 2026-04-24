@@ -67,7 +67,7 @@ describe('LeaveAndRequest Page', () => {
   test('shows request tab content when Raise Request tab is clicked', async () => {
     renderLeaveAndRequest();
     await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
-    expect(screen.getByText('Raise Request')).toBeInTheDocument();
+    expect(screen.getByLabelText('Request Type')).toBeInTheDocument();
   });
 
   test('hides LeaveSection when Raise Request tab is clicked', async () => {
@@ -79,7 +79,7 @@ describe('LeaveAndRequest Page', () => {
   test('switches back to Leave tab when Leave button is clicked', async () => {
     renderLeaveAndRequest();
     await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
-    expect(screen.getByText('Raise Request')).toBeInTheDocument();
+    expect(screen.getByLabelText('Request Type')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Leave' }));
     expect(await screen.findByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
   });
