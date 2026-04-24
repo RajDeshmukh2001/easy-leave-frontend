@@ -1,12 +1,12 @@
 import type { Role } from '@/types/auth';
 import Dashboard from '@/pages/Dashboard';
-import Leave from '@/pages/Leave';
 import ManagerDashboard from '@/pages/ManagerDashboard';
 import AllEmployeesDetails from '@/pages/AllEmployeesDetails';
 import AllEmployeesLeaveBalance from '@/pages/AllEmployeesLeaveBalance';
 import SingleEmployeeLeaveDetails from '@/pages/SingleEmployeeLeaveDetails';
 import LeaveDetails from '@/pages/LeaveDetails';
 import Holidays from '@/pages/Holidays';
+import LeaveAndRequest from '@/pages/LeaveAndRequest';
 
 export type AppRoute = {
   path: string;
@@ -21,7 +21,7 @@ export const APP_ROUTES: AppRoute[] = [
   },
   {
     path: '/leave',
-    element: <Leave />,
+    element: <LeaveAndRequest />,
   },
   {
     path: '/leave/:id',

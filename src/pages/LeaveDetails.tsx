@@ -1,5 +1,5 @@
 import { cancelLeave, fetchLeaveById, updateLeave } from '@/api/leave.api';
-import LeaveForm from '@/components/LeaveForm';
+import LeaveForm from '@/components/leave/LeaveForm';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';

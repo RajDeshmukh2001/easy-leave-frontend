@@ -1,7 +1,6 @@
 import { useFormikContext, ErrorMessage } from 'formik';
-import DatePicker from '@/components/DatePicker';
 import type { DateRange } from 'react-day-picker';
-
+import DatePicker from '@/components/DatePicker';
 type DatePickerFieldProps = {
   name: string;
   label: string;
