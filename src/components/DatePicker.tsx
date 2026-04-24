@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import type { DateRange } from 'react-day-picker';
+import type { DateRange, Matcher } from 'react-day-picker';
 
 type DatePickerProps = {
   date?: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
   mode?: 'range' | 'single';
   className?: string;
+  disabledDays?: Matcher | Matcher[];
 };
 
 export const DatePicker = ({
@@ -19,6 +20,7 @@ export const DatePicker = ({
   setDate,
   mode,
   className,
+  disabledDays = [{ before: startOfMonth(new Date()) }, { dayOfWeek: [0, 6] }],
 }: DatePickerProps): React.JSX.Element => {
   const today = new Date();
 
@@ -57,7 +59,7 @@ export const DatePicker = ({
             selected={date}
             onSelect={setDate}
             numberOfMonths={1}
-            disabled={[{ before: startOfMonth(today) }, { dayOfWeek: [0, 6] }]}
+            disabled={disabledDays}
           />
         ) : (
           <Calendar
@@ -66,7 +68,7 @@ export const DatePicker = ({
             selected={date?.from}
             onSelect={handleSingleSelect}
             numberOfMonths={1}
-            disabled={[{ before: startOfMonth(today) }, { dayOfWeek: [0, 6] }]}
+            disabled={disabledDays}
           />
         )}
       </PopoverContent>

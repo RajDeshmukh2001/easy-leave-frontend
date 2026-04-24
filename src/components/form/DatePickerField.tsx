@@ -1,5 +1,5 @@
 import { useFormikContext, ErrorMessage } from 'formik';
-import type { DateRange } from 'react-day-picker';
+import type { DateRange, Matcher } from 'react-day-picker';
 import DatePicker from '@/components/DatePicker';
 type DatePickerFieldProps = {
   name: string;
@@ -7,6 +7,7 @@ type DatePickerFieldProps = {
   value: DateRange | undefined;
   mode?: 'range' | 'single';
   className?: string;
+  disabledDays?: Matcher | Matcher[];
 };
 
 const DatePickerField = ({
@@ -15,6 +16,7 @@ const DatePickerField = ({
   value,
   mode,
   className,
+  disabledDays,
 }: DatePickerFieldProps): React.JSX.Element => {
   const { setFieldValue } = useFormikContext<Record<string, unknown>>();
 
@@ -28,6 +30,7 @@ const DatePickerField = ({
         setDate={(newDate) => setFieldValue(name, newDate)}
         mode={mode}
         className={className ?? 'w-full cursor-pointer'}
+        disabledDays={disabledDays}
       />
       <ErrorMessage name={name} component="p" className="text-sm text-red-700" />
     </div>
