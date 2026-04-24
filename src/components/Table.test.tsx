@@ -76,4 +76,18 @@ describe('Table Component', () => {
     expect(onRowClick).toHaveBeenCalledOnce();
     expect(onRowClick).toHaveBeenCalledWith(mockData[0]);
   });
+  test('renders Show More button when hasMore is true', () => {
+    render(
+      <Table
+        data={mockData}
+        columns={mockColumns}
+        message="No data"
+        getRowKey={(row) => row.id}
+        hasMore={true}
+        onLoadMore={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: /show more/i })).toBeInTheDocument();
+  });
 });
