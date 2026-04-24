@@ -119,12 +119,12 @@ describe('useRequest hook', () => {
   });
 
   test('should set generic error when API call fails with non-Error value', async () => {
-    vi.spyOn(requestApi, 'fetchRequests').mockRejectedValue('Failed to load your requests');
+    vi.spyOn(requestApi, 'fetchRequests').mockRejectedValue('Failed to load request');
     const { result } = renderHook(() => useRequest({ status: 'ALL', scope: 'SELF', page: 0 }));
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
-    expect(result.current.error).toBe('Failed to load your requests');
+    expect(result.current.error).toBe('Failed to load request');
     expect(result.current.requests).toEqual([]);
   });
 });

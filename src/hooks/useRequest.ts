@@ -42,7 +42,7 @@ function useRequest({ status, scope, page }: UseRequestProps): UseRequestReturn 
       });
       setHasMore(!result.last);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load your requests');
+      setError(err instanceof Error ? err.message : 'Failed to load request');
     } finally {
       setLoading(false);
       setLoadingMore(false);
