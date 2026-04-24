@@ -86,8 +86,8 @@ const LeaveForm = ({
           <TextareaField
             name="description"
             id="description"
-            label="Reason"
-            placeholder="Reason for taking leave..."
+            label="Leave Description"
+            placeholder="Describe your reason for leave..."
             required={true}
           />
 

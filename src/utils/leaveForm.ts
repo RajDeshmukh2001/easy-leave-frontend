@@ -15,11 +15,11 @@ export const validateLeaveForm = (values: LeaveFormValues): FormikErrors<LeaveFo
   }
 
   if (!values.description.trim()) {
-    errors.description = 'Reason is required';
+    errors.description = 'Leave Description is required';
   }
 
   if (values.description.length > 1000) {
-    errors.description = 'Reason cannot be over 1000 characters';
+    errors.description = 'Leave Description cannot be over 1000 characters';
   }
 
   return errors;

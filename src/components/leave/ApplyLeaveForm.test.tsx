@@ -71,7 +71,7 @@ describe('ApplyLeaveForm', () => {
     expect(screen.getByLabelText(/Duration/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Start Time/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/End Time/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Reason/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Leave Description/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
   });
 
@@ -84,7 +84,7 @@ describe('ApplyLeaveForm', () => {
 
     expect(await screen.findByText('Leave category is required')).toBeInTheDocument();
     expect(screen.getByText('Please choose a date')).toBeInTheDocument();
-    expect(screen.getByText('Reason is required')).toBeInTheDocument();
+    expect(screen.getByText('Leave Description is required')).toBeInTheDocument();
   });
 
   test('displays error when description exceeds 1000 characters', async () => {
@@ -93,7 +93,7 @@ describe('ApplyLeaveForm', () => {
     const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
     await userEvent.selectOptions(leaveCategoryInput, '1');
 
-    const descriptionInput = screen.getByLabelText(/Reason/i);
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     const longDescription = 'a'.repeat(1001);
 
     fireEvent.change(descriptionInput, { target: { value: longDescription } });
@@ -101,7 +101,7 @@ describe('ApplyLeaveForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
 
     const validationErrors = await screen.findByTestId('errors-description-input');
-    expect(validationErrors.innerHTML).toBe('Reason cannot be over 1000 characters');
+    expect(validationErrors.innerHTML).toBe('Leave Description cannot be over 1000 characters');
   });
 
   test('submits form with correct data', async () => {
@@ -112,7 +112,7 @@ describe('ApplyLeaveForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText(/Reason/i);
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
@@ -138,7 +138,7 @@ describe('ApplyLeaveForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText(/Reason/i);
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
@@ -156,7 +156,7 @@ describe('ApplyLeaveForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText(/Reason/i);
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
@@ -193,7 +193,7 @@ describe('ApplyLeaveForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText(/Reason/i);
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
