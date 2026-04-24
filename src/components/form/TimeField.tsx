@@ -30,7 +30,7 @@ const TimeField = ({
         name={name}
         disabled={disabled}
         {...(value !== undefined && { value })}
-        className={`px-3 py-2 rounded-lg border border-neutral-300 bg-gray-100 text-sm cursor-not-allowed ${className}`}
+        className={`px-3 py-2 rounded-lg border border-neutral-300 bg-gray-100 text-sm ${className}`}
       />
     </div>
   );

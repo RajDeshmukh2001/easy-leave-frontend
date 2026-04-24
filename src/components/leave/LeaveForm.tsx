@@ -80,6 +80,7 @@ const LeaveForm = ({
                   ? addHours(values.startTime, FULL_DAY_DURATION_HOURS)
                   : addHours(values.startTime, HALF_DAY_DURATION_HOURS)
               }
+              className="cursor-not-allowed"
             />
           </div>
 
