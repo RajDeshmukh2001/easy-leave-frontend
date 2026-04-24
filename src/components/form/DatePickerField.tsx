@@ -7,6 +7,7 @@ type DatePickerFieldProps = {
   value: DateRange | undefined;
   mode?: 'range' | 'single';
   className?: string;
+  required?: boolean;
 };
 
 const DatePickerField = ({
@@ -15,13 +16,14 @@ const DatePickerField = ({
   value,
   mode,
   className,
+  required = false,
 }: DatePickerFieldProps): React.JSX.Element => {
   const { setFieldValue } = useFormikContext<Record<string, unknown>>();
 
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor="date-range-picker" id="date-range-label">
-        {label}
+        {label} {required && <span className="text-red-700">*</span>}
       </label>
       <DatePicker
         date={value}

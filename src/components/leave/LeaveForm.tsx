@@ -45,6 +45,7 @@ const LeaveForm = ({
             loading={loading}
             error={error}
             placeholder="Select a category"
+            required={true}
           />
 
           <DatePickerField
@@ -52,6 +53,7 @@ const LeaveForm = ({
             label="Date"
             mode={datePickerMode}
             value={values.dateRange}
+            required={true}
           />
 
           <SelectField
@@ -62,10 +64,11 @@ const LeaveForm = ({
               { value: 'FULL_DAY', label: 'Full Day' },
               { value: 'HALF_DAY', label: 'Half Day' },
             ]}
+            required={true}
           />
 
           <div className="flex justify-between gap-3">
-            <TimeField name="startTime" id="startTime" label="Start Time" />
+            <TimeField name="startTime" id="startTime" label="Start Time" required={true} />
 
             <TimeField
               name="endTime"
@@ -85,6 +88,7 @@ const LeaveForm = ({
             id="description"
             label="Reason"
             placeholder="Reason for taking leave..."
+            required={true}
           />
 
           <Button
