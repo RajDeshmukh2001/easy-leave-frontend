@@ -113,4 +113,16 @@ describe('useRaiseRequest', () => {
     expect(toast.error).toHaveBeenCalledWith('Failed to raise request');
     expect(mockResetForm).not.toHaveBeenCalled();
   });
+
+  test('shows unexpected error toast on non-axios error', async () => {
+    raiseRequestMock.mockRejectedValueOnce(new Error('Network failure'));
+
+    const { result } = renderHook(() => useRaiseRequest());
+    await act(async () => {
+      await result.current.handleSubmit(mockPastLeaveValues, mockHelpers);
+    });
+
+    expect(toast.error).toHaveBeenCalledWith('Unexpected Error Occurred');
+    expect(mockResetForm).not.toHaveBeenCalled();
+  });
 });
