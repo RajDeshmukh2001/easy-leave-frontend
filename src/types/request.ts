@@ -1,4 +1,4 @@
-import type { RequestDuration, RequestStatus, RequestType } from '@/constants/Request';
+import type { RequestDuration, RequestStatus, RequestType } from '@/constants/request';
 
 export type RequestResponse = {
   id: string;

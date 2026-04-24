@@ -2,7 +2,7 @@ import type { RequestResponse } from '@/types/request';
 import type { ApiResponse } from '@/types/response';
 import axiosInstance from './axiosInstance';
 import type { PageResponse } from '@/types/pageResponse';
-import type { RequestScope, RequestStatus } from '@/constants/Request';
+import type { RequestScope, RequestStatus } from '@/constants/request';
 
 type Props = {
   scope: RequestScope;

@@ -57,13 +57,10 @@ describe('useRequest hook', () => {
 
   test('should fetch requests successfully', async () => {
     vi.spyOn(requestApi, 'fetchRequests').mockResolvedValue(mockPageResponse);
-
     const { result } = renderHook(() => useRequest({ status: 'PENDING', scope: 'SELF', page: 0 }));
-
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
-
     expect(result.current.requests).toEqual(mockRequests);
     expect(result.current.error).toBeNull();
     expect(result.current.hasMore).toBe(false);
@@ -92,7 +89,6 @@ describe('useRequest hook', () => {
       });
 
     let page = 0;
-
     const { result, rerender } = renderHook(
       ({ page }) => useRequest({ status: 'PENDING', scope: 'SELF', page }),
       { initialProps: { page } },
@@ -101,12 +97,12 @@ describe('useRequest hook', () => {
       expect(result.current.requests.length).toBe(1);
     });
     expect(result.current.hasMore).toBe(true);
+
     page = 1;
     rerender({ page });
     await waitFor(() => {
       expect(result.current.requests.length).toBe(2);
     });
-
     expect(fetchSpy).toHaveBeenCalledTimes(2);
     expect(result.current.requests).toEqual([...mockRequests, ...mockNextRequests]);
     expect(result.current.hasMore).toBe(false);
@@ -114,26 +110,20 @@ describe('useRequest hook', () => {
 
   test('should set error when API call fails with Error object', async () => {
     vi.spyOn(requestApi, 'fetchRequests').mockRejectedValue(new Error('failed to fetch'));
-
     const { result } = renderHook(() => useRequest({ status: 'ALL', scope: 'SELF', page: 0 }));
-
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
-
     expect(result.current.error).toBe('failed to fetch');
     expect(result.current.requests).toEqual([]);
   });
 
   test('should set generic error when API call fails with non-Error value', async () => {
     vi.spyOn(requestApi, 'fetchRequests').mockRejectedValue('Failed to load your requests');
-
     const { result } = renderHook(() => useRequest({ status: 'ALL', scope: 'SELF', page: 0 }));
-
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
-
     expect(result.current.error).toBe('Failed to load your requests');
     expect(result.current.requests).toEqual([]);
   });
