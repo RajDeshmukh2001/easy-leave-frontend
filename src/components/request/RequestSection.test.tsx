@@ -1,9 +1,12 @@
 import type { RequestResponse } from '@/types/request';
+import type { LeaveResponse } from '@/types/leaves';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import * as requestApi from '@/api/request.api';
+import * as leaveApi from '../../api/leave.api';
 import userEvent from '@testing-library/user-event';
 import RequestSection from './RequestSection';
+import Leave from '@/pages/LeaveAndRequest';
 import { vi } from 'vitest';
 
 const mockRequests: RequestResponse[] = [
@@ -57,6 +60,27 @@ const renderRequestSection = () => {
   );
 };
 
+const mockLeaves: LeaveResponse[] = [
+  {
+    id: '1',
+    type: 'Annual Leave',
+    duration: 'FULL_DAY',
+    date: '2026-10-01',
+    applyOn: '2026-09-01',
+    employeeName: 'Rakshit Saxena',
+    startTime: '09:00',
+    reason: 'Personal work',
+  },
+];
+
+const renderLeavePage = () => {
+  render(
+    <MemoryRouter>
+      <Leave />
+    </MemoryRouter>,
+  );
+};
+
 describe('RequestSection Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -101,6 +125,7 @@ describe('RequestSection Component', () => {
       });
     });
   });
+
   test('loads more requests when Show More is clicked', async () => {
     const firstPage = {
       content: [mockRequests[0]],
@@ -126,10 +151,14 @@ describe('RequestSection Component', () => {
       .spyOn(requestApi, 'fetchRequests')
       .mockResolvedValueOnce(firstPage)
       .mockResolvedValueOnce(secondPage);
+
     renderRequestSection();
+
     expect(await screen.findByText('Past Leave')).toBeInTheDocument();
+
     const button = await screen.findByRole('button', { name: 'Show More' });
     await userEvent.click(button);
+
     await waitFor(() => {
       expect(fetchSpy).toHaveBeenLastCalledWith({
         status: 'ALL',
@@ -137,6 +166,7 @@ describe('RequestSection Component', () => {
         page: 1,
       });
     });
+
     expect(await screen.findAllByText('Past Leave')).toHaveLength(2);
   });
 
@@ -144,5 +174,51 @@ describe('RequestSection Component', () => {
     vi.spyOn(requestApi, 'fetchRequests').mockRejectedValue(new Error('Failed to fetch requests'));
     renderRequestSection();
     expect(await screen.findByText('Failed to fetch requests')).toBeInTheDocument();
+  });
+});
+
+describe('Leave Page Component', () => {
+  beforeEach(() => {
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+  });
+
+  test('renders Leave and Raise Request tab buttons', () => {
+    renderLeavePage();
+    expect(screen.getByRole('button', { name: 'Leave' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Raise Request' })).toBeInTheDocument();
+  });
+
+  test('Leave tab is active by default', () => {
+    renderLeavePage();
+    expect(screen.getByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
+  });
+
+  test('switching to Raise Request tab shows RaiseRequestForm', async () => {
+    renderLeavePage();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Request Type')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Submit Leave' })).not.toBeInTheDocument();
+    });
+  });
+
+  test('switching to Raise Request tab hides leaves table', async () => {
+    renderLeavePage();
+    await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
+    await waitFor(() => {
+      expect(screen.queryByText('My Leaves')).not.toBeInTheDocument();
+    });
+  });
+
+  test('switching back to Leave tab shows leaves table again', async () => {
+    renderLeavePage();
+    await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Leave' }));
+    await waitFor(() => {
+      expect(screen.getByText('My Leaves')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
+    });
   });
 });
