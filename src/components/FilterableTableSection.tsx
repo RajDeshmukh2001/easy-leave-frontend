@@ -20,6 +20,9 @@ type FilterableTableSectionProps<T> = {
   getRowKey: (row: T) => string | number;
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  loadingMore?: boolean;
 };
 
 function FilterableTableSection<T>({
@@ -34,6 +37,9 @@ function FilterableTableSection<T>({
   getRowKey,
   onRowClick,
   emptyMessage = 'No records found.',
+  hasMore,
+  onLoadMore,
+  loadingMore,
 }: FilterableTableSectionProps<T>): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-fit shadow-xs border border-neutral-200">
@@ -54,6 +60,9 @@ function FilterableTableSection<T>({
           message={emptyMessage}
           getRowKey={getRowKey}
           onRowClick={onRowClick}
+          hasMore={hasMore}
+          onLoadMore={onLoadMore}
+          loadingMore={loadingMore}
         />
       )}
     </div>

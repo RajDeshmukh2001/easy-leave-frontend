@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import Loading from './Loading';
 
 type Column<T> = {
   header: string;
@@ -11,6 +12,9 @@ type TableProps<T> = {
   message: string;
   getRowKey: (row: T) => string | number;
   onRowClick?: (row: T) => void;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  loadingMore?: boolean;
 };
 
 function Table<T>({
@@ -19,6 +23,9 @@ function Table<T>({
   message,
   getRowKey,
   onRowClick,
+  hasMore,
+  onLoadMore,
+  loadingMore,
 }: TableProps<T>): React.JSX.Element {
   return (
     <div className="w-full overflow-x-auto rounded-b-2xl">
@@ -54,6 +61,19 @@ function Table<T>({
             <tr>
               <td colSpan={columns.length} className="text-center py-4 bg-white">
                 {message}
+              </td>
+            </tr>
+          )}
+          {hasMore && data.length > 0 && (
+            <tr>
+              <td colSpan={columns.length} className="text-center py-4 bg-white">
+                <button
+                  onClick={onLoadMore}
+                  disabled={loadingMore}
+                  className="px-4 py-2 bg-sidebar hover:bg-sidebar/80 text-white rounded-md disabled:opacity-50"
+                >
+                  {loadingMore ? <Loading /> : 'Show More'}
+                </button>
               </td>
             </tr>
           )}
