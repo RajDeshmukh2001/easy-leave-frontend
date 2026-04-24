@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { RequestScope, RequestStatus } from '@/constants/Request';
+import type { RequestScope, RequestStatus } from '@/constants/request';
 import type { RequestResponse } from '@/types/request';
 import { fetchRequests } from '@/api/request.api';
 
@@ -35,9 +35,9 @@ function useRequest({ status, scope, page }: UseRequestProps): UseRequestReturn 
       setError(null);
       const result = await fetchRequests({ status, scope, page });
       setRequests((prev) => {
-        if (page === 0) return result.content;
-        const existingIds = new Set(prev.map((request) => request.id));
-        const newItems = result.content.filter((request) => !existingIds.has(request.id));
+        if (page === 0 || prev.length === 0) return result.content;
+        const existingIds = new Set(prev.map((r) => r.id));
+        const newItems = result.content.filter((r) => !existingIds.has(r.id));
         return [...prev, ...newItems];
       });
       setHasMore(!result.last);

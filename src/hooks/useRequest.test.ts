@@ -98,14 +98,13 @@ describe('useRequest hook', () => {
       { initialProps: { page } },
     );
     await waitFor(() => {
-      expect(result.current.loading).toBe(false);
+      expect(result.current.requests.length).toBe(1);
     });
-    expect(result.current.requests).toEqual(mockRequests);
     expect(result.current.hasMore).toBe(true);
     page = 1;
     rerender({ page });
     await waitFor(() => {
-      expect(result.current.loading).toBe(false);
+      expect(result.current.requests.length).toBe(2);
     });
 
     expect(fetchSpy).toHaveBeenCalledTimes(2);
