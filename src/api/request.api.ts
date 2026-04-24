@@ -1,4 +1,4 @@
-import type { RequestProps, RequestResponse } from '@/types/request';
+import { REQUEST_PAGE_SIZE, type RequestProps, type RequestResponse } from '@/types/request';
 import type { ApiResponse } from '@/types/response';
 import axiosInstance from './axiosInstance';
 import type { PageResponse } from '@/types/pageResponse';
@@ -8,7 +8,7 @@ export const fetchRequests = async ({
   status,
   page,
 }: RequestProps): Promise<PageResponse<RequestResponse>> => {
-  const params: Record<string, string | number> = { scope, page, size: 20 };
+  const params: Record<string, string | number> = { scope, page, size: REQUEST_PAGE_SIZE };
   if (status && status !== 'ALL') {
     params.status = status;
   }

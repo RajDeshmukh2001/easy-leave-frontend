@@ -1,6 +1,8 @@
 import type { RequestScope, RequestStatus, RequestType } from '@/constants/request';
 import type { LeaveDuration } from './leaves';
 
+export const REQUEST_PAGE_SIZE = 20;
+
 export type RequestProps = {
   scope: RequestScope;
   status?: RequestStatus;
