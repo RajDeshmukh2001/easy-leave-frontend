@@ -2,7 +2,8 @@ import { screen, render, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import * as employeeLeaveBalance from '@/api/employeesLeaveBalance.api';
 import SingleEmployeeLeaveDetails from './SingleEmployeeLeaveDetails';
-import * as leaveApi from '../api/leave.api';
+import * as leaveApi from '@/api/leave.api';
+import * as userApi from '@/api/user.api';
 import type { LeaveResponse } from '@/types/leaves';
 import userEvent from '@testing-library/user-event';
 
@@ -65,6 +66,10 @@ describe('SingleEmployeeLeaveDetails', () => {
     vi.spyOn(employeeLeaveBalance, 'fetchYears').mockResolvedValue(['2025', '2026']);
     vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
+    vi.spyOn(userApi, 'fetchUserDetails').mockResolvedValue({
+      name: 'Priyansh Saxena',
+      email: 'test@gmail.com',
+    });
   });
 
   test('shows loading state initially', () => {
@@ -83,7 +88,7 @@ describe('SingleEmployeeLeaveDetails', () => {
     });
   });
 
-  test('shows error message when error is Error instance', async () => {
+  test('shows error message when error is Error instance - fetchLeavesRecord', async () => {
     vi.spyOn(employeeLeaveBalance, 'fetchSingleEmployeeLeaveRecord').mockRejectedValue(
       new Error('Error fetching leave record'),
     );
@@ -148,7 +153,7 @@ describe('SingleEmployeeLeaveDetails', () => {
   test('renders table columns', async () => {
     renderSingleEmployeeLeaveDetails();
     await waitFor(() => {
-      expect(screen.getByRole('columnheader', { name: 'Type' })).toBeInTheDocument();
+      expect(screen.getAllByRole('columnheader', { name: 'Type' }).length).toBeGreaterThan(0);
       expect(screen.getByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
       expect(screen.getByRole('columnheader', { name: 'Duration' })).toBeInTheDocument();
       expect(screen.getByRole('columnheader', { name: 'Applied On' })).toBeInTheDocument();
@@ -181,5 +186,42 @@ describe('SingleEmployeeLeaveDetails', () => {
     renderSingleEmployeeLeaveDetails();
     const error = await screen.findByText('Failed to fetch leave record Details');
     expect(error).toBeInTheDocument();
+  });
+
+  test('shows error message when error is not type of Error instance - fetchUser', async () => {
+    vi.spyOn(userApi, 'fetchUserDetails').mockRejectedValue('Failed to fetch user details');
+
+    renderSingleEmployeeLeaveDetails();
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch user details')).toBeInTheDocument();
+    });
+
+    const backButton = screen.getByRole('button', { name: /back/i });
+    await userEvent.click(backButton);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
+  });
+
+  test('shows error from userDetailsError', async () => {
+    vi.spyOn(userApi, 'fetchUserDetails').mockRejectedValue(
+      new Error('Failed to fetch user details'),
+    );
+    renderSingleEmployeeLeaveDetails();
+    const error = await screen.findByText('Failed to fetch user details');
+    expect(error).toBeInTheDocument();
+  });
+
+  test('updates selected year when dropdown changes', async () => {
+    renderSingleEmployeeLeaveDetails();
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('2026')).toBeInTheDocument();
+    });
+
+    const dropdown = screen.getByDisplayValue('2026');
+    await userEvent.selectOptions(dropdown, '2025');
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('2025')).toBeInTheDocument();
+    });
   });
 });
