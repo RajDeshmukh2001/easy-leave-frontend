@@ -107,8 +107,6 @@ describe('RaiseRequestForm', () => {
     expect(screen.getByLabelText('End Time')).toBeInTheDocument();
   });
 
-  // // ─── End time computed ────────────────────────────────────────────
-
   test('end time is disabled', async () => {
     renderRaiseRequestForm();
     await userEvent.selectOptions(screen.getByLabelText('Request Type'), 'PAST_LEAVE');
@@ -157,7 +155,7 @@ describe('RaiseRequestForm', () => {
     renderRaiseRequestForm();
     await userEvent.selectOptions(screen.getByLabelText('Request Type'), 'COMPENSATORY_OFF');
     fireEvent.change(screen.getByLabelText('Reason'), {
-      target: { value: 'a'.repeat(1001) },
+      target: { value: 'a'.repeat(1500) },
     });
     await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
     expect(await screen.findByText('Reason cannot be over 1000 characters')).toBeInTheDocument();
