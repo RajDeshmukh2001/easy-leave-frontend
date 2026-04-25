@@ -12,6 +12,7 @@ import DatePickerField from '@/components/form/DatePickerField';
 import TextareaField from '@/components/form/TextareaField';
 import TimeField from '@/components/form/TimeField';
 import { TriangleAlert } from 'lucide-react';
+import { startOfMonth } from 'date-fns';
 
 type LeaveFormProps = {
   initialValues: LeaveFormValues;
@@ -42,6 +43,12 @@ const LeaveForm = ({
   const { categories, loading, error } = useLeaveCategories();
   const { holidays, loading: holidaysLoading, error: holidaysError } = useHolidays('OPTIONAL');
 
+  const filteredHolidays = holidays.filter((holiday) => {
+    const holidayDate = new Date(holiday.date);
+    const firstDayOfCurrentMonth = startOfMonth(new Date());
+    return holidayDate >= firstDayOfCurrentMonth;
+  });
+
   return (
     <Formik
       initialValues={initialValues}
@@ -69,7 +76,7 @@ const LeaveForm = ({
               name="holidayId"
               id="holidayId"
               label="Select Optional Holiday"
-              options={holidays.map((holiday) => ({
+              options={filteredHolidays.map((holiday) => ({
                 value: holiday.id,
                 label: `${holiday.name} (${holiday.date})`,
               }))}
