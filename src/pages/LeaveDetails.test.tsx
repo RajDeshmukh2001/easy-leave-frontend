@@ -263,4 +263,12 @@ describe('LeaveDetails Page Component', () => {
     await cancelLeave();
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
   });
+
+  test('does not change holiday mode when leave type select is changed', async () => {
+    renderWithRouter();
+
+    await waitFor(() => expect(screen.getByText('Leave Details')).toBeInTheDocument());
+    await userEvent.selectOptions(screen.getByLabelText('Leave Type'), 'holiday');
+    expect(screen.getByLabelText('Leave Category')).toBeInTheDocument();
+  });
 });
