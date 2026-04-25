@@ -36,8 +36,8 @@ const ApplyLeaveForm = ({
       const selectedHoliday = holidays.find((holiday) => holiday.id === values.holidayId);
       leaveData = {
         holidayId: values.holidayId,
-        dates: selectedHoliday ? [selectedHoliday.date] : [],
-        description: selectedHoliday?.name || '',
+        dates: [selectedHoliday!.date],
+        description: selectedHoliday!.name,
         duration: 'FULL_DAY',
         startTime: values.startTime,
       };
