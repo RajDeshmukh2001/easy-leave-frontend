@@ -101,6 +101,7 @@ const LeaveDetails = (): React.JSX.Element => {
 
   const updateLeaveInitialValues: LeaveFormValues = {
     leaveCategoryId: matchedCategory?.id || '',
+    holidayId: '',
     dateRange: { from: parseLocalDate(leave.date), to: parseLocalDate(leave.date) },
     duration: leave.duration,
     startTime: leave.startTime,
@@ -124,6 +125,8 @@ const LeaveDetails = (): React.JSX.Element => {
           handleCancelLeave={handleCancelLeave}
           cancelLabel="Cancel Leave"
           disableSubmit={new Date(leave.date) < new Date()}
+          isHolidayMode={false}
+          setIsHolidayMode={() => {}}
         />
       </div>
     </div>
