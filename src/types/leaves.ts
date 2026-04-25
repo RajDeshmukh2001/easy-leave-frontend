@@ -12,7 +12,8 @@ export type LeaveResponse = {
 };
 
 export type LeaveApplicationRequest = {
-  leaveCategoryId: string;
+  leaveCategoryId?: string;
+  holidayId?: string;
   dates: string[];
   duration: LeaveDuration;
   startTime: string;
