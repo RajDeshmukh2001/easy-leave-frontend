@@ -32,7 +32,7 @@ export const raiseRequest = async (
     payload,
   );
   if (!data.success) {
-    throw new Error(data.message || 'Failed to raise request');
+    throw new Error(data.message || 'Failed to raise request(s)');
   }
   return data.data;
 }

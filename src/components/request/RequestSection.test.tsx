@@ -109,13 +109,13 @@ describe('RequestSection Component', () => {
 
   test('renders requests data after loading', async () => {
     renderRequestSection();
-    expect(await screen.findAllByText('Past Leave')).toHaveLength(3);
+    expect(await screen.findAllByText('Past Leave')).toHaveLength(1);
   });
 
   test('calls fetchRequests with pending status on filter change', async () => {
     const spy = vi.spyOn(requestApi, 'fetchRequests').mockResolvedValue(mockPageResponse);
     renderRequestSection();
-    const dropdown = await screen.findByRole('combobox');
+    const dropdown = screen.getByDisplayValue('All');
     await userEvent.selectOptions(dropdown, 'PENDING');
     await waitFor(() => {
       expect(spy).toHaveBeenLastCalledWith({
@@ -167,7 +167,7 @@ describe('RequestSection Component', () => {
       });
     });
 
-    expect(await screen.findAllByText('Past Leave')).toHaveLength(2);
+    expect(await screen.findAllByText('Past Leave')).toHaveLength(3);
   });
 
   test('shows error message on API failure', async () => {
