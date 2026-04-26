@@ -85,7 +85,7 @@ const RaiseRequestFormFields = ({
           <DatePickerField
             name="dateRange"
             label="Leave Date(s)"
-            mode="range"
+            mode={isPastLeave ? 'range' : 'single'}
             value={values.dateRange}
             disabledDays={isPastLeave ? pastLeaveDisabled : compOffDisabled}
           />
