@@ -43,7 +43,10 @@ export type RaiseRequestPayload = {
 export type RaiseRequestResponse = {
   id: string;
   requestType: RequestType;
-  dates: string[];
+  leaveCategoryName: string | null;
+  date: string;
+  startTime: string;
   duration: LeaveDuration;
+  description: string;
   status: RequestStatus;
 };

@@ -37,13 +37,18 @@ const mockCompOffValues: RaiseRequestFormValues = {
   description: 'Worked on Saturday',
 };
 
-const mockRaiseRequestResponse: RaiseRequestResponse = {
-  id: '123',
-  requestType: 'PAST_LEAVE',
-  dates: ['2026-04-24'],
-  duration: 'FULL_DAY',
-  status: 'PENDING',
-};
+const mockRaiseRequestResponse: RaiseRequestResponse[] = [
+  {
+    id: '123',
+    requestType: 'PAST_LEAVE',
+    leaveCategoryName: 'Annual Leave',
+    date: '2026-03-10',
+    startTime: '10:00:00',
+    duration: 'FULL_DAY',
+    description: 'Sick leave',
+    status: 'PENDING',
+  },
+];
 
 describe('useRaiseRequest', () => {
   beforeEach(() => {
