@@ -24,8 +24,10 @@ export const fetchRequests = async ({
   return data.data;
 };
 
-export const raiseRequest = async (payload: RaiseRequestPayload): Promise<RaiseRequestResponse> => {
-  const { data } = await axiosInstance.post<ApiResponse<RaiseRequestResponse>>(
+export const raiseRequest = async (
+  payload: RaiseRequestPayload,
+): Promise<RaiseRequestResponse[]> => {
+  const { data } = await axiosInstance.post<ApiResponse<RaiseRequestResponse[]>>(
     '/api/requests',
     payload,
   );
