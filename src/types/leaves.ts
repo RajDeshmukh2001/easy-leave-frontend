@@ -23,7 +23,7 @@ export type LeaveApplicationRequest = {
 export type LeaveApplicationResponse = {
   id: string;
   date: string;
-  leaveCategoryName: string;
+  type: string;
   duration: LeaveDuration;
   startTime: string | null;
   description: string | null;
