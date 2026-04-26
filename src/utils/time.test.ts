@@ -33,6 +33,14 @@ describe('getDatesBetween', () => {
 
     expect(getDatesBetween(range)).toEqual(['2026-04-03', '2026-04-06']);
   });
+
+  test('should return only weekend dates when includeWeekends is true', () => {
+    const range: DateRange = {
+      from: new Date('2026-04-03'),
+      to: new Date('2026-04-06'),
+    };
+    expect(getDatesBetween(range, true)).toEqual(['2026-04-04', '2026-04-05']);
+  });
 });
 
 describe('addHours', () => {

@@ -21,7 +21,7 @@ export const useRaiseRequest = (): UseRaiseRequestReturn => {
 
     const payload: RaiseRequestPayload = {
       requestType: values.requestType as RequestType,
-      dates: getDatesBetween(values.dateRange),
+      dates: getDatesBetween(values.dateRange, values.requestType === 'COMPENSATORY_OFF'),
       duration: values.duration,
       startTime: values.startTime,
       description: values.description,
