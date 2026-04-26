@@ -32,7 +32,7 @@ const mockLeave: LeaveResponse = {
 const mockUpdateLeaveResponse: LeaveApplicationResponse = {
   id: '123',
   date: new Date(2026, 3, 6).toISOString(),
-  leaveCategoryName: 'Annual Leave',
+  type: 'Annual Leave',
   duration: 'FULL_DAY',
   startTime: '10:00',
   description: 'Test',
