@@ -298,4 +298,13 @@ describe('LeaveDetails Page Component', () => {
       expect(screen.getByRole('button', { name: /update leave/i })).not.toBeDisabled();
     });
   });
+
+  test('renders informational message with cancel button', () => {
+    renderWithRouter();
+
+    waitFor(() => {
+      expect(screen.getByText('Cancelling leave cannot be undone.')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /cancel leave/i })).toBeInTheDocument();
+    });
+  });
 });

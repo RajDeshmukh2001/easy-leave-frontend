@@ -10,6 +10,7 @@ import useLeaveCategories from '@/hooks/useLeaveCategories';
 import DatePickerField from '@/components/form/DatePickerField';
 import TextareaField from '@/components/form/TextareaField';
 import TimeField from '@/components/form/TimeField';
+import { TriangleAlert } from 'lucide-react';
 
 type LeaveFormProps = {
   initialValues: LeaveFormValues;
@@ -103,15 +104,21 @@ const LeaveForm = ({
           </Button>
 
           {handleCancelLeave && (
-            <Button
-              className="w-full cursor-pointer py-5"
-              type="button"
-              variant="destructive"
-              onClick={handleCancelLeave}
-              disabled={disableSubmit}
-            >
-              {cancelLabel}
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button
+                className="w-full cursor-pointer py-5"
+                type="button"
+                variant="destructive"
+                onClick={handleCancelLeave}
+                disabled={disableSubmit}
+              >
+                {cancelLabel}
+              </Button>
+              <div className="flex gap-2 p-2 text-sm text-gray-800">
+                <TriangleAlert size={18} />
+                Cancelling leave cannot be undone.
+              </div>
+            </div>
           )}
         </Form>
       )}
