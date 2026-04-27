@@ -123,6 +123,7 @@ const LeaveDetails = (): React.JSX.Element => {
           datePickerMode="single"
           handleCancelLeave={handleCancelLeave}
           cancelLabel="Cancel Leave"
+          disableSubmit={new Date(leave.date) < new Date()}
         />
       </div>
     </div>

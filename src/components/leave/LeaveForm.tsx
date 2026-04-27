@@ -21,6 +21,7 @@ type LeaveFormProps = {
   datePickerMode?: 'range' | 'single';
   handleCancelLeave?: () => void;
   cancelLabel?: string;
+  disableSubmit?: boolean;
 };
 
 const LeaveForm = ({
@@ -30,6 +31,7 @@ const LeaveForm = ({
   datePickerMode = 'range',
   handleCancelLeave,
   cancelLabel = 'Cancel Leave',
+  disableSubmit = false,
 }: LeaveFormProps): React.JSX.Element => {
   const { categories, loading, error } = useLeaveCategories();
 
@@ -94,7 +96,7 @@ const LeaveForm = ({
 
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || disableSubmit}
             className="w-full bg-(--technogise-blue) cursor-pointer py-5"
           >
             {submitLabel}
@@ -106,6 +108,7 @@ const LeaveForm = ({
               type="button"
               variant="destructive"
               onClick={handleCancelLeave}
+              disabled={disableSubmit}
             >
               {cancelLabel}
             </Button>
