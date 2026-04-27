@@ -1,0 +1,148 @@
+import type { RequestResponse } from '@/types/request';
+import { MemoryRouter } from 'react-router-dom';
+import { render, screen, waitFor } from '@testing-library/react';
+import * as requestApi from '@/api/request.api';
+import userEvent from '@testing-library/user-event';
+import RequestSection from './RequestSection';
+import { vi } from 'vitest';
+
+const mockRequests: RequestResponse[] = [
+  {
+    id: '1',
+    date: '2026-04-22',
+    description: 'Sick leave',
+    employeeName: 'Priyansh Saxena',
+    status: 'PENDING',
+    type: 'PAST_LEAVE',
+    duration: 'FULL_DAY',
+    appliedDate: '2026-04-21',
+  },
+  {
+    id: '2',
+    date: '2026-04-22',
+    description: 'Sick leave',
+    employeeName: 'Rakshit Saxena',
+    status: 'APPROVED',
+    type: 'PAST_LEAVE',
+    duration: 'FULL_DAY',
+    appliedDate: '2026-04-21',
+  },
+  {
+    id: '3',
+    date: '2026-04-22',
+    description: 'Sick leave',
+    employeeName: 'Pruthviraj Deshmukh',
+    status: 'REJECTED',
+    type: 'PAST_LEAVE',
+    duration: 'FULL_DAY',
+    appliedDate: '2026-04-21',
+  },
+];
+
+const mockPageResponse = {
+  content: mockRequests,
+  first: true,
+  last: true,
+  totalPages: 1,
+  totalElements: 1,
+  size: 20,
+  number: 0,
+};
+
+const renderRequestSection = () => {
+  render(
+    <MemoryRouter>
+      <RequestSection />
+    </MemoryRouter>,
+  );
+};
+
+describe('RequestSection Component', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(requestApi, 'fetchRequests').mockResolvedValue(mockPageResponse);
+  });
+
+  test('shows loading state initially', () => {
+    renderRequestSection();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
+  test('renders filter dropdown with default value', async () => {
+    renderRequestSection();
+    expect(await screen.findByDisplayValue('All')).toBeInTheDocument();
+  });
+
+  test('renders table columns', async () => {
+    renderRequestSection();
+    await waitFor(() => {
+      expect(screen.getByRole('columnheader', { name: 'Type' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Duration' })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: 'Status' })).toBeInTheDocument();
+    });
+  });
+
+  test('renders requests data after loading', async () => {
+    renderRequestSection();
+    expect(await screen.findAllByText('Past Leave')).toHaveLength(3);
+  });
+
+  test('calls fetchRequests with pending status on filter change', async () => {
+    const spy = vi.spyOn(requestApi, 'fetchRequests').mockResolvedValue(mockPageResponse);
+    renderRequestSection();
+    const dropdown = await screen.findByRole('combobox');
+    await userEvent.selectOptions(dropdown, 'PENDING');
+    await waitFor(() => {
+      expect(spy).toHaveBeenLastCalledWith({
+        status: 'PENDING',
+        scope: 'SELF',
+        page: 0,
+      });
+    });
+  });
+  test('loads more requests when Show More is clicked', async () => {
+    const firstPage = {
+      content: [mockRequests[0]],
+      first: true,
+      last: false,
+      totalPages: 2,
+      totalElements: 2,
+      size: 1,
+      number: 0,
+    };
+
+    const secondPage = {
+      content: [mockRequests[1]],
+      first: false,
+      last: true,
+      totalPages: 2,
+      totalElements: 2,
+      size: 1,
+      number: 1,
+    };
+
+    const fetchSpy = vi
+      .spyOn(requestApi, 'fetchRequests')
+      .mockResolvedValueOnce(firstPage)
+      .mockResolvedValueOnce(secondPage);
+    renderRequestSection();
+    expect(await screen.findByText('Past Leave')).toBeInTheDocument();
+    const button = await screen.findByRole('button', { name: 'Show More' });
+    await userEvent.click(button);
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenLastCalledWith({
+        status: 'ALL',
+        scope: 'SELF',
+        page: 1,
+      });
+    });
+    expect(await screen.findAllByText('Past Leave')).toHaveLength(2);
+  });
+
+  test('shows error message on API failure', async () => {
+    vi.spyOn(requestApi, 'fetchRequests').mockRejectedValue(new Error('Failed to fetch requests'));
+    renderRequestSection();
+    expect(await screen.findByText('Failed to fetch requests')).toBeInTheDocument();
+  });
+});
