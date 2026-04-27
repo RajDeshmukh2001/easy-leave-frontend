@@ -44,6 +44,15 @@ function RequestSection(): React.JSX.Element {
       },
     },
   ];
+  const onFilterChange = (val: string) => {
+    setStatus(val as RequestStatus);
+  };
+
+  const onLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  const getRowKey = (request: RequestResponse) => request.id;
 
   return (
     <div className="w-full md:max-h-150 flex flex-col py-4">
@@ -56,11 +65,11 @@ function RequestSection(): React.JSX.Element {
           error={error}
           filterOptions={REQUEST_STATUS_OPTIONS}
           filterValue={status}
-          onFilterChange={(val) => setStatus(val as RequestStatus)}
-          getRowKey={(request: RequestResponse) => request.id}
+          onFilterChange={onFilterChange}
+          getRowKey={getRowKey}
           emptyMessage="No Request(s) Found"
           hasMore={hasMore}
-          onLoadMore={() => setPage((prev) => prev + 1)}
+          onLoadMore={onLoadMore}
           loadingMore={loadingMore}
         />
       </div>
