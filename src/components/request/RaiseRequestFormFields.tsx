@@ -54,6 +54,7 @@ const RaiseRequestFormFields = ({
         name="requestType"
         id="requestType"
         label="Request Type"
+        required
         options={[
           { value: 'PAST_LEAVE', label: 'Past Leave' },
           { value: 'COMPENSATORY_OFF', label: 'Compensatory Off' },
@@ -61,7 +62,7 @@ const RaiseRequestFormFields = ({
         placeholder="Select request type"
       />
 
-      {isPastLeave && <LeaveCategorySelect />}
+      {isPastLeave && <LeaveCategorySelect required />}
 
       {values.requestType !== '' && (
         <>
@@ -71,12 +72,14 @@ const RaiseRequestFormFields = ({
             mode={isPastLeave ? 'range' : 'single'}
             value={values.dateRange}
             disabledDays={isPastLeave ? pastLeaveDisabled : compOffDisabled}
+            required
           />
 
           <SelectField
             name="duration"
             id="duration"
             label="Duration"
+            required
             options={[
               { value: 'FULL_DAY', label: 'Full Day' },
               { value: 'HALF_DAY', label: 'Half Day' },
@@ -84,7 +87,7 @@ const RaiseRequestFormFields = ({
           />
 
           <div className="flex justify-between gap-3">
-            <TimeField name="startTime" id="startTime" label="Start Time" />
+            <TimeField name="startTime" id="startTime" label="Start Time" required />
 
             <TimeField
               name="endTime"
@@ -105,6 +108,7 @@ const RaiseRequestFormFields = ({
         name="description"
         id="description"
         label="Reason"
+        required
         placeholder={'Provide a reason for your request...'}
       />
 

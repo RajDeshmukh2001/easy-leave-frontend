@@ -6,6 +6,7 @@ type TextareaFieldProps = {
   label: string;
   placeholder?: string;
   rows?: number;
+  required?: boolean;
 };
 
 const TextareaField = ({
@@ -14,10 +15,14 @@ const TextareaField = ({
   label,
   placeholder = '',
   rows = 4,
+  required = false,
 }: TextareaFieldProps): React.JSX.Element => {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>
+        {label}
+        {required && <span className="text-red-700">*</span>}
+      </label>
       <Field
         as="textarea"
         id={id}
