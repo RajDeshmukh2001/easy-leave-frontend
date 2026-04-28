@@ -16,7 +16,11 @@ const initialValues: RaiseRequestFormValues = {
   description: '',
 };
 
-const ApplyRaiseRequestForm = (): React.JSX.Element => {
+const ApplyRaiseRequestForm = ({
+  refreshRequests,
+}: {
+  refreshRequests: () => Promise<void>;
+}): React.JSX.Element => {
   const handleSubmit = async (
     values: RaiseRequestFormValues,
     { resetForm }: FormikHelpers<RaiseRequestFormValues>,
@@ -35,6 +39,7 @@ const ApplyRaiseRequestForm = (): React.JSX.Element => {
     try {
       await raiseRequest(payload);
       toast.success('Request raised successfully');
+      await refreshRequests();
       resetForm();
     } catch (error) {
       if (isAxiosError(error)) {
