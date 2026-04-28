@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 function AllEmployeesLeaveBalance(): React.JSX.Element {
   const [years, setYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>('');
-  const { employees, loading, error, hasMore, loadMore } = useEmployeesLeaveBalance(selectedYear);
+  const { employees, loading, error } = useEmployeesLeaveBalance(selectedYear);
 
   const navigate = useNavigate();
 
@@ -46,6 +46,28 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
       ),
     },
   ];
+  const handleRowClick = (employee: EmployeeLeaveRecord): void => {
+    navigate(`/manager/employees/${employee.employeeId}`);
+  };
+
+  const getRowKey = (employee: EmployeeLeaveRecord): string | number => {
+    return employee.employeeId;
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center p-4">
+        <Loading />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center flex-col p-4">
+        <p className="p-3 text-red-700">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-col h-screen p-3">
@@ -60,31 +82,13 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
             />
           </div>
         </div>
-
-        {error && <p className="p-3 text-red-700">{error}</p>}
-
         <Table
           data={employees}
           columns={columns}
           message="No employee found"
-          getRowKey={(employee: EmployeeLeaveRecord) => employee.employeeId}
-          onRowClick={(employee: EmployeeLeaveRecord) =>
-            navigate(`/manager/employees/${employee.employeeId}`)
-          }
+          getRowKey={getRowKey}
+          onRowClick={handleRowClick}
         />
-
-        {loading && <Loading />}
-
-        {!loading && hasMore && (
-          <div className="flex justify-center p-4">
-            <button
-              onClick={loadMore}
-              className="px-4 py-2 text-sm bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50"
-            >
-              Load More
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
