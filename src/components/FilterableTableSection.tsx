@@ -2,6 +2,7 @@ import FilterDropdown from '@/components/FilterDropdown';
 import Loading from '@/components/Loading';
 import type { ReactNode } from 'react';
 import Table from '@/components/Table';
+import TableHeader from './TableHeader';
 
 type Column<T> = {
   header: string;
@@ -43,10 +44,13 @@ function FilterableTableSection<T>({
 }: FilterableTableSectionProps<T>): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-fit shadow-xs border border-neutral-200">
-      <div className="flex items-center p-3 justify-between bg-sidebar/98 rounded-t-2xl ">
-        <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold px-3 py-2">{title}</h1>
-
-        <FilterDropdown options={filterOptions} value={filterValue} onChange={onFilterChange} />
+      <div className="flex bg-white p-2 items-center justify-between rounded-2xl">
+        <TableHeader
+          title={title}
+          dropDownFilter={
+            <FilterDropdown options={filterOptions} value={filterValue} onChange={onFilterChange} />
+          }
+        />
       </div>
 
       {loading && <Loading />}

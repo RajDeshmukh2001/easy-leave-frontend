@@ -1,3 +1,4 @@
+import TableHeader from '@/components/TableHeader';
 import PageHeader from '../components/PageHeader';
 import Table from '../components/Table';
 import type { LeaveResponse } from '../types/leaves';
@@ -42,11 +43,7 @@ function Dashboard(): React.JSX.Element {
         pageSubtitle="Welcome to your dashboard! Here you can find an overview of your Leaves"
       />
       <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-        <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-          <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
-            Upcoming Leaves
-          </h1>
-        </div>
+        <TableHeader title="Upcoming Leaves" />
 
         {loading && <Loading />}
         {error && <p className="p-3 text-red-700">{error}</p>}
