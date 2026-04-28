@@ -10,6 +10,7 @@ import useLeaveCategories from '@/hooks/useLeaveCategories';
 import DatePickerField from '@/components/form/DatePickerField';
 import TextareaField from '@/components/form/TextareaField';
 import TimeField from '@/components/form/TimeField';
+import { TriangleAlert } from 'lucide-react';
 
 type LeaveFormProps = {
   initialValues: LeaveFormValues;
@@ -21,6 +22,7 @@ type LeaveFormProps = {
   datePickerMode?: 'range' | 'single';
   handleCancelLeave?: () => void;
   cancelLabel?: string;
+  disableSubmit?: boolean;
 };
 
 const LeaveForm = ({
@@ -30,6 +32,7 @@ const LeaveForm = ({
   datePickerMode = 'range',
   handleCancelLeave,
   cancelLabel = 'Cancel Leave',
+  disableSubmit = false,
 }: LeaveFormProps): React.JSX.Element => {
   const { categories, loading, error } = useLeaveCategories();
 
@@ -45,6 +48,7 @@ const LeaveForm = ({
             loading={loading}
             error={error}
             placeholder="Select a category"
+            required={true}
           />
 
           <DatePickerField
@@ -52,6 +56,7 @@ const LeaveForm = ({
             label="Date"
             mode={datePickerMode}
             value={values.dateRange}
+            required={true}
           />
 
           <SelectField
@@ -62,10 +67,11 @@ const LeaveForm = ({
               { value: 'FULL_DAY', label: 'Full Day' },
               { value: 'HALF_DAY', label: 'Half Day' },
             ]}
+            required={true}
           />
 
           <div className="flex justify-between gap-3">
-            <TimeField name="startTime" id="startTime" label="Start Time" />
+            <TimeField name="startTime" id="startTime" label="Start Time" required={true} />
 
             <TimeField
               name="endTime"
@@ -77,33 +83,44 @@ const LeaveForm = ({
                   ? addHours(values.startTime, FULL_DAY_DURATION_HOURS)
                   : addHours(values.startTime, HALF_DAY_DURATION_HOURS)
               }
+              className="cursor-not-allowed"
             />
           </div>
 
           <TextareaField
             name="description"
             id="description"
-            label="Reason"
-            placeholder="Reason for taking leave..."
+            label="Leave Description"
+            placeholder="Describe your reason for leave..."
+            required={true}
           />
 
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || disableSubmit}
             className="w-full bg-(--technogise-blue) cursor-pointer py-5"
           >
             {submitLabel}
           </Button>
 
           {handleCancelLeave && (
-            <Button
-              className="w-full cursor-pointer py-5"
-              type="button"
-              variant="destructive"
-              onClick={handleCancelLeave}
-            >
-              {cancelLabel}
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button
+                className="w-full cursor-pointer py-5"
+                type="button"
+                variant="destructive"
+                onClick={handleCancelLeave}
+                disabled={disableSubmit}
+              >
+                {cancelLabel}
+              </Button>
+              {!disableSubmit && (
+                <div className="flex gap-2 p-2 text-sm text-gray-800">
+                  <TriangleAlert size={18} />
+                  Cancelling leave cannot be undone.
+                </div>
+              )}
+            </div>
           )}
         </Form>
       )}

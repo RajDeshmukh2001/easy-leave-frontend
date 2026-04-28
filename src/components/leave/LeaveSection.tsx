@@ -43,9 +43,7 @@ function LeaveSection(): React.JSX.Element {
   ];
 
   const handleRowClick = (leave: LeaveResponse): void => {
-    if (new Date(leave.date) > new Date()) {
-      navigate(`/leave/${leave.id}`);
-    }
+    navigate(`/leave/${leave.id}`);
   };
 
   return (

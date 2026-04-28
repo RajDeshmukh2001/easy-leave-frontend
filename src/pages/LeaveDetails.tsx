@@ -109,7 +109,7 @@ const LeaveDetails = (): React.JSX.Element => {
 
   return (
     <div className="w-full p-3">
-      <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
+      <Button variant="outline" className="w-max mb-4 cursor-pointer" onClick={() => navigate(-1)}>
         <ArrowLeft /> Back
       </Button>
 
@@ -123,6 +123,7 @@ const LeaveDetails = (): React.JSX.Element => {
           datePickerMode="single"
           handleCancelLeave={handleCancelLeave}
           cancelLabel="Cancel Leave"
+          disableSubmit={new Date(leave.date) < new Date()}
         />
       </div>
     </div>
