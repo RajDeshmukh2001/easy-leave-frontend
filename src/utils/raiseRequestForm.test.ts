@@ -42,4 +42,12 @@ describe('validateRaiseRequestForm', () => {
     });
     expect(result.description).toBe('Reason cannot be over 1000 characters');
   });
+
+  test('should return error when duration is undefined', () => {
+    const result = validateRaiseRequestForm({
+      ...validPastLeaveValues,
+      duration: undefined as any,
+    });
+    expect(result.duration).toBe('Select duration');
+  });
 });
