@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useFetchYears from '@/hooks/useFetchYears';
 import { fetchUserDetails, type UserDetails } from '@/api/user.api';
 import FilterDropdown from '@/components/FilterDropdown';
+import TableHeader from '@/components/TableHeader';
 
 function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const { id } = useParams();
@@ -157,11 +158,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
       </div>
 
       <div className="flex flex-col max-h-150 min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-        <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-          <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
-            Leaves Record
-          </h1>
-        </div>
+        <TableHeader title="Leaves Record" />
         {leavesRecordLoading && <Loading />}
         {leavesRecordError && <p className="p-3 text-red-700">{leavesRecordError}</p>}
         {!leavesRecordLoading && !leavesRecordError && (
@@ -174,11 +171,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
         )}
       </div>
       <div className="flex flex-col max-h-175 min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-        <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-          <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
-            All Leaves
-          </h1>
-        </div>
+        <TableHeader title="All Leaves" />
         {leavesDetailsLoading && <Loading />}
         {leavesDetailsError && <p className="p-3 text-red-700">{leavesDetailsError}</p>}
         {!leavesDetailsLoading && !leavesDetailsError && (
