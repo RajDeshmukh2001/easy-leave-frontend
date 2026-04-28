@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { FormikHelpers } from 'formik';
-import type { RaiseRequestFormValues } from '@/types/request';
+import type { RaiseRequestFormValues, RaiseRequestResponse } from '@/types/request';
 import ApplyRaiseRequestForm from './ApplyRaiseRequestForm';
 import RaiseRequestForm from './RaiseRequestForm';
 import { raiseRequest } from '@/api/request.api';
@@ -20,145 +20,151 @@ const mockToastSuccess = vi.mocked(toast.success);
 const mockToastError = vi.mocked(toast.error);
 const mockRaiseRequestForm = vi.mocked(RaiseRequestForm);
 
+const mockResetForm = vi.fn();
+
+const mockRaiseRequestResponse: RaiseRequestResponse[] = [
+  {
+    id: '123',
+    requestType: 'PAST_LEAVE',
+    leaveCategoryName: 'Annual Leave',
+    date: '2026-03-10',
+    startTime: '10:00:00',
+    duration: 'FULL_DAY',
+    description: 'Sick leave',
+    status: 'PENDING',
+  },
+];
+
+const baseFormValues: RaiseRequestFormValues = {
+  requestType: 'COMPENSATORY_OFF',
+  leaveCategoryId: '123',
+  dateRange: undefined,
+  duration: 'FULL_DAY',
+  startTime: '10:00',
+  description: 'Worked on Saturday for client release',
+};
+
+const renderWithFormValues = (values: RaiseRequestFormValues) => {
+  mockRaiseRequestForm.mockImplementation(
+    ({
+      onSubmit,
+    }: {
+      onSubmit: (
+        values: RaiseRequestFormValues,
+        helpers: FormikHelpers<RaiseRequestFormValues>,
+      ) => void;
+    }) => (
+      <div data-testid="raise-request-form">
+        <button
+          data-testid="submit-button"
+          onClick={() =>
+            onSubmit(values, {
+              resetForm: mockResetForm,
+            } as unknown as FormikHelpers<RaiseRequestFormValues>)
+          }
+        >
+          Submit
+        </button>
+      </div>
+    ),
+  );
+  render(<ApplyRaiseRequestForm />);
+};
+
 describe('ApplyRaiseRequestForm', () => {
-  const mockResetForm = vi.fn();
-  const mockUser = userEvent.setup();
-
-  const testFormValues: RaiseRequestFormValues = {
-    requestType: 'VACATION' as RaiseRequestFormValues['requestType'],
-    leaveCategoryId: '123',
-    dateRange: undefined,
-    duration: 'FULL_DAY' as RaiseRequestFormValues['duration'],
-    startTime: '10:00',
-    description: 'Test description',
-  };
-
   beforeEach(() => {
     vi.clearAllMocks();
-    mockRaiseRequestForm.mockImplementation(
-      ({
-        onSubmit,
-      }: {
-        onSubmit: (
-          values: RaiseRequestFormValues,
-          helpers: FormikHelpers<RaiseRequestFormValues>,
-        ) => void;
-      }) => (
-        <div data-testid="raise-request-form">
-          <button
-            data-testid="submit-button"
-            onClick={() => {
-              if (onSubmit) {
-                onSubmit(testFormValues, {
-                  resetForm: mockResetForm,
-                } as unknown as FormikHelpers<RaiseRequestFormValues>);
-              }
-            }}
-          >
-            Submit
-          </button>
-        </div>
-      ),
-    );
+    mockGetDatesBetween.mockReturnValue(['2026-04-19']);
+    mockRaiseRequest.mockResolvedValue(mockRaiseRequestResponse);
   });
 
-  test('renders the raise request form correctly', () => {
-    render(<ApplyRaiseRequestForm />);
+  test('renders the raise request form', () => {
+    renderWithFormValues(baseFormValues);
     expect(screen.getByTestId('raise-request-form')).toBeInTheDocument();
   });
 
   describe('handleSubmit', () => {
-    test('submits form with correct data and resets form on success', async () => {
-      mockRaiseRequest.mockResolvedValue(undefined!);
-      mockGetDatesBetween.mockReturnValue(['2026-04-24']);
+    test('submits COMPENSATORY_OFF with correct payload and resets form on success', async () => {
+      renderWithFormValues(baseFormValues);
+      await userEvent.click(screen.getByTestId('submit-button'));
 
-      render(<ApplyRaiseRequestForm />);
-      await mockUser.click(screen.getByTestId('submit-button'));
-
-      expect(mockGetDatesBetween).toHaveBeenCalledWith(undefined, false);
+      expect(mockGetDatesBetween).toHaveBeenCalledWith(undefined, true);
       expect(mockRaiseRequest).toHaveBeenCalledWith(
         expect.objectContaining({
-          requestType: 'VACATION',
+          requestType: 'COMPENSATORY_OFF',
           duration: 'FULL_DAY',
           startTime: '10:00',
-          description: 'Test description',
+          description: 'Worked on Saturday for client release',
         }),
       );
       expect(mockToastSuccess).toHaveBeenCalledWith('Request raised successfully');
       expect(mockResetForm).toHaveBeenCalled();
     });
 
-    test('displays API error message on submission failure', async () => {
-      const axiosError = {
-        isAxiosError: true,
-        response: { data: { message: 'Quota exceeded' } },
-      };
-      mockRaiseRequest.mockRejectedValue(axiosError as unknown as Error);
-
-      render(<ApplyRaiseRequestForm />);
-      await mockUser.click(screen.getByTestId('submit-button'));
-
-      await waitFor(() => {
-        expect(mockToastError).toHaveBeenCalledWith('Quota exceeded');
+    test('submits PAST_LEAVE with leaveCategoryId in payload', async () => {
+      renderWithFormValues({
+        ...baseFormValues,
+        requestType: 'PAST_LEAVE',
+        description: 'Forgot to log sick leave',
       });
-    });
+      await userEvent.click(screen.getByTestId('submit-button'));
 
-    test('displays error message when submission fails with nonaxios error', async () => {
-      mockRaiseRequest.mockRejectedValue(new Error('Network error'));
-
-      render(<ApplyRaiseRequestForm />);
-      await mockUser.click(screen.getByTestId('submit-button'));
-
-      await waitFor(() => {
-        expect(mockToastError).toHaveBeenCalledWith('Unexpected Error Occurred');
-      });
-    });
-  });
-
-  describe('request types', () => {
-    test('includes leaveCategoryId in payload when requestType is PAST_LEAVE', async () => {
-      const pastLeaveValues: RaiseRequestFormValues = {
-        ...testFormValues,
-        requestType: 'PAST_LEAVE' as RaiseRequestFormValues['requestType'],
-      };
-
-      mockRaiseRequestForm.mockImplementationOnce(
-        ({
-          onSubmit,
-        }: {
-          onSubmit: (
-            values: RaiseRequestFormValues,
-            helpers: FormikHelpers<RaiseRequestFormValues>,
-          ) => void;
-        }) => (
-          <div data-testid="raise-request-form">
-            <button
-              data-testid="submit-button"
-              onClick={() => {
-                if (onSubmit) {
-                  onSubmit(pastLeaveValues, {
-                    resetForm: mockResetForm,
-                  } as unknown as FormikHelpers<RaiseRequestFormValues>);
-                }
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        ),
-      );
-
-      mockRaiseRequest.mockResolvedValue(undefined!);
-      mockGetDatesBetween.mockReturnValue(['2026-04-24']);
-
-      render(<ApplyRaiseRequestForm />);
-      await mockUser.click(screen.getByTestId('submit-button'));
+      expect(mockGetDatesBetween).toHaveBeenCalledWith(undefined, false);
       expect(mockRaiseRequest).toHaveBeenCalledWith(
         expect.objectContaining({
           requestType: 'PAST_LEAVE',
           leaveCategoryId: '123',
+          description: 'Forgot to log sick leave',
         }),
       );
+    });
+
+    test('does not include leaveCategoryId in payload for COMPENSATORY_OFF', async () => {
+      renderWithFormValues(baseFormValues);
+      await userEvent.click(screen.getByTestId('submit-button'));
+
+      expect(mockRaiseRequest).toHaveBeenCalledWith(
+        expect.not.objectContaining({ leaveCategoryId: expect.anything() }),
+      );
+    });
+
+    test('displays API error message on submission failure', async () => {
+      mockRaiseRequest.mockRejectedValue({
+        isAxiosError: true,
+        response: { data: { message: 'A request already exists for this date' } },
+      });
+
+      renderWithFormValues(baseFormValues);
+      await userEvent.click(screen.getByTestId('submit-button'));
+
+      await waitFor(() => {
+        expect(mockToastError).toHaveBeenCalledWith('A request already exists for this date');
+      });
+    });
+
+    test('displays fallback message when axios error has no response message', async () => {
+      mockRaiseRequest.mockRejectedValue({
+        isAxiosError: true,
+        response: { data: {} },
+      });
+
+      renderWithFormValues(baseFormValues);
+      await userEvent.click(screen.getByTestId('submit-button'));
+
+      await waitFor(() => {
+        expect(mockToastError).toHaveBeenCalledWith('Failed to raise request');
+      });
+    });
+
+    test('displays generic error message on non-axios error', async () => {
+      mockRaiseRequest.mockRejectedValue(new Error('Network failure'));
+
+      renderWithFormValues(baseFormValues);
+      await userEvent.click(screen.getByTestId('submit-button'));
+
+      await waitFor(() => {
+        expect(mockToastError).toHaveBeenCalledWith('Unexpected Error Occurred');
+      });
     });
   });
 });

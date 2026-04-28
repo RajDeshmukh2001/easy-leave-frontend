@@ -5,6 +5,7 @@ import { raiseRequest } from '@/api/request.api';
 import { getDatesBetween } from '@/utils/time';
 import RaiseRequestForm from './RaiseRequestForm';
 import type { RequestType } from '@/constants/request';
+import { isAxiosError } from 'axios';
 
 const initialValues: RaiseRequestFormValues = {
   requestType: '',
@@ -36,9 +37,11 @@ const ApplyRaiseRequestForm = (): React.JSX.Element => {
       toast.success('Request raised successfully');
       resetForm();
     } catch (error) {
-      const err = error as { isAxiosError?: boolean; response?: { data?: { message?: string } } };
-      const message = err.response?.data?.message || 'Failed to raise request';
-      toast.error(err.isAxiosError ? message : 'Unexpected Error Occurred');
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Failed to raise request');
+      } else {
+        toast.error('Unexpected Error Occurred');
+      }
     }
   };
 
