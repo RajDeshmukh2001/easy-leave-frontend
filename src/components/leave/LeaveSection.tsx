@@ -6,6 +6,8 @@ import Badge from '@/components/Badge';
 import { useNavigate } from 'react-router-dom';
 import ApplyLeaveForm from '@/components/leave/ApplyLeaveForm';
 import FilterableTableSection from '../FilterableTableSection';
+import toast from 'react-hot-toast';
+import { OPTIONAL_HOLIDAY } from '@/constants/leaveTypes';
 
 function LeaveSection(): React.JSX.Element {
   const [status, setStatus] = useState<LeaveStatus>('all');
@@ -43,6 +45,11 @@ function LeaveSection(): React.JSX.Element {
   ];
 
   const handleRowClick = (leave: LeaveResponse): void => {
+    if (leave.type === OPTIONAL_HOLIDAY) {
+      toast.error('Cannot update optional holiday');
+      return;
+    }
+
     navigate(`/leave/${leave.id}`);
   };
 
