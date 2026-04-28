@@ -4,9 +4,11 @@ import Table from '../components/Table';
 import type { LeaveResponse } from '../types/leaves';
 import Loading from '@/components/Loading';
 import useLeaves from '@/hooks/useLeaves';
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard(): React.JSX.Element {
   const { leaves, loading, error } = useLeaves({ status: 'upcoming', scope: 'self' });
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -35,6 +37,15 @@ function Dashboard(): React.JSX.Element {
       ),
     },
   ];
+  const handleRowClick = (leave: LeaveResponse): void => {
+    navigate(`/leave/${leave.id}`);
+  };
+
+  const getRowKey = (leave: LeaveResponse): string | number => {
+    return leave.id;
+  };
+
+  const reversedLeaves = [...leaves].reverse();
 
   return (
     <div className="w-full h-screen flex flex-col p-4 ">
@@ -49,10 +60,11 @@ function Dashboard(): React.JSX.Element {
         {error && <p className="p-3 text-red-700">{error}</p>}
         {!loading && !error && (
           <Table
-            data={[...leaves].reverse()}
+            data={reversedLeaves}
             columns={columns}
             message="No upcoming leave records found."
-            getRowKey={(leave: LeaveResponse) => leave.id}
+            getRowKey={getRowKey}
+            onRowClick={handleRowClick}
           />
         )}
       </div>
