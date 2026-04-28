@@ -46,6 +46,16 @@ const LeaveForm = ({
     return holidayDate >= firstDayOfCurrentMonth;
   });
 
+  const holidayOptions = filteredHolidays.map((holiday) => ({
+    value: holiday.id,
+    label: `${holiday.name} (${holiday.date})`,
+  }));
+
+  const durationOptions = [
+    { value: 'FULL_DAY', label: 'Full Day' },
+    { value: 'HALF_DAY', label: 'Half Day' },
+  ];
+
   return (
     <Formik
       initialValues={initialValues}
@@ -73,10 +83,7 @@ const LeaveForm = ({
               name="holidayId"
               id="holidayId"
               label="Select Optional Holiday"
-              options={filteredHolidays.map((holiday) => ({
-                value: holiday.id,
-                label: `${holiday.name} (${holiday.date})`,
-              }))}
+              options={holidayOptions}
               loading={holidaysLoading}
               error={holidaysError}
               placeholder="Choose a holiday"
@@ -103,15 +110,7 @@ const LeaveForm = ({
           )}
 
           {!isHolidayMode && (
-            <SelectField
-              name="duration"
-              id="duration"
-              label="Duration"
-              options={[
-                { value: 'FULL_DAY', label: 'Full Day' },
-                { value: 'HALF_DAY', label: 'Half Day' },
-              ]}
-            />
+            <SelectField name="duration" id="duration" label="Duration" options={durationOptions} />
           )}
 
           <div className="flex justify-between gap-3">
