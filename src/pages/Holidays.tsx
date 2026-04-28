@@ -5,6 +5,7 @@ import SelectField from '@/components/form/SelectField';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
 import Table from '@/components/Table';
+import TableHeader from '@/components/TableHeader';
 import { Button } from '@/components/ui/button';
 import {
   HOLIDAY_LIST_OPTIONS,
@@ -125,15 +126,17 @@ const Holidays = (): React.JSX.Element => {
             )}
           </Formik>
         </div>
-        <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-screen shadow-xs border border-neutral-200">
-          <div className="flex items-center p-3 justify-between bg-sidebar/98 rounded-t-2xl">
-            <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold px-3 py-2">
-              All Holidays
-            </h1>
-            <FilterDropdown
-              options={HOLIDAY_LIST_OPTIONS}
-              value={holidayType}
-              onChange={(val) => setHolidayType(val as HolidayListOptions)}
+        <div className="flex flex-1 flex-col rounded-2xl mb-5 max-h-150 md:max-h-fit shadow-xs border border-neutral-200">
+          <div className="flex justify-between items-center bg-white p-2 rounded-2xl">
+            <TableHeader
+              title="All Holidays"
+              dropDownFilter={
+                <FilterDropdown
+                  options={HOLIDAY_LIST_OPTIONS}
+                  value={holidayType}
+                  onChange={(val) => setHolidayType(val as HolidayListOptions)}
+                />
+              }
             />
           </div>
           {loading && <Loading />}
