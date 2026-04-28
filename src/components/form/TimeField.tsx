@@ -22,7 +22,8 @@ const TimeField = ({
   return (
     <div className="flex flex-1 flex-col">
       <label htmlFor={id}>
-        {label} {required && <span className="text-red-700">*</span>}
+        {label}
+        {required && <span className="text-red-700">*</span>}
       </label>
       <Field
         type="time"

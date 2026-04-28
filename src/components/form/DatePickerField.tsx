@@ -25,7 +25,8 @@ const DatePickerField = ({
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor="date-range-picker" id="date-range-label">
-        {label} {required && <span className="text-red-700">*</span>}
+        {label}
+        {required && <span className="text-red-700">*</span>}
       </label>
       <DatePicker
         date={value}

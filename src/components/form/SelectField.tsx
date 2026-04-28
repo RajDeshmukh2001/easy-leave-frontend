@@ -31,7 +31,8 @@ const SelectField = ({
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id}>
-        {label} {required && <span className="text-red-700">*</span>}
+        {label}
+        {required && <span className="text-red-700">*</span>}
       </label>
       {error && <p className="text-sm text-red-700">{error}</p>}
       <Field
