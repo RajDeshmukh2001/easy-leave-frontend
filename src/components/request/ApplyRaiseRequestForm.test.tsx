@@ -19,6 +19,7 @@ const mockGetDatesBetween = vi.mocked(getDatesBetween);
 const mockToastSuccess = vi.mocked(toast.success);
 const mockToastError = vi.mocked(toast.error);
 const mockRaiseRequestForm = vi.mocked(RaiseRequestForm);
+const mockRefreshRequests = vi.fn();
 
 const mockResetForm = vi.fn();
 
@@ -41,7 +42,7 @@ const baseFormValues: RaiseRequestFormValues = {
   dateRange: undefined,
   duration: 'FULL_DAY',
   startTime: '10:00',
-  description: 'Worked on Saturday for client release',
+  description: 'Worked on Saturday for client',
 };
 
 const renderWithFormValues = (values: RaiseRequestFormValues) => {
@@ -68,12 +69,13 @@ const renderWithFormValues = (values: RaiseRequestFormValues) => {
       </div>
     ),
   );
-  render(<ApplyRaiseRequestForm />);
+  render(<ApplyRaiseRequestForm refreshRequests={mockRefreshRequests} />);
 };
 
 describe('ApplyRaiseRequestForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockResetForm.mockClear();
     mockGetDatesBetween.mockReturnValue(['2026-04-19']);
     mockRaiseRequest.mockResolvedValue(mockRaiseRequestResponse);
   });
@@ -94,7 +96,7 @@ describe('ApplyRaiseRequestForm', () => {
           requestType: 'COMPENSATORY_OFF',
           duration: 'FULL_DAY',
           startTime: '10:00',
-          description: 'Worked on Saturday for client release',
+          description: 'Worked on Saturday for client',
         }),
       );
       expect(mockToastSuccess).toHaveBeenCalledWith('Request raised successfully');

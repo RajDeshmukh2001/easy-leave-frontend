@@ -11,7 +11,7 @@ function RequestSection(): React.JSX.Element {
   const [status, setStatus] = useState<RequestStatus>('ALL');
   const [page, setPage] = useState<number>(0);
 
-  const { requests, loading, loadingMore, error, hasMore } = useRequest({
+  const { requests, loading, loadingMore, error, hasMore, refreshRequests } = useRequest({
     status: status,
     scope: 'SELF',
     page,
@@ -60,7 +60,7 @@ function RequestSection(): React.JSX.Element {
     <div className="w-full md:max-h-150 flex flex-col py-4">
       <div className="flex flex-col flex-1 min-h-0 h-fit md:flex-row gap-6 mt-2">
         <div className="flex h-fit md:w-1/3 bg-white rounded-2xl shadow-xs border border-neutral-200">
-          <ApplyRaiseRequestForm />
+          <ApplyRaiseRequestForm refreshRequests={refreshRequests} />
         </div>
 
         <FilterableTableSection
