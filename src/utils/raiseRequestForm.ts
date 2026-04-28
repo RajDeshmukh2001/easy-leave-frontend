@@ -24,5 +24,9 @@ export const validateRaiseRequestForm = (
     errors.description = 'Reason cannot be over 1000 characters';
   }
 
+  if (!values.duration) {
+    errors.duration = 'Select duration';
+  }
+
   return errors;
 };
