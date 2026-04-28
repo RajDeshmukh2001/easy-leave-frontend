@@ -114,10 +114,12 @@ const LeaveForm = ({
               >
                 {cancelLabel}
               </Button>
-              <div className="flex gap-2 p-2 text-sm text-gray-800">
-                <TriangleAlert size={18} />
-                Cancelling leave cannot be undone.
-              </div>
+              {!disableSubmit && (
+                <div className="flex gap-2 p-2 text-sm text-gray-800">
+                  <TriangleAlert size={18} />
+                  Cancelling leave cannot be undone.
+                </div>
+              )}
             </div>
           )}
         </Form>
