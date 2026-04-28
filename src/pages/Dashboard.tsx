@@ -47,6 +47,21 @@ function Dashboard(): React.JSX.Element {
 
   const reversedLeaves = [...leaves].reverse();
 
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center p-4">
+        <Loading />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center flex-col p-4">
+        <p className="p-3 text-red-700">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-screen flex flex-col p-4 ">
       <PageHeader
@@ -55,18 +70,13 @@ function Dashboard(): React.JSX.Element {
       />
       <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
         <TableHeader title="Upcoming Leaves" />
-
-        {loading && <Loading />}
-        {error && <p className="p-3 text-red-700">{error}</p>}
-        {!loading && !error && (
-          <Table
-            data={reversedLeaves}
-            columns={columns}
-            message="No upcoming leave records found."
-            getRowKey={getRowKey}
-            onRowClick={handleRowClick}
-          />
-        )}
+        <Table
+          data={reversedLeaves}
+          columns={columns}
+          message="No upcoming leave records found."
+          getRowKey={getRowKey}
+          onRowClick={handleRowClick}
+        />
       </div>
     </div>
   );
