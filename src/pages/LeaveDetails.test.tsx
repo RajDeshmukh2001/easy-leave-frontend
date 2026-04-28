@@ -32,7 +32,7 @@ const mockLeave: LeaveResponse = {
 const mockUpdateLeaveResponse: LeaveApplicationResponse = {
   id: '123',
   date: new Date(2026, 3, 6).toISOString(),
-  leaveCategoryName: 'Annual Leave',
+  type: 'Annual Leave',
   duration: 'FULL_DAY',
   startTime: '10:00',
   description: 'Test',
@@ -262,5 +262,13 @@ describe('LeaveDetails Page Component', () => {
     renderWithRouter();
     await cancelLeave();
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
+  });
+
+  test('does not change holiday mode when leave type select is changed', async () => {
+    renderWithRouter();
+
+    await waitFor(() => expect(screen.getByText('Leave Details')).toBeInTheDocument());
+    await userEvent.selectOptions(screen.getByLabelText('Leave Type'), 'holiday');
+    expect(screen.getByLabelText('Leave Category')).toBeInTheDocument();
   });
 });

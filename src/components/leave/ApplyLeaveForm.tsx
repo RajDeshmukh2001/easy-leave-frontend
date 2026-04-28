@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { FormikHelpers } from 'formik';
 import { toast } from 'react-hot-toast';
 import { applyLeave } from '@/api/leave.api';
@@ -7,9 +7,11 @@ import { getDatesBetween } from '@/utils/time';
 import { isAxiosError } from 'axios';
 import LeaveForm from '@/components/leave/LeaveForm';
 import type { LeaveFormValues } from '@/types/leaveForm';
+import useHolidays from '@/hooks/useHolidays';
 
 const initialValues: LeaveFormValues = {
   leaveCategoryId: '',
+  holidayId: '',
   dateRange: undefined,
   startTime: '10:00',
   duration: 'FULL_DAY',
@@ -21,17 +23,33 @@ const ApplyLeaveForm = ({
 }: {
   refreshLeaves: () => Promise<void>;
 }): React.JSX.Element => {
+  const [isHolidayMode, setIsHolidayMode] = useState(false);
+  const { holidays } = useHolidays('OPTIONAL');
+
   const handleSubmit = async (
     values: LeaveFormValues,
     { resetForm }: FormikHelpers<LeaveFormValues>,
-  ): Promise<void> => {
-    const leaveData: LeaveApplicationRequest = {
-      leaveCategoryId: values.leaveCategoryId,
-      dates: getDatesBetween(values.dateRange),
-      duration: values.duration,
-      startTime: values.startTime,
-      description: values.description,
-    };
+  ) => {
+    let leaveData: LeaveApplicationRequest;
+
+    if (isHolidayMode) {
+      const selectedHoliday = holidays.find((holiday) => holiday.id === values.holidayId);
+      leaveData = {
+        holidayId: values.holidayId,
+        dates: [selectedHoliday!.date],
+        description: selectedHoliday!.name,
+        duration: 'FULL_DAY',
+        startTime: values.startTime,
+      };
+    } else {
+      leaveData = {
+        leaveCategoryId: values.leaveCategoryId,
+        dates: getDatesBetween(values.dateRange),
+        duration: values.duration,
+        startTime: values.startTime,
+        description: values.description,
+      };
+    }
 
     try {
       await applyLeave(leaveData);
@@ -47,7 +65,14 @@ const ApplyLeaveForm = ({
     }
   };
 
-  return <LeaveForm initialValues={initialValues} onSubmit={handleSubmit} />;
+  return (
+    <LeaveForm
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      isHolidayMode={isHolidayMode}
+      setIsHolidayMode={setIsHolidayMode}
+    />
+  );
 };
 
 export default ApplyLeaveForm;
