@@ -6,8 +6,8 @@ import * as requestApi from '@/api/request.api';
 import * as leaveApi from '../../api/leave.api';
 import userEvent from '@testing-library/user-event';
 import RequestSection from './RequestSection';
-import Leave from '@/pages/LeaveAndRequest';
 import { vi } from 'vitest';
+import LeaveAndRequest from '@/pages/LeaveAndRequest';
 
 const mockRequests: RequestResponse[] = [
   {
@@ -76,7 +76,7 @@ const mockLeaves: LeaveResponse[] = [
 const renderLeavePage = () => {
   render(
     <MemoryRouter>
-      <Leave />
+      <LeaveAndRequest />
     </MemoryRouter>,
   );
 };
