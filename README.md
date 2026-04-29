@@ -425,3 +425,36 @@ GET /api/holidays?type={type}
 3. Select different types from the dropdown (e.g., FIXED, OPTIONAL)
 4. Verify the list updates according to the selected type
 5. Add new holiday and verify if list refreshes and includes new holiday
+
+---
+
+### Raise Request Form
+
+#### Overview
+
+This feature allows employees to raise two types of requests to their manager directly from the Leave page via a new "Raise Request" tab.
+
+#### Key Highlights
+
+- Added "Raise Request" tab on the Leave page alongside the existing "Leave" tab
+- Supports two request types — **Past Leave** (forgot to record) and **Compensatory Off**
+- Conditionally renders fields based on selected request type:
+  - **Past Leave**: Leave category, date range picker (weekdays only, last 30 days), duration, start time, and description
+  - **Compensatory Off**: Single date picker (weekends only, last 30 days), duration, start time, and description
+- Validates all required fields before submission with appropriate error messages
+- Shows success toast on successful submission and resets the form
+- Shows error toast with API error message on failure
+
+#### How to Test
+
+1. Go to the Leave page
+2. Click on the **Raise Request** tab
+3. Select **Past Leave** as the request type
+4. Verify Leave Category, date range picker, duration, start time and description fields appear
+5. Verify date picker only allows weekdays within the last 30 days
+6. Submit without filling fields → verify validation errors appear
+7. Fill all fields and submit → expect success toast and form reset
+8. Select **Compensatory Off** as the request type
+9. Verify Leave Category field does NOT appear
+10. Verify date picker only allows a single weekend date within the last 30 days
+11. Fill all fields and submit → expect success toast and form reset

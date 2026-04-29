@@ -20,7 +20,8 @@ const TextareaField = ({
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id}>
-        {label} {required && <span className="text-red-700">*</span>}
+        {label}
+        {required && <span className="text-red-700">*</span>}
       </label>
       <Field
         as="textarea"
