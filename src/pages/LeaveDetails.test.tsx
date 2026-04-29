@@ -69,6 +69,7 @@ afterEach(() => {
 });
 
 beforeEach(async () => {
+  vi.clearAllMocks();
   vi.spyOn(api, 'fetchLeaveById').mockResolvedValue(mockLeave);
 
   const { default: useLeaveCategories } = await import('@/hooks/useLeaveCategories');
