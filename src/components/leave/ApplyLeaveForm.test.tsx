@@ -208,32 +208,32 @@ describe('ApplyLeaveForm', () => {
 
   test('switches to holiday mode when Optional Holiday is selected from leave type dropdown', async () => {
     renderApplyLeaveForm();
-    await screen.findByLabelText('Leave Category');
+    await screen.findByLabelText(/Leave Category/i);
 
-    await userEvent.selectOptions(screen.getByLabelText('Leave Type'), 'holiday');
+    await userEvent.selectOptions(screen.getByLabelText(/Leave Type/i), 'holiday');
 
-    expect(screen.getByLabelText('Select Optional Holiday')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Leave Category')).not.toBeInTheDocument();
-    expect(screen.queryByText('Pick a date')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Reason')).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Select Optional Holiday/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Leave Category/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Pick a date/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Reason/i)).not.toBeInTheDocument();
   });
 
   test('displays validation error when submitting in holiday mode without selecting a holiday', async () => {
     renderApplyLeaveForm();
-    await screen.findByLabelText('Leave Category');
+    await screen.findByLabelText(/Leave Category/i);
 
-    await userEvent.selectOptions(screen.getByLabelText('Leave Type'), 'holiday');
+    await userEvent.selectOptions(screen.getByLabelText(/Leave Type/i), 'holiday');
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
 
-    expect(await screen.findByText('Please select a holiday')).toBeInTheDocument();
+    expect(await screen.findByText(/Please select a holiday/i)).toBeInTheDocument();
   });
 
   test('submits correct payload when a holiday is selected', async () => {
     renderApplyLeaveForm();
-    await screen.findByLabelText('Leave Category');
+    await screen.findByLabelText(/Leave Category/i);
 
-    await userEvent.selectOptions(screen.getByLabelText('Leave Type'), 'holiday');
-    await userEvent.selectOptions(screen.getByLabelText('Select Optional Holiday'), 'holiday1');
+    await userEvent.selectOptions(screen.getByLabelText(/Leave Type/i), 'holiday');
+    await userEvent.selectOptions(screen.getByLabelText(/Select Optional Holiday/i), 'holiday1');
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
 
     await waitFor(() => {

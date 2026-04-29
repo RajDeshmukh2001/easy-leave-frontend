@@ -312,7 +312,7 @@ describe('LeaveDetails Page Component', () => {
     renderWithRouter();
 
     await waitFor(() => expect(screen.getByText('Leave Details')).toBeInTheDocument());
-    await userEvent.selectOptions(screen.getByLabelText('Leave Type'), 'holiday');
-    expect(screen.getByLabelText('Leave Category')).toBeInTheDocument();
+    await userEvent.selectOptions(screen.getByLabelText(/Leave Type/i), 'holiday');
+    expect(screen.getByLabelText(/Leave Category/i)).toBeInTheDocument();
   });
 });
