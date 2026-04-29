@@ -14,6 +14,7 @@ type SelectFieldProps = {
   disabled?: boolean;
   loading?: boolean;
   error?: string | null;
+  required?: boolean;
 };
 
 const SelectField = ({
@@ -25,10 +26,13 @@ const SelectField = ({
   disabled = false,
   loading = false,
   error = null,
+  required = false,
 }: SelectFieldProps): React.JSX.Element => {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>
+        {label} {required && <span className="text-red-700">*</span>}
+      </label>
       {error && <p className="text-sm text-red-700">{error}</p>}
       <Field
         as="select"

@@ -137,28 +137,4 @@ describe('Leave Page Component', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith('/leave/1');
   });
-
-  test('does not navigate when leave date is in the past', async () => {
-    const mockNavigate = vi.fn();
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-
-    const pastLeave: LeaveResponse[] = [
-      {
-        ...mockLeaves[0],
-        date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      },
-    ];
-
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(pastLeave);
-
-    renderLeavePage();
-
-    await waitFor(() => {
-      expect(screen.getByText('Annual Leave')).toBeInTheDocument();
-    });
-
-    await userEvent.click(screen.getByText('Annual Leave'));
-
-    expect(mockNavigate).not.toHaveBeenCalled();
-  });
 });

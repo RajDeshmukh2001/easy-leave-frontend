@@ -123,7 +123,11 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
     return (
       <div className="w-full h-screen flex justify-center items-center flex-col p-4">
         <p className="p-3 text-red-700">{userDetailsError}</p>
-        <Button variant="outline" className="w-max mb-4" onClick={() => navigate(-1)}>
+        <Button
+          variant="outline"
+          className="w-max mb-4 cursor-pointer"
+          onClick={() => navigate(-1)}
+        >
           <ArrowLeft /> Back
         </Button>
       </div>
@@ -131,7 +135,7 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   }
   return (
     <div className="w-full flex flex-col p-4 space-y-6">
-      <Button variant="outline" className="w-max" onClick={() => navigate(-1)}>
+      <Button variant="outline" className="w-max cursor-pointer" onClick={() => navigate(-1)}>
         <ArrowLeft /> Back
       </Button>
 

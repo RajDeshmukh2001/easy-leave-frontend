@@ -65,54 +65,58 @@ describe('ApplyLeaveForm', () => {
 
   test('renders all form fields', async () => {
     renderApplyLeaveForm();
-    expect(await screen.findByLabelText('Leave Category')).toBeInTheDocument();
 
+    expect(await screen.findByLabelText(/Leave Category/i)).toBeInTheDocument();
     expect(screen.getByText('Pick a date')).toBeInTheDocument();
-    expect(screen.getByLabelText('Duration')).toBeInTheDocument();
-    expect(screen.getByLabelText('Start Time')).toBeInTheDocument();
-    expect(screen.getByLabelText('End Time')).toBeInTheDocument();
-    expect(screen.getByLabelText('Reason')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Duration/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Start Time/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/End Time/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Leave Description/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit Leave' })).toBeInTheDocument();
   });
 
   test('display required field validation errors', async () => {
     renderApplyLeaveForm();
 
-    await screen.findByLabelText('Leave Category');
+    await screen.findByLabelText(/Leave Category/i);
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
 
     expect(await screen.findByText('Leave category is required')).toBeInTheDocument();
     expect(screen.getByText('Please choose a date')).toBeInTheDocument();
-    expect(screen.getByText('Reason is required')).toBeInTheDocument();
+    expect(screen.getByText('Leave Description is required')).toBeInTheDocument();
   });
 
   test('displays error when description exceeds 1000 characters', async () => {
     renderApplyLeaveForm();
 
-    const leaveCategoryInput = await screen.findByLabelText('Leave Category');
+    const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
     await userEvent.selectOptions(leaveCategoryInput, '1');
-    const descriptionInput = screen.getByLabelText('Reason');
+
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     const longDescription = 'a'.repeat(1001);
+
     fireEvent.change(descriptionInput, { target: { value: longDescription } });
+
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
 
     const validationErrors = await screen.findByTestId('errors-description-input');
-    expect(validationErrors.innerHTML).toBe('Reason cannot be over 1000 characters');
+    expect(validationErrors.innerHTML).toBe('Leave Description cannot be over 1000 characters');
   });
 
   test('submits form with correct data', async () => {
     renderApplyLeaveForm();
 
-    const leaveCategoryInput = await screen.findByLabelText('Leave Category');
+    const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
     await userEvent.selectOptions(leaveCategoryInput, '1');
 
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText('Reason');
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
+
     expect(leaveApi.applyLeave).toHaveBeenCalledOnce();
     expect(leaveApi.applyLeave).toHaveBeenCalledWith(mockLeaveApplicationRequest);
     expect(toast.success).toHaveBeenCalled();
@@ -124,18 +128,21 @@ describe('ApplyLeaveForm', () => {
       isAxiosError: true,
       response: { data: { message: errorMessage } },
     };
+
     vi.spyOn(leaveApi, 'applyLeave').mockRejectedValue(axiosError);
 
     renderApplyLeaveForm();
 
-    const leaveCategoryInput = await screen.findByLabelText('Leave Category');
+    const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
     await userEvent.selectOptions(leaveCategoryInput, '1');
+
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText('Reason');
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
+
     expect(toast.error).toHaveBeenCalledWith(errorMessage);
   });
 
@@ -144,27 +151,30 @@ describe('ApplyLeaveForm', () => {
 
     renderApplyLeaveForm();
 
-    const leaveCategoryInput = await screen.findByLabelText('Leave Category');
+    const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
     await userEvent.selectOptions(leaveCategoryInput, '1');
+
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText('Reason');
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
+
     expect(toast.error).toHaveBeenCalledWith('Unexpected Error Occurred');
   });
 
   test('updates the end time field when duration is set to half day', async () => {
     renderApplyLeaveForm();
 
-    const durationInput = await screen.getByLabelText('Duration');
+    const durationInput = await screen.getByLabelText(/Duration/i);
     await userEvent.selectOptions(durationInput, 'HALF_DAY');
 
-    const startTimeInput = screen.getByLabelText('Start Time');
-    const endTimeInput = screen.getByLabelText('End Time');
+    const startTimeInput = screen.getByLabelText(/Start Time/i);
+    const endTimeInput = screen.getByLabelText(/End Time/i);
 
     fireEvent.change(startTimeInput, { target: { value: '10:00' } });
+
     expect(endTimeInput).toHaveValue('14:00');
   });
 
@@ -173,18 +183,21 @@ describe('ApplyLeaveForm', () => {
       isAxiosError: true,
       response: { data: {} },
     };
+
     vi.spyOn(leaveApi, 'applyLeave').mockRejectedValue(axiosError);
 
     renderApplyLeaveForm();
 
-    const leaveCategoryInput = await screen.findByLabelText('Leave Category');
+    const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
     await userEvent.selectOptions(leaveCategoryInput, '1');
+
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
-    const descriptionInput = screen.getByLabelText('Reason');
+    const descriptionInput = screen.getByLabelText(/Leave Description/i);
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
+
     expect(toast.error).toHaveBeenCalledWith('Leave Application submission failed');
   });
 });

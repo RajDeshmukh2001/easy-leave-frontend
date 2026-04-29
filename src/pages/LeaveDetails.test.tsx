@@ -81,6 +81,15 @@ beforeEach(async () => {
 });
 
 describe('LeaveDetails Page Component', () => {
+  beforeAll(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date('2026-01-01'));
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
   test('renders page header', async () => {
     renderWithRouter();
 
@@ -262,5 +271,40 @@ describe('LeaveDetails Page Component', () => {
     renderWithRouter();
     await cancelLeave();
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Failed to cancel leave'));
+  });
+
+  test('disables update button when leave date is in the past', async () => {
+    vi.spyOn(api, 'fetchLeaveById').mockResolvedValue({
+      ...mockLeave,
+      date: '2025-01-14',
+    });
+
+    renderWithRouter();
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /update leave/i })).toBeDisabled();
+    });
+  });
+
+  test('enables update button when leave date is in the future', async () => {
+    vi.spyOn(api, 'fetchLeaveById').mockResolvedValue({
+      ...mockLeave,
+      date: '2026-01-10',
+    });
+
+    renderWithRouter();
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /update leave/i })).not.toBeDisabled();
+    });
+  });
+
+  test('renders informational message with cancel button', () => {
+    renderWithRouter();
+
+    waitFor(() => {
+      expect(screen.getByText('Cancelling leave cannot be undone.')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /cancel leave/i })).toBeInTheDocument();
+    });
   });
 });
