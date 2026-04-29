@@ -147,7 +147,7 @@ describe('Employees Page Component', () => {
     });
     renderEmployeesPage();
     await waitFor(() => {
-      expect(screen.getByText('Load More')).toBeInTheDocument();
+      expect(screen.getByText('Show More')).toBeInTheDocument();
     });
   });
 
@@ -166,7 +166,7 @@ describe('Employees Page Component', () => {
       loadMore,
     });
     renderEmployeesPage();
-    await userEvent.click(screen.getByText('Load More'));
+    await userEvent.click(screen.getByText('Show More'));
     expect(loadMore).toHaveBeenCalledTimes(1);
   });
 

@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 function AllEmployeesLeaveBalance(): React.JSX.Element {
   const [years, setYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>('');
-  const { employees, loading, error } = useEmployeesLeaveBalance(selectedYear);
+  const { employees, loading, error, hasMore, loadMore } = useEmployeesLeaveBalance(selectedYear);
 
   const navigate = useNavigate();
 
@@ -88,6 +88,8 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
           message="No employee found"
           getRowKey={getRowKey}
           onRowClick={handleRowClick}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
         />
       </div>
     </div>
