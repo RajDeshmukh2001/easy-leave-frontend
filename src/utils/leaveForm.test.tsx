@@ -9,6 +9,7 @@ const originalLeave: LeaveFormValues = {
   duration: 'FULL_DAY',
   startTime: '09:00',
   description: 'Initial reason',
+  leaveType: 'regular',
 };
 
 describe('buildUpdatePayload', () => {
