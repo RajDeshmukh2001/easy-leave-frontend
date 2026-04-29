@@ -8,4 +8,5 @@ export type LeaveFormValues = {
   startTime: string;
   duration: LeaveDuration;
   description: string;
+  leaveType: 'regular' | 'holiday';
 };

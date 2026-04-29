@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { FormikHelpers } from 'formik';
 import { toast } from 'react-hot-toast';
 import { applyLeave } from '@/api/leave.api';
@@ -16,6 +16,7 @@ const initialValues: LeaveFormValues = {
   startTime: '10:00',
   duration: 'FULL_DAY',
   description: '',
+  leaveType: 'regular',
 };
 
 const ApplyLeaveForm = ({
@@ -23,7 +24,6 @@ const ApplyLeaveForm = ({
 }: {
   refreshLeaves: () => Promise<void>;
 }): React.JSX.Element => {
-  const [isHolidayMode, setIsHolidayMode] = useState(false);
   const { holidays } = useHolidays('OPTIONAL');
 
   const handleSubmit = async (
@@ -32,7 +32,7 @@ const ApplyLeaveForm = ({
   ) => {
     let leaveData: LeaveApplicationRequest;
 
-    if (isHolidayMode) {
+    if (values.leaveType === 'holiday') {
       const selectedHoliday = holidays.find((holiday) => holiday.id === values.holidayId);
       leaveData = {
         holidayId: values.holidayId,
@@ -65,14 +65,7 @@ const ApplyLeaveForm = ({
     }
   };
 
-  return (
-    <LeaveForm
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      isHolidayMode={isHolidayMode}
-      setIsHolidayMode={setIsHolidayMode}
-    />
-  );
+  return <LeaveForm initialValues={initialValues} onSubmit={handleSubmit} />;
 };
 
 export default ApplyLeaveForm;

@@ -20,8 +20,6 @@ type LeaveFormProps = {
     values: LeaveFormValues,
     helpers: FormikHelpers<LeaveFormValues>,
   ) => void | Promise<void>;
-  isHolidayMode: boolean;
-  setIsHolidayMode: (val: boolean) => void;
   submitLabel?: string;
   datePickerMode?: 'range' | 'single';
   handleCancelLeave?: () => void;
@@ -32,8 +30,6 @@ type LeaveFormProps = {
 const LeaveForm = ({
   initialValues,
   onSubmit,
-  isHolidayMode,
-  setIsHolidayMode,
   submitLabel = 'Submit Leave',
   datePickerMode = 'range',
   handleCancelLeave,
@@ -63,25 +59,22 @@ const LeaveForm = ({
     <Formik
       initialValues={initialValues}
       onSubmit={onSubmit}
-      validate={(values) => validateLeaveForm(values, isHolidayMode)}
+      validate={(values) => validateLeaveForm(values)}
       enableReinitialize
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap-4 p-4 w-full">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="leaveType">Leave Type</label>
-            <select
-              id="leaveType"
-              className="rounded-md border border-gray-300 bg-gray-50 p-2 text-sm cursor-pointer"
-              value={isHolidayMode ? 'holiday' : 'regular'}
-              onChange={(e) => setIsHolidayMode(e.target.value === 'holiday')}
-            >
-              <option value="regular">Regular Leave</option>
-              <option value="holiday">Optional Holiday</option>
-            </select>
-          </div>
+          <SelectField
+            name="leaveType"
+            id="leaveType"
+            label="Leave Type"
+            options={[
+              { value: 'regular', label: 'Regular Leave' },
+              { value: 'holiday', label: 'Optional Holiday' },
+            ]}
+          />
 
-          {isHolidayMode ? (
+          {values.leaveType === 'holiday' ? (
             <SelectField
               name="holidayId"
               id="holidayId"
@@ -105,7 +98,7 @@ const LeaveForm = ({
             />
           )}
 
-          {!isHolidayMode && (
+          {values.leaveType !== 'holiday' && (
             <DatePickerField
               name="dateRange"
               label="Date"
@@ -115,7 +108,7 @@ const LeaveForm = ({
             />
           )}
 
-          {!isHolidayMode && (
+          {values.leaveType !== 'holiday' && (
             <SelectField
               name="duration"
               id="duration"
@@ -148,7 +141,7 @@ const LeaveForm = ({
             />
           </div>
 
-          {!isHolidayMode && (
+          {values.leaveType !== 'holiday' && (
             <TextareaField
               name="description"
               id="description"

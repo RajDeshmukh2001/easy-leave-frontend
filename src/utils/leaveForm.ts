@@ -3,13 +3,10 @@ import type { LeaveFormValues } from '@/types/leaveForm';
 import type { UpdateLeaveRequest } from '@/types/leaves';
 import { format } from 'date-fns';
 
-export const validateLeaveForm = (
-  values: LeaveFormValues,
-  isHolidayMode: boolean,
-): FormikErrors<LeaveFormValues> => {
+export const validateLeaveForm = (values: LeaveFormValues): FormikErrors<LeaveFormValues> => {
   const errors: FormikErrors<LeaveFormValues> = {};
 
-  if (isHolidayMode) {
+  if (values.leaveType === 'holiday') {
     if (!values.holidayId) {
       errors.holidayId = 'Please select a holiday';
     }
