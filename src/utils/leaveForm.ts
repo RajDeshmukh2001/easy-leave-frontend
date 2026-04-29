@@ -22,14 +22,14 @@ export const validateLeaveForm = (
       errors.dateRange = 'Please choose a date';
     }
 
-  if (!values.description.trim()) {
-    errors.description = 'Leave Description is required';
-  }
+    if (!values.description.trim()) {
+      errors.description = 'Leave Description is required';
+    }
 
-  if (values.description.length > 1000) {
-    errors.description = 'Leave Description cannot be over 1000 characters';
+    if (values.description.length > 1000) {
+      errors.description = 'Leave Description cannot be over 1000 characters';
+    }
   }
-
   return errors;
 };
 
