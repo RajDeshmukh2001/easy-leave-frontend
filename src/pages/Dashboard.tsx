@@ -30,12 +30,6 @@ function Dashboard(): React.JSX.Element {
       header: 'Applied On',
       render: (leave: LeaveResponse) => new Date(leave.applyOn).toLocaleDateString(),
     },
-    {
-      header: 'Reason',
-      render: (leave: LeaveResponse) => (
-        <span className="text-gray-600 truncate block max-w-50">{leave.reason}</span>
-      ),
-    },
   ];
   const handleRowClick = (leave: LeaveResponse): void => {
     navigate(`/leave/${leave.id}`);

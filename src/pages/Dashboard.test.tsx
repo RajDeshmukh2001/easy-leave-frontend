@@ -69,7 +69,6 @@ describe('Dashboard Component', () => {
       expect(screen.getByText('Date')).toBeInTheDocument();
       expect(screen.getByText('Duration')).toBeInTheDocument();
       expect(screen.getByText('Applied On')).toBeInTheDocument();
-      expect(screen.getByText('Reason')).toBeInTheDocument();
     });
   });
 
