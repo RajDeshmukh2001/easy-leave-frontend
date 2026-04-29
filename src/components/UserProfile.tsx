@@ -15,10 +15,12 @@ const UserProfile = ({
   nameClass = 'text-sm font-medium text-sidebar-accent-foreground',
   emailClass = 'text-xs text-sidebar-foreground/50 ',
 }: UserProfileProps): React.JSX.Element => {
+  const nameInitial = name?.charAt(0).toLocaleUpperCase();
+
   return (
     <div className={`flex gap-3 ${mainClass}`}>
       <div className={`shrink-0 flex items-center justify-center rounded-full ${avatarClass}`}>
-        <div className="bg-transparent">{name?.charAt(0).toLocaleUpperCase()}</div>
+        <div className="bg-transparent">{nameInitial}</div>
       </div>
       <div className="flex-1 min-w-0">
         <p className={`truncate ${nameClass}`}>{name}</p>
