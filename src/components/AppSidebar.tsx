@@ -18,6 +18,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { SidebarLogo } from './SidebarLogo';
 import { useSidebar } from '@/hooks/use-sidebar';
 import toast from 'react-hot-toast';
+import UserProfile from './UserProfile';
 
 const NavItemLink = ({ item }: { item: NavItem }): React.JSX.Element => {
   const { setOpenMobile } = useSidebar();
@@ -101,17 +102,21 @@ export const AppSidebar = (): React.JSX.Element => {
         )}
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu>
+        <SidebarMenu className="space-y-4">
+          <SidebarMenuItem>
+            <UserProfile name={user?.name} email={user?.email} />
+          </SidebarMenuItem>
+
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={handleLogout}
               tooltip="Logout"
               className="text-center flex cursor-pointer px-2 py-4 border border-white/20"
             >
-              <span className="group-data-[collapsible=icon]:hidden w-full text-lg font-semibold">
+              <span className="group-data-[collapsible=icon]:hidden w-full font-semibold">
                 Logout
               </span>
-              <LogOut className="text-red-600" />
+              <LogOut className="text-sidebar-accent-foreground" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
