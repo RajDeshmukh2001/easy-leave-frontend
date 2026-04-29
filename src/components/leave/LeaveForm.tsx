@@ -72,6 +72,7 @@ const LeaveForm = ({
               { value: 'regular', label: 'Regular Leave' },
               { value: 'holiday', label: 'Optional Holiday' },
             ]}
+            required={true}
           />
 
           {values.leaveType === 'holiday' ? (
