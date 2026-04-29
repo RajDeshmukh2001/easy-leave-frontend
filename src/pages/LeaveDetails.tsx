@@ -106,6 +106,7 @@ const LeaveDetails = (): React.JSX.Element => {
     duration: leave.duration,
     startTime: leave.startTime,
     description: leave.reason,
+    leaveType: 'regular',
   };
 
   return (
@@ -125,8 +126,6 @@ const LeaveDetails = (): React.JSX.Element => {
           handleCancelLeave={handleCancelLeave}
           cancelLabel="Cancel Leave"
           disableSubmit={new Date(leave.date) < new Date()}
-          isHolidayMode={false}
-          setIsHolidayMode={() => {}}
         />
       </div>
     </div>
