@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
 import ApplyLeaveForm from '@/components/leave/ApplyLeaveForm';
 import * as leaveCategoriesApi from '@/api/leaveCategories.api';
+import * as holidayApi from '@/api/holiday.api';
 import userEvent from '@testing-library/user-event';
 import type { LeaveApplicationRequest, LeaveApplicationResponse } from '@/types/leaves';
 import * as leaveApi from '@/api/leave.api';
@@ -29,7 +30,7 @@ const mockLeaveApplicationResponse: LeaveApplicationResponse[] = [
   {
     id: '123',
     date: mockToday.toISOString(),
-    leaveCategoryName: 'Annual Leave',
+    type: 'Annual Leave',
     duration: 'FULL_DAY',
     startTime: '10:00',
     description: 'Test',
@@ -61,6 +62,10 @@ describe('ApplyLeaveForm', () => {
 
     vi.spyOn(leaveCategoriesApi, 'fetchLeaveCategories').mockResolvedValue(mockCategories);
     vi.spyOn(leaveApi, 'applyLeave').mockResolvedValue(mockLeaveApplicationResponse);
+    vi.spyOn(holidayApi, 'fetchHolidays').mockResolvedValue([
+      { id: 'holiday1', name: 'Dussehra', date: '2026-10-20', type: 'OPTIONAL' },
+      { id: 'holiday2', name: 'New Years Eve', date: '2026-12-31', type: 'OPTIONAL' },
+    ]);
   });
 
   test('renders all form fields', async () => {
@@ -189,7 +194,8 @@ describe('ApplyLeaveForm', () => {
     renderApplyLeaveForm();
 
     const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
-    await userEvent.selectOptions(leaveCategoryInput, '1');
+    const option = await screen.findByRole('option', { name: /Annual Leave/i });
+    await userEvent.selectOptions(leaveCategoryInput, option);
 
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 
@@ -199,5 +205,47 @@ describe('ApplyLeaveForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
 
     expect(toast.error).toHaveBeenCalledWith('Leave Application submission failed');
+  });
+
+  test('switches to holiday mode when Optional Holiday is selected from leave type dropdown', async () => {
+    renderApplyLeaveForm();
+    await screen.findByLabelText(/Leave Category/i);
+
+    await userEvent.selectOptions(screen.getByLabelText(/Leave Type/i), 'holiday');
+
+    expect(screen.getByLabelText(/Select Optional Holiday/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Leave Category/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Pick a date/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Reason/i)).not.toBeInTheDocument();
+  });
+
+  test('displays validation error when submitting in holiday mode without selecting a holiday', async () => {
+    renderApplyLeaveForm();
+    await screen.findByLabelText(/Leave Category/i);
+
+    await userEvent.selectOptions(screen.getByLabelText(/Leave Type/i), 'holiday');
+    await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
+
+    expect(await screen.findByText(/Please select a holiday/i)).toBeInTheDocument();
+  });
+
+  test('submits correct payload when a holiday is selected', async () => {
+    renderApplyLeaveForm();
+    await screen.findByLabelText(/Leave Category/i);
+
+    await userEvent.selectOptions(screen.getByLabelText(/Leave Type/i), 'holiday');
+    await userEvent.selectOptions(screen.getByLabelText(/Select Optional Holiday/i), 'holiday1');
+    await userEvent.click(screen.getByRole('button', { name: 'Submit Leave' }));
+
+    await waitFor(() => {
+      expect(leaveApi.applyLeave).toHaveBeenCalledWith({
+        holidayId: 'holiday1',
+        dates: ['2026-10-20'],
+        description: 'Dussehra',
+        duration: 'FULL_DAY',
+        startTime: '10:00',
+      });
+    });
+    expect(toast.success).toHaveBeenCalled();
   });
 });

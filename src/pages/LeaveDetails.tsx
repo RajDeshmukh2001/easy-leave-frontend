@@ -101,10 +101,12 @@ const LeaveDetails = (): React.JSX.Element => {
 
   const updateLeaveInitialValues: LeaveFormValues = {
     leaveCategoryId: matchedCategory?.id || '',
+    holidayId: '',
     dateRange: { from: parseLocalDate(leave.date), to: parseLocalDate(leave.date) },
     duration: leave.duration,
     startTime: leave.startTime,
     description: leave.reason,
+    leaveType: 'regular',
   };
 
   return (

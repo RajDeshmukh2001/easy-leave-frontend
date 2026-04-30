@@ -6,22 +6,27 @@ import { format } from 'date-fns';
 export const validateLeaveForm = (values: LeaveFormValues): FormikErrors<LeaveFormValues> => {
   const errors: FormikErrors<LeaveFormValues> = {};
 
-  if (!values.leaveCategoryId) {
-    errors.leaveCategoryId = 'Leave category is required';
-  }
+  if (values.leaveType === 'holiday') {
+    if (!values.holidayId) {
+      errors.holidayId = 'Please select a holiday';
+    }
+  } else {
+    if (!values.leaveCategoryId) {
+      errors.leaveCategoryId = 'Leave category is required';
+    }
 
-  if (!values.dateRange || !values.dateRange.from) {
-    errors.dateRange = 'Please choose a date';
-  }
+    if (!values.dateRange || !values.dateRange.from) {
+      errors.dateRange = 'Please choose a date';
+    }
 
-  if (!values.description.trim()) {
-    errors.description = 'Leave Description is required';
-  }
+    if (!values.description.trim()) {
+      errors.description = 'Leave Description is required';
+    }
 
-  if (values.description.length > 1000) {
-    errors.description = 'Leave Description cannot be over 1000 characters';
+    if (values.description.length > 1000) {
+      errors.description = 'Leave Description cannot be over 1000 characters';
+    }
   }
-
   return errors;
 };
 

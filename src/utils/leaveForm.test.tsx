@@ -4,10 +4,12 @@ import type { LeaveDuration } from '@/types/leaves';
 
 const originalLeave: LeaveFormValues = {
   leaveCategoryId: '1',
+  holidayId: '',
   dateRange: { from: new Date('2026-04-10'), to: new Date('2026-04-10') },
   duration: 'FULL_DAY',
   startTime: '09:00',
   description: 'Initial reason',
+  leaveType: 'regular',
 };
 
 describe('buildUpdatePayload', () => {

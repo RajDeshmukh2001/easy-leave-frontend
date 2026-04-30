@@ -458,3 +458,43 @@ This feature allows employees to raise two types of requests to their manager di
 9. Verify Leave Category field does NOT appear
 10. Verify date picker only allows a single weekend date within the last 30 days
 11. Fill all fields and submit → expect success toast and form reset
+
+---
+
+### Apply For Optional Holiday Leave
+
+#### Overview
+
+This feature allows employees to apply for leave on optional holidays. Employees can select an optional holiday from the leave application form by choosing the 'Optional Holiday' type in Leave Type dropdown, which then displays a list of available optional holidays to choose from.
+
+#### Key Highlights
+
+- Added 'Optional Holiday' type in the leave application form
+- Fetches and displays list of current month and upcoming optional holidays from API when 'Optional Holiday' type is selected
+- Allows employees to select an optional holiday for their leave application
+- Validates that an optional holiday is selected when 'Optional Holiday' type is chosen
+- Lets users select start time for the optional holiday leave
+- Other fields like date and duration are auto-filled based on the selected optional holiday
+- Description field is automatically sent as the name of the selected optional holiday
+
+#### API Integration
+
+Endpoints used:
+
+```
+POST /api/leaves/
+```
+
+```
+GET /api/holidays?type=OPTIONAL
+```
+
+#### How to Test
+
+1. Go to the Leave page
+2. Click on "Apply for Leave"
+3. Select "Optional Holiday" as the leave type
+4. Verify that a dropdown appears with the list of available optional holidays
+5. Select an optional holiday from the dropdown
+6. Submit the form
+7. Expect: Success toast + list refresh with the new leave application for the selected optional holiday

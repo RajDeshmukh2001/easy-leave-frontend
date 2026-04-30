@@ -32,7 +32,7 @@ const mockLeave: LeaveResponse = {
 const mockUpdateLeaveResponse: LeaveApplicationResponse = {
   id: '123',
   date: new Date(2026, 3, 6).toISOString(),
-  leaveCategoryName: 'Annual Leave',
+  type: 'Annual Leave',
   duration: 'FULL_DAY',
   startTime: '10:00',
   description: 'Test',
@@ -69,6 +69,7 @@ afterEach(() => {
 });
 
 beforeEach(async () => {
+  vi.clearAllMocks();
   vi.spyOn(api, 'fetchLeaveById').mockResolvedValue(mockLeave);
 
   const { default: useLeaveCategories } = await import('@/hooks/useLeaveCategories');
@@ -299,10 +300,10 @@ describe('LeaveDetails Page Component', () => {
     });
   });
 
-  test('renders informational message with cancel button', () => {
+  test('renders informational message with cancel button', async () => {
     renderWithRouter();
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(screen.getByText('Cancelling leave cannot be undone.')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /cancel leave/i })).toBeInTheDocument();
     });

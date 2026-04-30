@@ -7,13 +7,16 @@ import { getDatesBetween } from '@/utils/time';
 import { isAxiosError } from 'axios';
 import LeaveForm from '@/components/leave/LeaveForm';
 import type { LeaveFormValues } from '@/types/leaveForm';
+import useHolidays from '@/hooks/useHolidays';
 
 const initialValues: LeaveFormValues = {
   leaveCategoryId: '',
+  holidayId: '',
   dateRange: undefined,
   startTime: '10:00',
   duration: 'FULL_DAY',
   description: '',
+  leaveType: 'regular',
 };
 
 const ApplyLeaveForm = ({
@@ -21,17 +24,32 @@ const ApplyLeaveForm = ({
 }: {
   refreshLeaves: () => Promise<void>;
 }): React.JSX.Element => {
+  const { holidays } = useHolidays('OPTIONAL');
+
   const handleSubmit = async (
     values: LeaveFormValues,
     { resetForm }: FormikHelpers<LeaveFormValues>,
-  ): Promise<void> => {
-    const leaveData: LeaveApplicationRequest = {
-      leaveCategoryId: values.leaveCategoryId,
-      dates: getDatesBetween(values.dateRange),
-      duration: values.duration,
-      startTime: values.startTime,
-      description: values.description,
-    };
+  ) => {
+    let leaveData: LeaveApplicationRequest;
+
+    if (values.leaveType === 'holiday') {
+      const selectedHoliday = holidays.find((holiday) => holiday.id === values.holidayId);
+      leaveData = {
+        holidayId: values.holidayId,
+        dates: [selectedHoliday!.date],
+        description: selectedHoliday!.name,
+        duration: 'FULL_DAY',
+        startTime: values.startTime,
+      };
+    } else {
+      leaveData = {
+        leaveCategoryId: values.leaveCategoryId,
+        dates: getDatesBetween(values.dateRange),
+        duration: values.duration,
+        startTime: values.startTime,
+        description: values.description,
+      };
+    }
 
     try {
       await applyLeave(leaveData);
