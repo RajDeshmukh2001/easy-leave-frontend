@@ -1,11 +1,14 @@
+import TableHeader from '@/components/TableHeader';
 import PageHeader from '../components/PageHeader';
 import Table from '../components/Table';
 import type { LeaveResponse } from '../types/leaves';
 import Loading from '@/components/Loading';
 import useLeaves from '@/hooks/useLeaves';
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard(): React.JSX.Element {
   const { leaves, loading, error } = useLeaves({ status: 'upcoming', scope: 'self' });
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -27,13 +30,31 @@ function Dashboard(): React.JSX.Element {
       header: 'Applied On',
       render: (leave: LeaveResponse) => new Date(leave.applyOn).toLocaleDateString(),
     },
-    {
-      header: 'Reason',
-      render: (leave: LeaveResponse) => (
-        <span className="text-gray-600 truncate block max-w-50">{leave.reason}</span>
-      ),
-    },
   ];
+  const handleRowClick = (leave: LeaveResponse): void => {
+    navigate(`/leave/${leave.id}`);
+  };
+
+  const getRowKey = (leave: LeaveResponse): string | number => {
+    return leave.id;
+  };
+
+  const reversedLeaves = [...leaves].reverse();
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center p-4">
+        <Loading />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center flex-col p-4">
+        <p className="p-3 text-red-700">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen flex flex-col p-4 ">
@@ -42,22 +63,14 @@ function Dashboard(): React.JSX.Element {
         pageSubtitle="Welcome to your dashboard! Here you can find an overview of your Leaves"
       />
       <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-        <div className="bg-sidebar/98 py-2 px-1 rounded-t-2xl ">
-          <h1 className="text-xl md:text-2xl text-sidebar-foreground font-bold mb-4 px-4 py-2">
-            Upcoming Leaves
-          </h1>
-        </div>
-
-        {loading && <Loading />}
-        {error && <p className="p-3 text-red-700">{error}</p>}
-        {!loading && !error && (
-          <Table
-            data={[...leaves].reverse()}
-            columns={columns}
-            message="No upcoming leave records found."
-            getRowKey={(leave: LeaveResponse) => leave.id}
-          />
-        )}
+        <TableHeader title="Upcoming Leaves" />
+        <Table
+          data={reversedLeaves}
+          columns={columns}
+          message="No upcoming leave records found."
+          getRowKey={getRowKey}
+          onRowClick={handleRowClick}
+        />
       </div>
     </div>
   );

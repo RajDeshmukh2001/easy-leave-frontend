@@ -46,13 +46,34 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
       ),
     },
   ];
+  const handleRowClick = (employee: EmployeeLeaveRecord): void => {
+    navigate(`/manager/employees/${employee.employeeId}`);
+  };
+
+  const getRowKey = (employee: EmployeeLeaveRecord): string | number => {
+    return employee.employeeId;
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center p-4">
+        <Loading />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center flex-col p-4">
+        <p className="p-3 text-red-700">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-col h-screen p-3">
       <PageHeader pageTitle="All Employees" pageSubtitle="View employees leave records" />
-
       <div className="flex overflow-y-scroll flex-col w-full rounded-2xl shadow-2xs border border-neutral-200">
-        <div className="flex bg-sidebar items-center rounded-t-2xl justify-between p-3">
+        <div className="flex bg-white items-center rounded-t-2xl justify-between p-3">
           <div className="flex justify-end w-full">
             <FilterDropdown
               options={years}
@@ -61,31 +82,15 @@ function AllEmployeesLeaveBalance(): React.JSX.Element {
             />
           </div>
         </div>
-
-        {error && <p className="p-3 text-red-700">{error}</p>}
-
         <Table
           data={employees}
           columns={columns}
           message="No employee found"
-          getRowKey={(employee: EmployeeLeaveRecord) => employee.employeeId}
-          onRowClick={(employee: EmployeeLeaveRecord) =>
-            navigate(`/manager/employees/${employee.employeeId}`)
-          }
+          getRowKey={getRowKey}
+          onRowClick={handleRowClick}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
         />
-
-        {loading && <Loading />}
-
-        {!loading && hasMore && (
-          <div className="flex justify-center p-4">
-            <button
-              onClick={loadMore}
-              className="px-4 py-2 text-sm bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50"
-            >
-              Load More
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

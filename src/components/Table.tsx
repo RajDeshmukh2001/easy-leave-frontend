@@ -30,12 +30,12 @@ function Table<T>({
   return (
     <div className="w-full overflow-x-auto rounded-b-2xl">
       <table className="min-w-full table-fixed text-sm text-left">
-        <thead className="text-gray-600 bg-sidebar/98 border-b sticky top-0 z-10 border-gray-300 uppercase text-xs tracking-wider">
+        <thead className="bg-white shadow sticky top-0 z-10 uppercase text-xs tracking-wider">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.header}
-                className="px-3 md:px-6 py-3 text-left text-sidebar-foreground font-semibold text-nowrap"
+                className="px-3 md:px-6 py-3 text-left font-semibold text-nowrap"
               >
                 {col.header}
               </th>
