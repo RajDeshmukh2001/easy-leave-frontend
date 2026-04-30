@@ -194,7 +194,8 @@ describe('ApplyLeaveForm', () => {
     renderApplyLeaveForm();
 
     const leaveCategoryInput = await screen.findByLabelText(/Leave Category/i);
-    await userEvent.selectOptions(leaveCategoryInput, '1');
+    const option = await screen.findByRole('option', { name: /Annual Leave/i });
+    await userEvent.selectOptions(leaveCategoryInput, option);
 
     await userEvent.click(screen.getByRole('button', { name: 'Pick a date' }));
 

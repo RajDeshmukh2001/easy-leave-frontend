@@ -5,6 +5,7 @@ import { MemoryRouter, useNavigate } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
 import * as leaveApi from '@/api/leave.api';
+import toast from 'react-hot-toast';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -13,6 +14,13 @@ vi.mock('react-router-dom', async () => {
     useNavigate: vi.fn(),
   };
 });
+
+vi.mock('react-hot-toast', () => ({
+  default: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
 
 const mockLeaves: LeaveResponse[] = [
   {
@@ -158,11 +166,12 @@ describe('Leave Page Component', () => {
       expect(screen.getByText('Optional Holiday')).toBeInTheDocument();
     });
 
-    await userEvent.click(screen.getByRole('cell', { name: 'Optional Holiday' }));
-
-    waitFor(() => {
-      expect(screen.getByText('Cannot update optional holiday.')).toBeInTheDocument();
+    const row = await screen.findByRole('row', {
+      name: /optional holiday/i,
     });
+    await userEvent.click(row);
+
+    expect(toast.error).toHaveBeenCalledWith('Cannot update optional holiday');
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });

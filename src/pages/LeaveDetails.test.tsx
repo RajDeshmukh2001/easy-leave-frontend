@@ -300,10 +300,10 @@ describe('LeaveDetails Page Component', () => {
     });
   });
 
-  test('renders informational message with cancel button', () => {
+  test('renders informational message with cancel button', async () => {
     renderWithRouter();
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(screen.getByText('Cancelling leave cannot be undone.')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /cancel leave/i })).toBeInTheDocument();
     });
