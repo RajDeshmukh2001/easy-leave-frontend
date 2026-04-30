@@ -17,7 +17,10 @@ export const SidebarLogo = ({ title, logo }: Props): React.JSX.Element => {
   return (
     <SidebarMenu>
       <SidebarMenuItem className="flex items-center">
-        <SidebarMenuButton size="lg">
+        <SidebarMenuButton
+          size="lg"
+          className="data-open:hover:bg-transparent hover:bg-transparent active:bg-transparent data-active:bg-transparent"
+        >
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground group-data-[collapsible=icon]:hidden">
             {logo}
           </div>

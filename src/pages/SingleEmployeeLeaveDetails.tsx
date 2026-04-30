@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useFetchYears from '@/hooks/useFetchYears';
 import { fetchUserDetails, type UserDetails } from '@/api/user.api';
 import FilterDropdown from '@/components/FilterDropdown';
+import UserProfile from '@/components/UserProfile';
 
 function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const { id } = useParams();
@@ -139,17 +140,15 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
         <ArrowLeft /> Back
       </Button>
 
-      <div className="flex items-center justify-between flex-col md:flex-row gap-y-2.5">
-        <div className="w-full flex items-center gap-2.5 md:gap-4">
-          <h1 className="text-lg md:text-xl text-(--technogise-blue) font-extrabold h-12 w-12 md:h-14 md:w-14 flex items-center justify-center bg-(--technogise-blue)/10 rounded-full">
-            {userDetails?.name.charAt(0).toLocaleUpperCase()}
-          </h1>
-
-          <div>
-            <h1 className="text-base md:text-lg font-bold text-foreground">{userDetails?.name}</h1>
-            <h3 className="text-sm text-muted-foreground">{userDetails?.email}</h3>
-          </div>
-        </div>
+      <div className="flex md:items-center justify-between flex-col md:flex-row gap-y-2.5">
+        <UserProfile
+          name={userDetails?.name}
+          email={userDetails?.email}
+          mainClass="items-start"
+          avatarClass="h-12 w-12 text-lg md:text-2xl font-bold text-white bg-(--technogise-blue)"
+          nameClass="text-base md:text-lg font-bold text-foreground"
+          emailClass="text-sm text-muted-foreground"
+        />
 
         <div className="flex justify-end w-full">
           <FilterDropdown

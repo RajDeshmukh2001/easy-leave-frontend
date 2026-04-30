@@ -40,6 +40,13 @@ function ManagerDashboard(): React.JSX.Element {
     fetchMetrics();
   }, []);
 
+  const formatDurationLabel = (duration: string): string => {
+    return duration
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   return (
     <div className="w-full h-screen flex flex-col p-6 bg-gray-50">
       <PageHeader pageTitle="Manager Dashboard" pageSubtitle="Team leave overview at a glance" />
@@ -91,10 +98,7 @@ function ManagerDashboard(): React.JSX.Element {
                   <LeaveCardItem
                     key={leave.id}
                     title={leave.employeeName}
-                    description={leave.duration
-                      .split('_')
-                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                      .join(' ')}
+                    duration={formatDurationLabel(leave.duration)}
                     badgeName={leave.type}
                     style="bg-warning/5 border border-warning/10"
                   />
@@ -124,7 +128,8 @@ function ManagerDashboard(): React.JSX.Element {
                     <LeaveCardItem
                       key={leave.id}
                       title={leave.employeeName}
-                      description={leave.date}
+                      duration={formatDurationLabel(leave.duration)}
+                      date={leave.date}
                       badgeName={leave.type}
                       style="bg-muted"
                     />
