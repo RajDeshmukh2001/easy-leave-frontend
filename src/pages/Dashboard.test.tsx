@@ -37,6 +37,7 @@ const renderDashboard = () => {
 
 describe('Dashboard Component', () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
   });
 
