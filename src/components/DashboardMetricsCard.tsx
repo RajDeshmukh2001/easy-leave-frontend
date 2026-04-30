@@ -15,15 +15,17 @@ function DashboardMetricsCard({
 }: DashboardMetricsCardProps): React.JSX.Element {
   return (
     <div
-      className={twMerge('px-4 py-4 border border-gray-200 rounded-2xl bg-white shadow-sm', style)}
+      className={twMerge(
+        'p-5 border border-gray-200 rounded-xl bg-white shadow-sm hover:shadow-lg',
+        style,
+      )}
     >
       <div className="flex justify-between items-center">
-        <p className="font-medium text-gray-700">{title}</p>
-        <div className="text-gray-500 flex items-center justify-center">{icon}</div>
+        <p className="text-s font-medium text-gray-500">{title}</p>
+        <div className="p-2 rounded-lg bg-gray-100 text-gray-600">{icon}</div>
       </div>
-
-      <div className="mt-3">
-        <p className="text-2xl font-bold text-gray-800">{value}</p>
+      <div className="mt-1">
+        <p className="text-2xl font-semibold text-gray-900">{value}</p>
       </div>
     </div>
   );
