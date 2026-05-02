@@ -7,6 +7,8 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import type { LeaveApplicationResponse, LeaveResponse } from '@/types/leaves';
 import userEvent from '@testing-library/user-event';
 import toast from 'react-hot-toast';
+import * as holidayApi from '@/api/holiday.api';
+import type { HolidayResponse } from '@/types/holiday';
 
 vi.mock('@/api/leave.api');
 vi.mock('@/utils/leaveForm');
@@ -38,6 +40,10 @@ const mockUpdateLeaveResponse: LeaveApplicationResponse = {
   startTime: '10:00',
   description: 'Test',
 };
+
+const mockHolidays: HolidayResponse[] = [
+  { id: 'holiday-1', name: 'New Years Eve', date: '2026-12-31', type: 'OPTIONAL' },
+];
 
 vi.mock('@/hooks/useLeaveCategories');
 
@@ -72,6 +78,7 @@ afterEach(() => {
 beforeEach(async () => {
   vi.clearAllMocks();
   vi.spyOn(api, 'fetchLeaveById').mockResolvedValue(mockLeave);
+  vi.spyOn(holidayApi, 'fetchHolidays').mockResolvedValue(mockHolidays);
 
   const { default: useLeaveCategories } = await import('@/hooks/useLeaveCategories');
   vi.mocked(useLeaveCategories).mockReturnValue({
@@ -82,16 +89,16 @@ beforeEach(async () => {
   });
 });
 
+beforeAll(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  vi.setSystemTime(new Date('2026-01-01'));
+});
+
+afterAll(() => {
+  vi.useRealTimers();
+});
+
 describe('LeaveDetails Page Component', () => {
-  beforeAll(() => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-    vi.setSystemTime(new Date('2026-01-01'));
-  });
-
-  afterAll(() => {
-    vi.useRealTimers();
-  });
-
   test('renders page header', async () => {
     renderWithRouter();
 
@@ -308,5 +315,77 @@ describe('LeaveDetails Page Component', () => {
       expect(screen.getByText('Cancelling leave cannot be undone.')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /cancel leave/i })).toBeInTheDocument();
     });
+  });
+});
+
+describe('Holiday Leave', () => {
+  const mockHolidayLeave: LeaveResponse = {
+    id: '1',
+    date: '2026-12-31',
+    employeeName: 'Raj',
+    type: 'Optional Holiday',
+    duration: 'FULL_DAY',
+    startTime: '09:00:00',
+    applyOn: '2026-12-31T10:00:00',
+    reason: 'New Years Eve',
+    holidayId: 'holiday-1',
+  };
+
+  beforeEach(() => {
+    vi.spyOn(api, 'fetchLeaveById').mockResolvedValue(mockHolidayLeave);
+  });
+
+  test('sets leaveType to holiday when leave has holidayId', async () => {
+    renderWithRouter();
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Optional Holiday')).toBeInTheDocument();
+    });
+  });
+
+  test('pre-populates holiday dropdown with matched holiday', async () => {
+    renderWithRouter();
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue(/New Years Eve/i)).toBeInTheDocument();
+    });
+  });
+
+  test('calls updateLeave with holiday payload on submit', async () => {
+    vi.mocked(leaveFormUtils.buildUpdatePayload).mockReturnValue({
+      holidayId: 'holiday-1',
+      date: '2026-12-31',
+      description: 'New Years Eve',
+      startTime: '09:00:00',
+    });
+    vi.spyOn(api, 'updateLeave').mockResolvedValue(mockUpdateLeaveResponse);
+
+    renderWithRouter();
+
+    await waitFor(() => expect(screen.getByDisplayValue('Optional Holiday')).toBeInTheDocument());
+    await submitForm();
+
+    await waitFor(() => {
+      expect(leaveFormUtils.buildUpdatePayload).toHaveBeenCalled();
+      expect(api.updateLeave).toHaveBeenCalledWith('1', {
+        holidayId: 'holiday-1',
+        date: '2026-12-31',
+        description: 'New Years Eve',
+        startTime: '09:00:00',
+      });
+    });
+  });
+
+  test('shows error toast when no changes made on optional holiday leave', async () => {
+    vi.mocked(leaveFormUtils.buildUpdatePayload).mockReturnValue({});
+
+    renderWithRouter();
+    await submitForm();
+
+    await waitFor(() =>
+      expect(toast.error).toHaveBeenCalledWith(
+        'No changes made. At least one field must be provided to update the leave',
+      ),
+    );
   });
 });
