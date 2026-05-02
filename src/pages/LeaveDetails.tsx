@@ -106,7 +106,7 @@ const LeaveDetails = (): React.JSX.Element => {
   const updateLeaveInitialValues: LeaveFormValues = isHolidayLeave
     ? {
         leaveCategoryId: '',
-        holidayId: leave.holidayId ?? '',
+        holidayId: leave.holidayId as string,
         dateRange: { from: parseLocalDate(leave.date), to: parseLocalDate(leave.date) },
         duration: leave.duration,
         startTime: leave.startTime,
