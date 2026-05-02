@@ -5,7 +5,6 @@ import { MemoryRouter, useNavigate } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
 import * as leaveApi from '@/api/leave.api';
-import toast from 'react-hot-toast';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
