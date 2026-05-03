@@ -25,6 +25,15 @@ describe('DatePicker', () => {
 });
 
 describe('DatePicker - single mode selection', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(2026, 3, 1));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   test('calls setDate with from/to equal to selected date in single mode', async () => {
     const user = userEvent.setup();
     const setDate = vi.fn();
