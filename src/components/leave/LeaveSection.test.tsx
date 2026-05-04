@@ -35,6 +35,16 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockPageResponse = {
+  content: mockLeaves,
+  first: true,
+  last: true,
+  totalPages: 1,
+  totalElements: 1,
+  size: 20,
+  number: 0,
+};
+
 const renderLeavePage = () => {
   render(
     <MemoryRouter>
@@ -45,7 +55,7 @@ const renderLeavePage = () => {
 
 describe('Leave Page Component', () => {
   beforeEach(() => {
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
   });
 
   test('renders My Leaves heading', () => {
@@ -89,12 +99,17 @@ describe('Leave Page Component', () => {
   });
 
   test('calls fetchLeaves with upcoming status on filter change', async () => {
-    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
     renderLeavePage();
     const dropdown = screen.getByDisplayValue('All');
     await userEvent.selectOptions(dropdown, 'upcoming');
     await waitFor(() => {
-      expect(spy).toHaveBeenCalledWith({ status: 'upcoming', scope: 'self' });
+      expect(spy).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          status: 'upcoming',
+          scope: 'self',
+        }),
+      );
     });
   });
 
@@ -105,7 +120,10 @@ describe('Leave Page Component', () => {
         date: new Date().toISOString().split('T')[0],
       },
     ];
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayLeave);
+
+    const todayResponse = { ...mockPageResponse, content: todayLeave };
+
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayResponse);
     renderLeavePage();
     await waitFor(() => {
       expect(screen.getByText('Ongoing')).toBeInTheDocument();
@@ -119,7 +137,10 @@ describe('Leave Page Component', () => {
         date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       },
     ];
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayLeave);
+
+    const todayResponse = { ...mockPageResponse, content: todayLeave };
+
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayResponse);
     renderLeavePage();
     await waitFor(() => {
       expect(screen.getByText('Completed')).toBeInTheDocument();
@@ -157,8 +178,9 @@ describe('Leave Page Component', () => {
         date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       },
     ];
+    const todayResponse = { ...mockPageResponse, content: optionalHolidayLeave };
 
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(optionalHolidayLeave);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayResponse);
 
     renderLeavePage();
 
