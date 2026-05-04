@@ -12,11 +12,17 @@ function ManagerDashboard(): React.JSX.Element {
   const {
     leaves: upcomingLeaves,
     loading: upcomingLeavesLoading,
+    loadingMore: upcomingLoadingMore,
+    hasMore: upcomingHasMore,
+    loadMore: loadMoreUpcoming,
     error: upcomingLeavesError,
-  } = useLeaves({ status: 'upcoming', scope: 'organization' });
+  } = useLeaves({ status: 'upcoming', scope: 'organization', sortDir: 'asc' });
   const {
     leaves: ongoingLeaves,
     loading: ongoingLeavesLoading,
+    loadingMore: ongoingLoadingMore,
+    hasMore: ongoingHasMore,
+    loadMore: loadMoreOngoing,
     error: ongoingLeavesError,
   } = useLeaves({ status: 'ongoing', scope: 'organization' });
 
@@ -94,15 +100,26 @@ function ManagerDashboard(): React.JSX.Element {
                   No Employee On Leave Today
                 </p>
               ) : (
-                ongoingLeaves.map((leave) => (
-                  <LeaveCardItem
-                    key={leave.id}
-                    title={leave.employeeName}
-                    duration={formatDurationLabel(leave.duration)}
-                    badgeName={leave.type}
-                    style="bg-warning/5 border border-warning/10"
-                  />
-                ))
+                <>
+                  {ongoingLeaves.map((leave) => (
+                    <LeaveCardItem
+                      key={leave.id}
+                      title={leave.employeeName}
+                      duration={formatDurationLabel(leave.duration)}
+                      badgeName={leave.type}
+                      style="bg-warning/5 border border-warning/10"
+                    />
+                  ))}
+                  {ongoingHasMore && ongoingLeaves.length > 0 && (
+                    <button
+                      onClick={loadMoreOngoing}
+                      disabled={ongoingLoadingMore}
+                      className="w-fit mt-2 px-4 py-2 bg-sidebar text-white rounded-md disabled:opacity-50"
+                    >
+                      {ongoingLoadingMore ? <Loading /> : 'Show More'}
+                    </button>
+                  )}
+                </>
               ))}
           </div>
         </div>
@@ -122,9 +139,8 @@ function ManagerDashboard(): React.JSX.Element {
                   No Upcoming/Schedule leave
                 </p>
               ) : (
-                [...upcomingLeaves]
-                  .reverse()
-                  .map((leave) => (
+                <>
+                  {upcomingLeaves.map((leave) => (
                     <LeaveCardItem
                       key={leave.id}
                       title={leave.employeeName}
@@ -133,7 +149,17 @@ function ManagerDashboard(): React.JSX.Element {
                       badgeName={leave.type}
                       style="bg-muted"
                     />
-                  ))
+                  ))}
+                  {upcomingHasMore && upcomingLeaves.length > 0 && (
+                    <button
+                      onClick={loadMoreUpcoming}
+                      disabled={upcomingLoadingMore}
+                      className="w-fit mt-2 px-4 py-2 bg-sidebar text-white rounded-md disabled:opacity-50"
+                    >
+                      {upcomingLoadingMore ? <Loading /> : 'Show More'}
+                    </button>
+                  )}
+                </>
               ))}
           </div>
         </div>

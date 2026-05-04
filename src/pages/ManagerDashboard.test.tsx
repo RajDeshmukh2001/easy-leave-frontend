@@ -5,6 +5,7 @@ import type { LeaveResponse } from '@/types/leaves';
 import * as leaveApi from '../api/leave.api';
 import * as dashboardApi from '../api/dashboard.api';
 import type { ManagerDashboardMetrics } from '@/types/dashboard';
+import userEvent from '@testing-library/user-event';
 
 const renderManagerDashboard = () => {
   return render(
@@ -27,6 +28,16 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockPageResponse = {
+  content: mockLeaves,
+  first: true,
+  last: true,
+  totalPages: 1,
+  totalElements: 1,
+  size: 20,
+  number: 0,
+};
+
 const mockEmployeesMetrics: ManagerDashboardMetrics = {
   totalEmployees: 20,
   totalEmployeesOnLeaveToday: 5,
@@ -35,7 +46,7 @@ const mockEmployeesMetrics: ManagerDashboardMetrics = {
 
 describe('ManagerDashboard', () => {
   beforeEach(() => {
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
     vi.spyOn(dashboardApi, 'getManagerDashboardMetrics').mockResolvedValue(mockEmployeesMetrics);
   });
 
@@ -51,19 +62,64 @@ describe('ManagerDashboard', () => {
     expect(screen.getByText('Upcoming Leaves')).toBeInTheDocument();
   });
 
+  test('shows Loading inside Show More button when clicked', async () => {
+    vi.spyOn(leaveApi, 'fetchLeaves')
+      .mockResolvedValueOnce({
+        content: mockLeaves,
+        first: true,
+        last: false,
+        totalPages: 2,
+        totalElements: 2,
+        size: 1,
+        number: 0,
+      })
+      .mockResolvedValueOnce({
+        content: mockLeaves,
+        first: true,
+        last: false,
+        totalPages: 2,
+        totalElements: 2,
+        size: 1,
+        number: 0,
+      })
+      .mockImplementationOnce(() => new Promise(() => {}))
+      .mockImplementation(() => new Promise(() => {}));
+
+    renderManagerDashboard();
+
+    const buttons = await screen.findAllByRole('button', {
+      name: /show more/i,
+    });
+
+    await userEvent.click(buttons[0]);
+    await userEvent.click(buttons[1]);
+
+    expect(screen.getAllByText(/loading/i).length).toBeGreaterThan(0);
+  });
+
   test('calls fetchLeaves with upcoming status and organization scope', async () => {
-    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
     renderManagerDashboard();
     await waitFor(() => {
-      expect(spy).toHaveBeenCalledWith({ status: 'upcoming', scope: 'organization' });
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'upcoming',
+          scope: 'organization',
+        }),
+      );
     });
   });
 
   test('calls fetchLeaves with ongoing status and organization scope', async () => {
-    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
     renderManagerDashboard();
     await waitFor(() => {
-      expect(spy).toHaveBeenCalledWith({ status: 'ongoing', scope: 'organization' });
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'ongoing',
+          scope: 'organization',
+        }),
+      );
     });
   });
 
@@ -102,6 +158,7 @@ describe('ManagerDashboard', () => {
       expect(screen.getByText('Failed to fetch data')).toBeInTheDocument();
     });
   });
+
   test('displays error message on network error', async () => {
     vi.spyOn(dashboardApi, 'getManagerDashboardMetrics').mockRejectedValue(
       'Failed to fetch dashboard metrics',
