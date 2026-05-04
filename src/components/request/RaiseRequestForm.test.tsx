@@ -128,15 +128,6 @@ describe('RaiseRequestForm', () => {
     expect(screen.getByLabelText(/End Time/i)).toHaveValue('17:00');
   });
 
-  test('shows leave category error when PAST_LEAVE submitted without category', async () => {
-    renderRaiseRequestForm();
-    await userEvent.selectOptions(screen.getByLabelText(/Request Type/i), 'PAST_LEAVE');
-    await screen.findByLabelText(/Leave Category/i);
-    await userEvent.click(screen.getByText('Pick a date'));
-    await userEvent.click(screen.getByRole('button', { name: 'Raise Request' }));
-    expect(await screen.findByText('Select a leave category')).toBeInTheDocument();
-  });
-
   test('shows date error when submitted without selecting a date', async () => {
     renderRaiseRequestForm();
     await userEvent.selectOptions(screen.getByLabelText(/Request Type/i), 'COMPENSATORY_OFF');

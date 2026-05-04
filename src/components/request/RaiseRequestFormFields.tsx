@@ -62,7 +62,7 @@ const RaiseRequestFormFields = ({
         placeholder="Select request type"
       />
 
-      {isPastLeave && <LeaveCategorySelect required />}
+      {isPastLeave && <LeaveCategorySelect required setFieldValue={setFieldValue} />}
 
       {values.requestType !== '' && (
         <>
