@@ -67,7 +67,7 @@ const LeaveForm = ({
           <SelectField
             name="leaveType"
             id="leaveType"
-            label="Leave Type"
+            label="Type"
             options={[
               { value: 'regular', label: 'Regular Leave' },
               { value: 'holiday', label: 'Optional Holiday' },
@@ -90,7 +90,7 @@ const LeaveForm = ({
             <SelectField
               name="leaveCategoryId"
               id="leaveCategoryId"
-              label="Leave Category"
+              label="Category"
               options={categories.map((category) => ({ value: category.id, label: category.name }))}
               loading={loading}
               error={error}
@@ -146,7 +146,7 @@ const LeaveForm = ({
             <TextareaField
               name="description"
               id="description"
-              label="Leave Description"
+              label="Description"
               placeholder="Describe your reason for leave..."
               required={true}
             />

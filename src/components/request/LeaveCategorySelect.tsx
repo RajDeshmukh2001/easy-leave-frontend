@@ -25,7 +25,7 @@ const LeaveCategorySelect = ({
       <SelectField
         name="leaveCategoryId"
         id="leaveCategoryId"
-        label="Leave Category"
+        label="Category"
         required={required}
         options={[{ value: annualLeaveCategory?.id ?? '', label: 'Annual Leave' }]}
         disabled
