@@ -5,7 +5,7 @@ import type { LeaveResponse } from '../types/leaves';
 import Loading from '@/components/Loading';
 import useLeaves from '@/hooks/useLeaves';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getEmployeeDashboardMetrics } from '@/api/dashboard.api';
 import type { EmployeeDashboardMetrics } from '@/types/dashboard';
 import DashboardMetricsCard from '@/components/DashboardMetricsCard';
@@ -15,8 +15,11 @@ function Dashboard(): React.JSX.Element {
   const {
     leaves,
     loading: upcomingLeaveLoading,
+    loadingMore,
     error: upcomingLeaveError,
-  } = useLeaves({ status: 'upcoming', scope: 'self' });
+    hasMore,
+    loadMore,
+  } = useLeaves({ status: 'upcoming', scope: 'self', sortDir: 'asc' });
   const navigate = useNavigate();
 
   const [metricsData, setMetricsData] = useState<EmployeeDashboardMetrics | null>(null);
@@ -40,8 +43,6 @@ function Dashboard(): React.JSX.Element {
     };
     fetchMetrics();
   }, []);
-
-  const reversedLeaves = useMemo(() => [...leaves].reverse(), [leaves]);
 
   const columns = [
     {
@@ -125,11 +126,14 @@ function Dashboard(): React.JSX.Element {
           <p className="p-3 text-red-700">{upcomingLeaveError}</p>
         ) : (
           <Table
-            data={reversedLeaves}
+            data={leaves}
             columns={columns}
             message="No upcoming leave records found."
             getRowKey={getRowKey}
             onRowClick={handleRowClick}
+            hasMore={hasMore}
+            onLoadMore={loadMore}
+            loadingMore={loadingMore}
           />
         )}
       </div>
