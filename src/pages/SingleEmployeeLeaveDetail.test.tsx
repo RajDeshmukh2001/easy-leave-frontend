@@ -47,6 +47,16 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockPageResponse = {
+  content: mockLeaves,
+  first: true,
+  last: true,
+  totalPages: 1,
+  totalElements: 1,
+  size: 20,
+  number: 0,
+};
+
 const renderSingleEmployeeLeaveDetails = () => {
   return render(
     <MemoryRouter initialEntries={['/employee/1']}>
@@ -64,7 +74,7 @@ describe('SingleEmployeeLeaveDetails', () => {
       mockLeaveRecord,
     );
     vi.spyOn(employeeLeaveBalance, 'fetchYears').mockResolvedValue(['2025', '2026']);
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
     vi.spyOn(userApi, 'fetchUserDetails').mockResolvedValue({
       name: 'Priyansh Saxena',
