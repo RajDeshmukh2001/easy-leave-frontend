@@ -114,7 +114,7 @@ function ManagerDashboard(): React.JSX.Element {
                     <button
                       onClick={loadMoreOngoing}
                       disabled={ongoingLoadingMore}
-                      className="w-fit mt-2 px-4 py-2 bg-sidebar text-white rounded-md disabled:opacity-50"
+                      className="w-fit mt-2 px-4 py-2 bg-sidebar text-white rounded-md disabled:opacity-50 self-center"
                     >
                       {ongoingLoadingMore ? <Loading /> : 'Show More'}
                     </button>
@@ -154,7 +154,7 @@ function ManagerDashboard(): React.JSX.Element {
                     <button
                       onClick={loadMoreUpcoming}
                       disabled={upcomingLoadingMore}
-                      className="w-fit mt-2 px-4 py-2 bg-sidebar text-white rounded-md disabled:opacity-50"
+                      className="w-fit mt-2 px-4 py-2 bg-sidebar text-white rounded-md disabled:opacity-50 self-center"
                     >
                       {upcomingLoadingMore ? <Loading /> : 'Show More'}
                     </button>
