@@ -3,6 +3,7 @@ import { describe, expect, test, vi, beforeEach } from 'vitest';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import * as leaveApi from '../api/leave.api';
+import * as dashboardApi from '@/api/dashboard.api';
 import type { LeaveResponse } from '../types/leaves';
 import userEvent from '@testing-library/user-event';
 
@@ -27,6 +28,13 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockMetrics = {
+  totalAnnualLeaves: 20,
+  leavesTaken: 5,
+  remainingAnnualLeaves: 15,
+  pendingRequests: 2,
+};
+
 const renderDashboard = () => {
   render(
     <MemoryRouter>
@@ -39,6 +47,7 @@ describe('Dashboard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(dashboardApi, 'getEmployeeDashboardMetrics').mockResolvedValue(mockMetrics);
   });
 
   test('renders page header', async () => {
@@ -58,9 +67,11 @@ describe('Dashboard Component', () => {
     });
   });
 
-  test('shows loading state initially', () => {
+  test('shows upcoming leaves loading state', async () => {
+    vi.spyOn(leaveApi, 'fetchLeaves').mockImplementation(() => new Promise(() => {}));
     renderDashboard();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(await screen.findByText('Upcoming Leaves')).toBeInTheDocument();
+    expect(screen.getAllByText('Loading...').length).toBeGreaterThan(0);
   });
 
   test('renders table columns', async () => {
@@ -96,5 +107,35 @@ describe('Dashboard Component', () => {
     await waitFor(() => expect(screen.getByText('Annual Leave')).toBeInTheDocument());
     await userEvent.click(screen.getByText('Annual Leave'));
     expect(mockNavigate).toHaveBeenCalledWith('/leave/1');
+  });
+
+  test('Should show metric details', async () => {
+    renderDashboard();
+
+    expect(await screen.findByText('Total Annual Leave')).toBeInTheDocument();
+    expect(screen.getByText('20')).toBeInTheDocument();
+
+    expect(screen.getByText('Annual Leave Taken')).toBeInTheDocument();
+    expect(screen.getByText('5')).toBeInTheDocument();
+
+    expect(screen.getByText('Annual Leave Remaining')).toBeInTheDocument();
+    expect(screen.getByText('15')).toBeInTheDocument();
+
+    expect(screen.getByText('Pending Request')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  test('shows error message when dashboard metrics API fails', async () => {
+    vi.spyOn(dashboardApi, 'getEmployeeDashboardMetrics').mockRejectedValue(
+      new Error('Failed to fetch dashboard metrics'),
+    );
+    renderDashboard();
+    expect(await screen.findByText('Failed to fetch dashboard metrics')).toBeInTheDocument();
+  });
+
+  test('shows fallback error message when dashboard metrics API throws non-error value', async () => {
+    vi.spyOn(dashboardApi, 'getEmployeeDashboardMetrics').mockRejectedValue('unknown error');
+    renderDashboard();
+    expect(await screen.findByText('Failed to fetch dashboard metrics')).toBeInTheDocument();
   });
 });
