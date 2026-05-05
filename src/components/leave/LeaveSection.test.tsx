@@ -178,9 +178,9 @@ describe('Leave Page Component', () => {
         date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       },
     ];
-    const todayResponse = { ...mockPageResponse, content: optionalHolidayLeave };
+    const optionalHolidayResponse = { ...mockPageResponse, content: optionalHolidayLeave };
 
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(todayResponse);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(optionalHolidayResponse);
 
     renderLeavePage();
 
