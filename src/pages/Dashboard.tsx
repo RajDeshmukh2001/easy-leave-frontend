@@ -93,7 +93,7 @@ function Dashboard(): React.JSX.Element {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col p-4 ">
+    <div className="w-full md:min-h-screen flex flex-col p-3 md:p-4">
       <PageHeader
         pageTitle="Dashboard"
         pageSubtitle="Welcome to your dashboard! Here you can find an overview of your Leaves"
@@ -144,7 +144,7 @@ function Dashboard(): React.JSX.Element {
               </div>
         <div className="flex flex-col flex-1 md:mt-2 rounded-2xl shadow-xs border border-neutral-300">
           <TableHeader title="Holidays" />
-          <div className="flex flex-col h-full p-3 bg-white gap-2 rounded-2xl overflow-scroll">
+          <div className="flex flex-col flex-1 p-3 gap-2 overflow-auto">
             {holidayLoading ? (
               <div className="w-full flex justify-center items-center p-4">
                 <Loading />
@@ -154,7 +154,7 @@ function Dashboard(): React.JSX.Element {
             ) : holidays.length > 0 ? (
               holidays.map((holiday) => <HolidayCard key={holiday.id} holiday={holiday} />)
             ) : (
-              <div className="flex justify-center items-center h-full w-full">No Holiday(s)</div>
+              <div className="flex justify-center items-center h-full">No Holiday(s)</div>
             )}
           </div>
         </div>
