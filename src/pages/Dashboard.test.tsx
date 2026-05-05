@@ -4,8 +4,10 @@ import { MemoryRouter, useNavigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import * as leaveApi from '../api/leave.api';
 import * as dashboardApi from '@/api/dashboard.api';
+import * as holidayApi from '@/api/holiday.api';
 import type { LeaveResponse } from '../types/leaves';
 import userEvent from '@testing-library/user-event';
+import type { HolidayResponse } from '@/types/holiday';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -35,6 +37,21 @@ const mockMetrics = {
   pendingRequests: 2,
 };
 
+const mockHolidays: HolidayResponse[] = [
+  {
+    id: '1',
+    name: 'Fixed Holiday',
+    type: 'FIXED',
+    date: '2026-09-01',
+  },
+  {
+    id: '2',
+    name: 'Optional Holiday',
+    type: 'OPTIONAL',
+    date: '2026-10-01',
+  },
+];
+
 const renderDashboard = () => {
   render(
     <MemoryRouter>
@@ -48,6 +65,7 @@ describe('Dashboard Component', () => {
     vi.clearAllMocks();
     vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
     vi.spyOn(dashboardApi, 'getEmployeeDashboardMetrics').mockResolvedValue(mockMetrics);
+    vi.spyOn(holidayApi, 'fetchHolidays').mockResolvedValue(mockHolidays);
   });
 
   test('renders page header', async () => {
@@ -67,10 +85,22 @@ describe('Dashboard Component', () => {
     });
   });
 
+  test('renders Upcoming Holidays heading', async () => {
+    renderDashboard();
+    expect(await screen.findByText('Upcoming Holidays')).toBeInTheDocument();
+  });
+
   test('shows upcoming leaves loading state', async () => {
     vi.spyOn(leaveApi, 'fetchLeaves').mockImplementation(() => new Promise(() => {}));
     renderDashboard();
     expect(await screen.findByText('Upcoming Leaves')).toBeInTheDocument();
+    expect(screen.getAllByText('Loading...').length).toBeGreaterThan(0);
+  });
+
+  test('shows holiday loading state', async () => {
+    vi.spyOn(holidayApi, 'fetchHolidays').mockImplementation(() => new Promise(() => {}));
+    renderDashboard();
+    expect(await screen.findByText('Upcoming Holidays')).toBeInTheDocument();
     expect(screen.getAllByText('Loading...').length).toBeGreaterThan(0);
   });
 
@@ -82,6 +112,15 @@ describe('Dashboard Component', () => {
       expect(screen.getByText('Duration')).toBeInTheDocument();
       expect(screen.getByText('Applied On')).toBeInTheDocument();
     });
+  });
+
+  test('renders holiday card when upcoming holidays exist', async () => {
+    renderDashboard();
+
+    expect(await screen.findByText('Fixed Holiday')).toBeInTheDocument();
+    expect(screen.getByText('FIXED')).toBeInTheDocument();
+    expect(await screen.findByText('Optional Holiday')).toBeInTheDocument();
+    expect(screen.getByText('OPTIONAL')).toBeInTheDocument();
   });
 
   test('calls fetchLeaves with upcoming status and self scope', async () => {
@@ -137,5 +176,17 @@ describe('Dashboard Component', () => {
     vi.spyOn(dashboardApi, 'getEmployeeDashboardMetrics').mockRejectedValue('unknown error');
     renderDashboard();
     expect(await screen.findByText('Failed to fetch dashboard metrics')).toBeInTheDocument();
+  });
+
+  test('shows holiday API error message', async () => {
+    vi.spyOn(holidayApi, 'fetchHolidays').mockRejectedValue(new Error('Failed to fetch holidays'));
+    renderDashboard();
+    expect(await screen.findByText('Failed to fetch holidays')).toBeInTheDocument();
+  });
+
+  test('shows no upcoming holidays fallback when no holidays exist', async () => {
+    vi.spyOn(holidayApi, 'fetchHolidays').mockResolvedValue([]);
+    renderDashboard();
+    expect(await screen.findByText('No Upcoming Holiday(s)')).toBeInTheDocument();
   });
 });
