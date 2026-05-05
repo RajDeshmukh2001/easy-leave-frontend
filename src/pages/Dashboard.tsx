@@ -10,6 +10,8 @@ import { getEmployeeDashboardMetrics } from '@/api/dashboard.api';
 import type { EmployeeDashboardMetrics } from '@/types/dashboard';
 import DashboardMetricsCard from '@/components/DashboardMetricsCard';
 import { CalendarDays, CheckCircle, Clock, Hourglass } from 'lucide-react';
+import useHolidays from '@/hooks/useHolidays';
+import HolidayCard from '@/components/HolidayCard';
 
 function Dashboard(): React.JSX.Element {
   const {
@@ -17,6 +19,9 @@ function Dashboard(): React.JSX.Element {
     loading: upcomingLeaveLoading,
     error: upcomingLeaveError,
   } = useLeaves({ status: 'upcoming', scope: 'self' });
+
+  const { holidays, loading: holidayLoading, error: holidayError } = useHolidays('all');
+
   const navigate = useNavigate();
 
   const [metricsData, setMetricsData] = useState<EmployeeDashboardMetrics | null>(null);
@@ -115,23 +120,41 @@ function Dashboard(): React.JSX.Element {
           icon={<Hourglass />}
         />
       </div>
-      <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-        <TableHeader title="Upcoming Leaves" />
-        {upcomingLeaveLoading ? (
-          <div className="w-full flex justify-center items-center p-4">
-            <Loading />
+      <div className="flex gap-4 bg-white overflow-scroll">
+        <div className="flex flex-col flex-1/3 min-h-0 md:mt-2 rounded-2xl shadow-xs border border-neutral-300">
+          <TableHeader title="Upcoming Leaves" />
+          {upcomingLeaveLoading ? (
+            <div className="w-full flex justify-center items-center p-4">
+              <Loading />
+            </div>
+          ) : upcomingLeaveError ? (
+            <p className="p-3 text-red-700">{upcomingLeaveError}</p>
+          ) : (
+            <Table
+              data={reversedLeaves}
+              columns={columns}
+              message="No upcoming leave records found."
+              getRowKey={getRowKey}
+              onRowClick={handleRowClick}
+            />
+          )}
+        </div>
+        <div className="flex flex-col flex-1 md:mt-2 rounded-2xl shadow-xs border border-neutral-300">
+          <TableHeader title="Holidays" />
+          <div className="flex flex-col h-full p-3 bg-white gap-2 rounded-2xl overflow-scroll">
+            {holidayLoading ? (
+              <div className="w-full flex justify-center items-center p-4">
+                <Loading />
+              </div>
+            ) : holidayError ? (
+              <p className="p-3 text-red-700">{holidayError}</p>
+            ) : holidays.length > 0 ? (
+              holidays.map((holiday) => <HolidayCard key={holiday.id} holiday={holiday} />)
+            ) : (
+              <div className="flex justify-center items-center h-full w-full">No Holiday(s)</div>
+            )}
           </div>
-        ) : upcomingLeaveError ? (
-          <p className="p-3 text-red-700">{upcomingLeaveError}</p>
-        ) : (
-          <Table
-            data={reversedLeaves}
-            columns={columns}
-            message="No upcoming leave records found."
-            getRowKey={getRowKey}
-            onRowClick={handleRowClick}
-          />
-        )}
+        </div>
       </div>
     </div>
   );
