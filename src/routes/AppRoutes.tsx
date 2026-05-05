@@ -5,9 +5,9 @@ import ProtectedRoute from './ProtectedRoute';
 import type React from 'react';
 import PublicRoute from './PublicRoute';
 import { APP_ROUTES } from './routes.config';
+import NotFound from '@/pages/NotFound';
 
 const AppRoutes = (): React.JSX.Element => {
-  
   return (
     <Routes>
       <Route
@@ -31,6 +31,15 @@ const AppRoutes = (): React.JSX.Element => {
         element={
           <PublicRoute>
             <Home />
+          </PublicRoute>
+        }
+      />
+
+      <Route
+        path="*"
+        element={
+          <PublicRoute>
+            <NotFound />
           </PublicRoute>
         }
       />
