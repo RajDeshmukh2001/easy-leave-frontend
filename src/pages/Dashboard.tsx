@@ -120,29 +120,29 @@ function Dashboard(): React.JSX.Element {
           icon={<Hourglass />}
         />
       </div>
-      <div className="flex gap-4 bg-white overflow-scroll">
-        <div className="flex flex-col min-h-0 w-full mb-5 md:mt-2 rounded-2xl shadow-xs border border-neutral-200">
-                <TableHeader title="Upcoming Leaves" />
-                {upcomingLeaveLoading ? (
-                  <div className="w-full flex justify-center items-center p-4">
-                    <Loading />
-                  </div>
-                ) : upcomingLeaveError ? (
-                  <p className="p-3 text-red-700">{upcomingLeaveError}</p>
-                ) : (
-                  <Table
-                    data={leaves}
-                    columns={columns}
-                    message="No upcoming leave records found."
-                    getRowKey={getRowKey}
-                    onRowClick={handleRowClick}
-                    hasMore={hasMore}
-                    onLoadMore={loadMore}
-                    loadingMore={loadingMore}
-                  />
-                )}
-              </div>
-        <div className="flex flex-col flex-1 md:mt-2 rounded-2xl shadow-xs border border-neutral-300">
+      <div className="flex flex-col md:flex-row gap-4 flex-1 overflow-hidden">
+        <div className="flex flex-col w-full max-h-100 md:w-2/3 md:max-h-130 bg-white rounded-2xl shadow-sm border border-neutral-300 overflow-hidden">
+          <TableHeader title="Upcoming Leaves" />
+          {upcomingLeaveLoading ? (
+            <div className="w-full flex justify-center items-center p-4">
+              <Loading />
+            </div>
+          ) : upcomingLeaveError ? (
+            <p className="p-3 text-red-700">{upcomingLeaveError}</p>
+          ) : (
+            <Table
+              data={leaves}
+              columns={columns}
+              message="No upcoming leave records found."
+              getRowKey={getRowKey}
+              onRowClick={handleRowClick}
+              hasMore={hasMore}
+              onLoadMore={loadMore}
+              loadingMore={loadingMore}
+            />
+          )}
+        </div>
+        <div className="flex flex-col w-full max-h-100 md:w-1/3 md:max-h-130 bg-white rounded-2xl shadow-sm border border-neutral-300 overflow-hidden">
           <TableHeader title="Holidays" />
           <div className="flex flex-col flex-1 p-3 gap-2 overflow-auto">
             {holidayLoading ? (
