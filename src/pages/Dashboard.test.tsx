@@ -97,7 +97,7 @@ describe('Dashboard Component', () => {
 
   test('renders Upcoming Holidays heading', async () => {
     renderDashboard();
-    expect(await screen.findByText('Upcoming Holidays')).toBeInTheDocument();
+    expect(await screen.findByText('Holidays')).toBeInTheDocument();
   });
 
   test('shows upcoming leaves loading state', async () => {
@@ -110,7 +110,7 @@ describe('Dashboard Component', () => {
   test('shows holiday loading state', async () => {
     vi.spyOn(holidayApi, 'fetchHolidays').mockImplementation(() => new Promise(() => {}));
     renderDashboard();
-    expect(await screen.findByText('Upcoming Holidays')).toBeInTheDocument();
+    expect(await screen.findByText('Holidays')).toBeInTheDocument();
     expect(screen.getAllByText('Loading...').length).toBeGreaterThan(0);
   });
 
@@ -202,6 +202,6 @@ describe('Dashboard Component', () => {
   test('shows no upcoming holidays fallback when no holidays exist', async () => {
     vi.spyOn(holidayApi, 'fetchHolidays').mockResolvedValue([]);
     renderDashboard();
-    expect(await screen.findByText('No Upcoming Holiday(s)')).toBeInTheDocument();
+    expect(await screen.findByText('No Holiday(s)')).toBeInTheDocument();
   });
 });
