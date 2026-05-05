@@ -28,7 +28,10 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
   const {
     leaves: leavesDetails,
     loading: leavesDetailsLoading,
+    loadingMore,
     error: leavesDetailsError,
+    hasMore,
+    loadMore,
   } = useLeaves({
     status: 'all',
     scope: 'organization',
@@ -183,6 +186,9 @@ function SingleEmployeeLeaveDetails(): React.JSX.Element {
             columns={leavesColumns}
             message="No leave records found."
             getRowKey={(leave: LeaveResponse) => leave.id}
+            hasMore={hasMore}
+            onLoadMore={loadMore}
+            loadingMore={loadingMore}
           />
         )}
       </div>

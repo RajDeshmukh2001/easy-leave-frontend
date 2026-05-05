@@ -73,6 +73,16 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockLeavesPageResponse = {
+  content: mockLeaves,
+  first: true,
+  last: true,
+  totalPages: 1,
+  totalElements: 1,
+  size: 20,
+  number: 0,
+};
+
 const renderLeavePage = () => {
   render(
     <MemoryRouter>
@@ -179,7 +189,7 @@ describe('RequestSection Component', () => {
 
 describe('Leave Page Component', () => {
   beforeEach(() => {
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeavesPageResponse);
   });
 
   test('renders Leave and Raise Request tab buttons', () => {

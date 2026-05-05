@@ -28,6 +28,16 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockPageResponse = {
+  content: mockLeaves,
+  first: true,
+  last: true,
+  totalPages: 1,
+  totalElements: 1,
+  size: 20,
+  number: 0,
+};
+
 const mockMetrics = {
   totalAnnualLeaves: 20,
   leavesTaken: 5,
@@ -46,7 +56,7 @@ const renderDashboard = () => {
 describe('Dashboard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
     vi.spyOn(dashboardApi, 'getEmployeeDashboardMetrics').mockResolvedValue(mockMetrics);
   });
 
@@ -85,10 +95,15 @@ describe('Dashboard Component', () => {
   });
 
   test('calls fetchLeaves with upcoming status and self scope', async () => {
-    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    const spy = vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
     renderDashboard();
     await waitFor(() => {
-      expect(spy).toHaveBeenCalledWith({ status: 'upcoming', scope: 'self' });
+      expect(spy).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          status: 'upcoming',
+          scope: 'self',
+        }),
+      );
     });
   });
 

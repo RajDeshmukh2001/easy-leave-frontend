@@ -13,7 +13,10 @@ function LeaveSection(): React.JSX.Element {
   const [status, setStatus] = useState<LeaveStatus>('all');
   const navigate = useNavigate();
 
-  const { leaves, loading, error, refreshLeaves } = useLeaves({ status, scope: 'self' });
+  const { leaves, loading, loadingMore, error, refreshLeaves, hasMore, loadMore } = useLeaves({
+    status,
+    scope: 'self',
+  });
 
   const columns = [
     {
@@ -54,7 +57,7 @@ function LeaveSection(): React.JSX.Element {
   };
 
   return (
-    <div className="w-full md:max-h-150 flex flex-col py-4">
+    <div className="w-full md:max-h-170 flex flex-col py-4">
       <div className="flex flex-col flex-1 min-h-0 h-fit md:flex-row gap-6 mt-2">
         <div className="flex h-fit md:w-1/3 bg-white rounded-2xl shadow-xs border border-neutral-200">
           <ApplyLeaveForm refreshLeaves={refreshLeaves} />
@@ -71,6 +74,9 @@ function LeaveSection(): React.JSX.Element {
           getRowKey={(leave: LeaveResponse) => leave.id}
           onRowClick={handleRowClick}
           emptyMessage="No leave records found."
+          hasMore={hasMore}
+          onLoadMore={loadMore}
+          loadingMore={loadingMore}
         />
       </div>
     </div>

@@ -27,6 +27,16 @@ const mockLeaves: LeaveResponse[] = [
   },
 ];
 
+const mockPageResponse = {
+  content: mockLeaves,
+  first: true,
+  last: true,
+  totalPages: 1,
+  totalElements: 1,
+  size: 20,
+  number: 0,
+};
+
 const renderLeaveAndRequest = () => {
   render(
     <MemoryRouter>
@@ -37,7 +47,7 @@ const renderLeaveAndRequest = () => {
 
 describe('LeaveAndRequest Page', () => {
   beforeEach(() => {
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockLeaves);
+    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(mockPageResponse);
   });
 
   test('renders page header', () => {
