@@ -14,7 +14,6 @@ function PendingRequests(): React.JSX.Element {
   });
 
   const onLoadMore = () => {
-    if (!hasMore) return;
     setPage((prev) => prev + 1);
   };
 
