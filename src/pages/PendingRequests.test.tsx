@@ -1,7 +1,7 @@
 import { MemoryRouter } from 'react-router-dom';
 import * as requestApi from '@/api/request.api';
 import type { RequestResponse } from '@/types/request';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import PendingRequests from './PendingRequests';
@@ -249,6 +249,69 @@ describe('Pending Request Page test', () => {
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Unexpected Error Occurred');
+    });
+  });
+
+  test('should not call API when actionType is null on form submit', async () => {
+    const spy = vi.spyOn(requestApi, 'handleRequestResponse');
+
+    renderPendingRequest();
+
+    await screen.findByText('Priyansh Saxena');
+
+    const form = document.querySelector('form');
+    if (form) {
+      fireEvent.submit(form);
+    }
+
+    await waitFor(() => {
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  test('should show default axios error message when no backend message', async () => {
+    vi.spyOn(requestApi, 'handleRequestResponse').mockRejectedValue({
+      isAxiosError: true,
+      response: {
+        data: {},
+      },
+    });
+
+    renderPendingRequest();
+
+    const approveBtn = await screen.findAllByRole('button', { name: /approve/i });
+
+    await userEvent.click(approveBtn[0]);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Request response processing failed');
+    });
+  });
+
+  test('should show success toast with default message when response message is empty', async () => {
+    vi.spyOn(requestApi, 'handleRequestResponse').mockResolvedValue({
+      success: true,
+      message: '',
+      data: {
+        id: '1',
+        date: '2026-04-22',
+        description: 'Sick leave',
+        employeeName: 'Priyansh Saxena',
+        status: 'APPROVED',
+        leaveCategory: 'Annual Leave',
+        type: 'PAST_LEAVE',
+        duration: 'FULL_DAY',
+        appliedDate: '2026-04-21',
+      },
+    });
+
+    renderPendingRequest();
+
+    const approveBtn = await screen.findAllByRole('button', { name: /approve/i });
+    await userEvent.click(approveBtn[0]);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith('Request process successfully');
     });
   });
 });
