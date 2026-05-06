@@ -154,6 +154,7 @@ describe('buildUpdatePayload', () => {
       holidayId: 'holiday-1',
       date: '2026-12-31',
       description: 'Holiday 1',
+      duration: 'FULL_DAY',
     });
   });
 

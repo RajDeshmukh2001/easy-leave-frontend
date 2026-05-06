@@ -41,6 +41,7 @@ const buildHolidayUpdatePayload = (
   if (updatedValues.holidayId !== original.holidayId) {
     const selectedHoliday = holidays.find((holiday) => holiday.id === updatedValues.holidayId);
     payload.holidayId = updatedValues.holidayId;
+    payload.duration = 'FULL_DAY';
     payload.date = selectedHoliday?.date;
     payload.description = selectedHoliday?.name;
   }
