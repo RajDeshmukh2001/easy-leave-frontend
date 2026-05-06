@@ -33,7 +33,7 @@ function PendingRequests(): React.JSX.Element {
     <div className="w-full flex flex-col p-4 gap-4 bg-gray-50">
       <PageHeader
         pageTitle="Pending Request(s)"
-        pageSubtitle="Review and approve all requests from employees"
+        pageSubtitle="Review and manage all employee requests"
       />
 
       {!loading && requests.length === 0 && (
