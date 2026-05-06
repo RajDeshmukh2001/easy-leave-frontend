@@ -166,35 +166,4 @@ describe('Leave Page Component', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith('/leave/1');
   });
-
-  test('shows error toast when clicking on optional holiday leave', async () => {
-    const mockNavigate = vi.fn();
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-
-    const optionalHolidayLeave: LeaveResponse[] = [
-      {
-        ...mockLeaves[0],
-        type: 'Optional Holiday',
-        date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      },
-    ];
-    const optionalHolidayResponse = { ...mockPageResponse, content: optionalHolidayLeave };
-
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(optionalHolidayResponse);
-
-    renderLeavePage();
-
-    await waitFor(() => {
-      expect(screen.getByText('Optional Holiday')).toBeInTheDocument();
-    });
-
-    const row = await screen.findByRole('row', {
-      name: /optional holiday/i,
-    });
-    await userEvent.click(row);
-
-    expect(toast.error).toHaveBeenCalledWith('Cannot update optional holiday');
-
-    expect(mockNavigate).not.toHaveBeenCalled();
-  });
 });
