@@ -120,7 +120,7 @@ function Dashboard(): React.JSX.Element {
           icon={<Hourglass />}
         />
       </div>
-      <div className="flex flex-col md:flex-row gap-4 flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row gap-4 flex-1 overflow-hidden mt-4">
         <div className="flex flex-col w-full max-h-100 md:w-2/3 md:max-h-130 bg-white rounded-2xl shadow-sm border border-neutral-300 overflow-hidden">
           <TableHeader title="Upcoming Leaves" />
           {upcomingLeaveLoading ? (

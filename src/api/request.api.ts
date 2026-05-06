@@ -1,4 +1,11 @@
-import { REQUEST_PAGE_SIZE, type RaiseRequestPayload, type RaiseRequestResponse, type RequestProps, type RequestResponse } from '@/types/request';
+import {
+  REQUEST_PAGE_SIZE,
+  type HandleRequestPayload,
+  type RaiseRequestPayload,
+  type RaiseRequestResponse,
+  type RequestProps,
+  type RequestResponse,
+} from '@/types/request';
 import type { ApiResponse } from '@/types/response';
 import axiosInstance from './axiosInstance';
 import type { PageResponse } from '@/types/pageResponse';
@@ -35,4 +42,19 @@ export const raiseRequest = async (
     throw new Error(data.message || 'Failed to raise request(s)');
   }
   return data.data;
-}
+};
+
+export const handleRequestResponse = async (
+  id: string,
+  payload: HandleRequestPayload,
+): Promise<ApiResponse<RequestResponse>> => {
+  const { data } = await axiosInstance.patch<ApiResponse<RequestResponse>>(
+    `/api/requests/${id}`,
+    payload,
+  );
+
+  if (!data.success) {
+    throw new Error(data.message || 'Failed to raise request(s)');
+  }
+  return data;
+};

@@ -20,7 +20,7 @@ export type RequestResponse = {
   type: RequestType;
   duration: LeaveDuration;
   appliedDate: string;
-}
+};
 
 export type RaiseRequestFormValues = {
   requestType: RequestType | '';
@@ -49,4 +49,10 @@ export type RaiseRequestResponse = {
   duration: LeaveDuration;
   description: string;
   status: RequestStatus;
+};
+
+export type HandleRequestPayload = {
+  status: string;
+  requestType: string;
+  managerRemark?: string;
 };
