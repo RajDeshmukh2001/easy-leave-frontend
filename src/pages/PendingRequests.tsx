@@ -1,13 +1,17 @@
+import { handleRequestResponse } from '@/api/request.api';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
 import RequestCard from '@/components/RequestCard';
 import useRequest from '@/hooks/useRequest';
+import type { RequestResponse } from '@/types/request';
+import { isAxiosError } from 'axios';
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 function PendingRequests(): React.JSX.Element {
   const [page, setPage] = useState<number>(0);
 
-  const { requests, loading, loadingMore, error, hasMore } = useRequest({
+  const { requests, loading, loadingMore, error, hasMore, refreshRequests } = useRequest({
     status: 'PENDING',
     scope: 'ORGANIZATION',
     page,
@@ -29,6 +33,30 @@ function PendingRequests(): React.JSX.Element {
     return <div className="w-full p-4 rounded-md bg-red-100 text-red-700">{error}</div>;
   }
 
+  const handleRequest = async (
+    request: RequestResponse,
+    actionType: 'APPROVED' | 'REJECTED',
+    values: { managerRemark: string },
+  ) => {
+    try {
+      const payload = {
+        status: actionType,
+        requestType: request.type,
+        managerRemark: values.managerRemark || undefined,
+      };
+
+      const response = await handleRequestResponse(request.id, payload);
+      toast.success(response?.message || 'Request process successfully');
+      refreshRequests();
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Request response processing failed');
+      } else {
+        toast.error('Unexpected Error Occurred');
+      }
+    }
+  };
+
   return (
     <div className="w-full flex flex-col p-4 gap-4 bg-gray-50">
       <PageHeader
@@ -44,7 +72,7 @@ function PendingRequests(): React.JSX.Element {
 
       <div className="grid grid-cols-1 gap-4">
         {requests.map((request) => (
-          <RequestCard key={request.id} request={request} />
+          <RequestCard key={request.id} request={request} onHandleRequest={handleRequest} />
         ))}
       </div>
 

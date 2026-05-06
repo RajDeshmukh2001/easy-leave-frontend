@@ -4,12 +4,14 @@ import React, { useState } from 'react';
 import TextareaField from './form/TextareaField';
 import { Form, Formik } from 'formik';
 import { Button } from './ui/button';
-import { handleRequestResponse } from '@/api/request.api';
-import { isAxiosError } from 'axios';
-import toast from 'react-hot-toast';
 
 type RequestCardProps = {
   request: RequestResponse;
+  onHandleRequest: (
+    request: RequestResponse,
+    actionType: 'APPROVED' | 'REJECTED',
+    values: FormValuesType,
+  ) => Promise<void>;
 };
 
 type FormValuesType = {
@@ -20,27 +22,13 @@ const initialValues: FormValuesType = {
   managerRemark: '',
 };
 
-function RequestCard({ request }: RequestCardProps): React.JSX.Element {
+function RequestCard({ request, onHandleRequest }: RequestCardProps): React.JSX.Element {
   const [actionType, setActionType] = useState<'APPROVED' | 'REJECTED' | null>(null);
 
-  const handleRequest = async (values: FormValuesType) => {
+  const handleSubmit = async (values: FormValuesType) => {
     if (!actionType) return;
-    try {
-      const payload = {
-        status: actionType,
-        requestType: request.type,
-        managerRemark: values.managerRemark || undefined,
-      };
 
-      const response = await handleRequestResponse(request.id, payload);
-      toast.success(response?.message || 'Request process successfully');
-    } catch (error) {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || 'Request response processing failed');
-      } else {
-        toast.error('Unexpected Error Occurred');
-      }
-    }
+    await onHandleRequest(request, actionType, values);
   };
 
   return (
@@ -81,7 +69,7 @@ function RequestCard({ request }: RequestCardProps): React.JSX.Element {
       <hr />
 
       <div className="pt-4">
-        <Formik initialValues={initialValues} onSubmit={handleRequest}>
+        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {({ isSubmitting }) => (
             <Form className="space-y-4">
               <TextareaField
