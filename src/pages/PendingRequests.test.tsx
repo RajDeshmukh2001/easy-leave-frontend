@@ -5,6 +5,16 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import PendingRequests from './PendingRequests';
+import toast from 'react-hot-toast';
+
+vi.mock('react-hot-toast', () => ({
+  default: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
+vi.spyOn(requestApi, 'handleRequestResponse');
 
 const renderPendingRequest = () => {
   return render(
@@ -143,5 +153,102 @@ describe('Pending Request Page test', () => {
     });
 
     expect(await screen.findByText('Jatin Joshi')).toBeInTheDocument();
+  });
+
+  test('should approve request and show success toast', async () => {
+    vi.spyOn(requestApi, 'handleRequestResponse').mockResolvedValue({
+      success: true,
+      message: 'Request approved successfully',
+      data: {
+        id: '1',
+        date: '2026-04-22',
+        description: 'Sick leave',
+        employeeName: 'Priyansh Saxena',
+        status: 'APPROVED',
+        leaveCategory: 'Annual Leave',
+        type: 'PAST_LEAVE',
+        duration: 'FULL_DAY',
+        appliedDate: '2026-04-21',
+      },
+    });
+
+    renderPendingRequest();
+
+    const approveBtn = await screen.findAllByRole('button', { name: /approve/i });
+
+    await userEvent.click(approveBtn[0]);
+
+    await waitFor(() => {
+      expect(requestApi.handleRequestResponse).toHaveBeenCalled();
+      expect(toast.success).toHaveBeenCalledWith('Request approved successfully');
+    });
+  });
+
+  test('should reject request when reject button clicked', async () => {
+    vi.spyOn(requestApi, 'handleRequestResponse').mockResolvedValue({
+      success: true,
+      message: 'Request rejected successfully',
+      data: {
+        id: '1',
+        date: '2026-04-22',
+        description: 'Sick leave',
+        employeeName: 'Priyansh Saxena',
+        status: 'REJECTED',
+        leaveCategory: 'Annual Leave',
+        type: 'PAST_LEAVE',
+        duration: 'FULL_DAY',
+        appliedDate: '2026-04-21',
+      },
+    });
+
+    renderPendingRequest();
+
+    const rejectBtn = await screen.findAllByRole('button', { name: /reject/i });
+
+    await userEvent.click(rejectBtn[0]);
+
+    await waitFor(() => {
+      expect(requestApi.handleRequestResponse).toHaveBeenCalledWith(
+        '1',
+        expect.objectContaining({
+          status: 'REJECTED',
+        }),
+      );
+    });
+  });
+
+  test('should show error toast when API returns axios error', async () => {
+    vi.spyOn(requestApi, 'handleRequestResponse').mockRejectedValue({
+      isAxiosError: true,
+      response: {
+        data: {
+          message: 'Something went wrong from backend',
+        },
+      },
+    });
+
+    renderPendingRequest();
+
+    const approveBtn = await screen.findAllByRole('button', { name: /approve/i });
+
+    await userEvent.click(approveBtn[0]);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Something went wrong from backend');
+    });
+  });
+
+  test('should show generic error toast for unexpected error', async () => {
+    vi.spyOn(requestApi, 'handleRequestResponse').mockRejectedValue(new Error('Random error'));
+
+    renderPendingRequest();
+
+    const approveBtn = await screen.findAllByRole('button', { name: /approve/i });
+
+    await userEvent.click(approveBtn[0]);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Unexpected Error Occurred');
+    });
   });
 });
