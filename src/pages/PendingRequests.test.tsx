@@ -80,9 +80,7 @@ describe('Pending Request Page test', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Pending Request(s)')).toBeInTheDocument();
-      expect(
-        screen.getByText('Review and approve all requests from employees'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Review and manage all employee requests')).toBeInTheDocument();
     });
   });
 
