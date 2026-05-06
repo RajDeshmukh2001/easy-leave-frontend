@@ -1,15 +1,51 @@
 import type { RequestResponse } from '@/types/request';
 import { formatEnumLabel } from '@/utils/formateEnumLabel';
-import React from 'react';
+import React, { useState } from 'react';
+import TextareaField from './form/TextareaField';
+import { Form, Formik } from 'formik';
+import { Button } from './ui/button';
+import { handleRequestResponse } from '@/api/request.api';
+import { isAxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 type RequestCardProps = {
   request: RequestResponse;
 };
 
+type FormValuesType = {
+  managerRemark: string;
+};
+
+const initialValues: FormValuesType = {
+  managerRemark: '',
+};
+
 function RequestCard({ request }: RequestCardProps): React.JSX.Element {
+  const [actionType, setActionType] = useState<'APPROVED' | 'REJECTED' | null>(null);
+
+  const handleRequest = async (values: FormValuesType) => {
+    if (!actionType) return;
+    try {
+      const payload = {
+        status: actionType,
+        requestType: request.type,
+        managerRemark: values.managerRemark || undefined,
+      };
+
+      const response = await handleRequestResponse(request.id, payload);
+      toast.success(response?.message || 'Request process successfully');
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Request response processing failed');
+      } else {
+        toast.error('Unexpected Error Occurred');
+      }
+    }
+  };
+
   return (
     <div className="w-full bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md ">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 pb-4">
         <h2 className="text-xl font-bold text-card-foreground">{request.employeeName}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
           <p>
@@ -40,6 +76,44 @@ function RequestCard({ request }: RequestCardProps): React.JSX.Element {
           <p className="font-semibold text-gray-800 mb-1 text-sm">Description : </p>
           <p className="text-sm text-gray-600 leading-relaxed">{request.description}</p>
         </div>
+      </div>
+
+      <hr />
+
+      <div className="pt-4">
+        <Formik initialValues={initialValues} onSubmit={handleRequest}>
+          {({ isSubmitting }) => (
+            <Form className="space-y-4">
+              <TextareaField
+                name="managerRemark"
+                id="managerRemark"
+                label="Remark"
+                placeholder="Add a remark"
+              />
+
+              <div className="flex items-center justify-end gap-4">
+                <Button
+                  type="submit"
+                  onClick={() => setActionType('APPROVED')}
+                  className="bg-(--technogise-blue) mb-0 cursor-pointer"
+                  disabled={isSubmitting}
+                >
+                  Approve
+                </Button>
+
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  onClick={() => setActionType('REJECTED')}
+                  className="mb-0 cursor-pointer"
+                  disabled={isSubmitting}
+                >
+                  Reject
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );
