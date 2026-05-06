@@ -10,6 +10,7 @@ import type { LeaveResponse } from '@/types/leaves';
 import { parseLocalDate } from '@/utils/date';
 import { buildUpdatePayload } from '@/utils/leaveForm';
 import { isAxiosError } from 'axios';
+import { startOfMonth } from 'date-fns';
 import type { FormikHelpers } from 'formik';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -95,6 +96,15 @@ const LeaveDetails = (): React.JSX.Element => {
     );
   }
 
+  const leaveDate = new Date(leave.date);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  leaveDate.setHours(0, 0, 0, 0);
+
+  const firstDayOfCurrentMonth = startOfMonth(today);
+  const isBeforeCurrentMonth = leaveDate < firstDayOfCurrentMonth;
+
   const matchedCategory: LeaveCategoryResponse | undefined = categories.find(
     (category) => category.name === leave.type,
   );
@@ -125,7 +135,7 @@ const LeaveDetails = (): React.JSX.Element => {
           datePickerMode="single"
           handleCancelLeave={handleCancelLeave}
           cancelLabel="Cancel Leave"
-          disableSubmit={new Date(leave.date) < new Date()}
+          disableSubmit={isBeforeCurrentMonth}
         />
       </div>
     </div>
