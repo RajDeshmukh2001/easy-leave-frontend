@@ -48,6 +48,7 @@ function RequestSection(): React.JSX.Element {
 
   const onFilterChange = (val: string) => {
     setStatus(val as RequestStatus);
+    setPage(0);
   };
 
   const onLoadMore = () => {
