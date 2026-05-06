@@ -40,6 +40,10 @@ function useLeaves({
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
+  useEffect(() => {
+    setPage(0);
+  }, [status, scope, empId, year, size, sort, sortDir]);
+
   const loadLeaves = useCallback(async () => {
     try {
       if (page === 0) {
