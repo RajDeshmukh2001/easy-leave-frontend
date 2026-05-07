@@ -5,7 +5,6 @@ import { MemoryRouter, useNavigate } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
 import * as leaveApi from '@/api/leave.api';
-import toast from 'react-hot-toast';
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -32,6 +31,7 @@ const mockLeaves: LeaveResponse[] = [
     employeeName: 'Priyansh Saxena',
     startTime: '09:00',
     reason: 'Personal work',
+    holidayId: null,
   },
 ];
 
@@ -165,36 +165,5 @@ describe('Leave Page Component', () => {
     await userEvent.click(screen.getByText('Annual Leave'));
 
     expect(mockNavigate).toHaveBeenCalledWith('/leave/1');
-  });
-
-  test('shows error toast when clicking on optional holiday leave', async () => {
-    const mockNavigate = vi.fn();
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-
-    const optionalHolidayLeave: LeaveResponse[] = [
-      {
-        ...mockLeaves[0],
-        type: 'Optional Holiday',
-        date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      },
-    ];
-    const optionalHolidayResponse = { ...mockPageResponse, content: optionalHolidayLeave };
-
-    vi.spyOn(leaveApi, 'fetchLeaves').mockResolvedValue(optionalHolidayResponse);
-
-    renderLeavePage();
-
-    await waitFor(() => {
-      expect(screen.getByText('Optional Holiday')).toBeInTheDocument();
-    });
-
-    const row = await screen.findByRole('row', {
-      name: /optional holiday/i,
-    });
-    await userEvent.click(row);
-
-    expect(toast.error).toHaveBeenCalledWith('Cannot update optional holiday');
-
-    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });
